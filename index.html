@@ -1260,54 +1260,75 @@
 
 
 
-    // Confirmation popup handlers
-    const cancelBtn = document.getElementById('confirmation-cancel');
-    const confirmBtn = document.getElementById('confirmation-confirm');
+    // Initialize event listeners when DOM is ready
+    function initializeEventListeners() {
+      // Confirmation popup handlers
+      const cancelBtn = document.getElementById('confirmation-cancel');
+      const confirmBtn = document.getElementById('confirmation-confirm');
 
-    if (cancelBtn) {
-      cancelBtn.addEventListener('click', hideConfirmationPopup);
-    } else {
-      console.error('Confirmation cancel button not found');
-    }
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', hideConfirmationPopup);
+      } else {
+        console.error('Confirmation cancel button not found');
+      }
 
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', () => {
-        const popup = document.getElementById('confirmation-popup');
-        const cardId = popup.dataset.cardId;
-        const action = popup.dataset.action;
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+          const popup = document.getElementById('confirmation-popup');
+          const cardId = popup.dataset.cardId;
+          const action = popup.dataset.action;
 
-        console.log('Confirmation button clicked:', action, 'for card:', cardId);
+          console.log('Confirmation button clicked:', action, 'for card:', cardId);
 
-        if (cardId && action) {
-          if (action === 'make-public') {
-            console.log('Calling makeCardPublic for card:', cardId);
-            makeCardPublic(cardId);
-          } else if (action === 'make-private') {
-            console.log('Calling makeCardPrivate for card:', cardId);
-            makeCardPrivate(cardId);
+          if (cardId && action) {
+            if (action === 'make-public') {
+              console.log('Calling makeCardPublic for card:', cardId);
+              makeCardPublic(cardId);
+            } else if (action === 'make-private') {
+              console.log('Calling makeCardPrivate for card:', cardId);
+              makeCardPrivate(cardId);
+            }
+            hideConfirmationPopup();
           }
-          hideConfirmationPopup();
-        }
-      });
+        });
+      }
+
+      // Close confirmation popup when clicking outside
+      const confirmationPopup = document.getElementById('confirmation-popup');
+      if (confirmationPopup) {
+        confirmationPopup.addEventListener('click', (e) => {
+          if (e.target === confirmationPopup) {
+            hideConfirmationPopup();
+          }
+        });
+      }
+
+      // Referral popup handlers
+      const copyBtn = document.getElementById('copy-referral-btn');
+      const referralCloseBtn = document.getElementById('referral-close');
+      const referralPopup = document.getElementById('referral-popup');
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', copyReferralLink);
+      }
+      if (referralCloseBtn) {
+        referralCloseBtn.addEventListener('click', hideReferralPopup);
+      }
+      if (referralPopup) {
+        referralPopup.addEventListener('click', (e) => {
+          if (e.target === referralPopup) {
+            hideReferralPopup();
+          }
+        });
+      }
     }
 
-    // Close confirmation popup when clicking outside
-    document.getElementById('confirmation-popup').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('confirmation-popup')) {
-        hideConfirmationPopup();
-      }
-    });
-
-    // Referral popup handlers
-    document.getElementById('copy-referral-btn').addEventListener('click', copyReferralLink);
-    document.getElementById('referral-close').addEventListener('click', hideReferralPopup);
-
-    // Close referral popup when clicking outside
-    document.getElementById('referral-popup').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('referral-popup')) {
-        hideReferralPopup();
-      }
-    });
+    // Initialize event listeners when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeEventListeners);
+    } else {
+      initializeEventListeners();
+    }
 
     btn.addEventListener('click', () => {
       if (attemptsLeft <= 0) return;
@@ -1478,12 +1499,19 @@
     }
 
     function showConfirmationPopup(cardId, action) {
+      console.log('showConfirmationPopup called:', cardId, action);
+
       const card = completedCards.find(c => c.id === cardId);
-      if (!card) return;
+      if (!card) {
+        console.log('Card not found in completedCards:', cardId);
+        return;
+      }
 
       const titleEl = document.getElementById('confirmation-title');
       const descriptionEl = document.getElementById('confirmation-description');
       const confirmBtn = document.getElementById('confirmation-confirm');
+
+      console.log('Found elements:', { titleEl: !!titleEl, descriptionEl: !!descriptionEl, confirmBtn: !!confirmBtn });
 
       if (action === 'make-public') {
         titleEl.textContent = 'Make Thing Public?';
@@ -1501,6 +1529,9 @@
         popup.dataset.cardId = cardId;
         popup.dataset.action = action;
         popup.classList.add('show');
+        console.log('Popup shown with data:', { cardId, action });
+      } else {
+        console.error('Confirmation popup element not found');
       }
     }
 
@@ -1762,6 +1793,7 @@
 
           if (card.type === 'completed') {
             const isPublic = publicCards.some(pc => pc.id === card.id);
+            console.log('Rendering completed card:', card.id, 'isPublic:', isPublic);
             toggleHtml = `
           <div class="toggle-container">
             <span class="toggle-label">${isPublic ? 'Public' : 'Make Public'}</span>
@@ -1916,6 +1948,8 @@
                   // Making private
                   console.log('Showing make-private confirmation for card:', card.id);
                   showConfirmationPopup(card.id, 'make-private');
+                } else {
+                  console.log('No action needed - toggle state matches public state');
                 }
 
                 // Reset the toggle to current state until confirmed with smooth animation
