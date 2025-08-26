@@ -1198,13 +1198,22 @@
     // Load public cards from API on initialization
     function loadPublicCards() {
       const userId = localStorage.getItem('userId');
-      if (!userId) return;
+      if (!userId) {
+        console.log('No userId found for loadPublicCards');
+        return;
+      }
 
+      console.log('Loading public cards for user:', userId);
       fetch(`https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards?one_thing_users_id=${userId}`)
-        .then(response => response.json())
+        .then(response => {
+          console.log('LoadPublicCards response status:', response.status);
+          return response.json();
+        })
         .then(data => {
+          console.log('LoadPublicCards data:', data);
           if (data && Array.isArray(data)) {
             publicCards = data;
+            console.log('Updated publicCards:', publicCards);
             try {
               localStorage.setItem('publicCards', JSON.stringify(publicCards));
             } catch (e) {
@@ -1218,7 +1227,7 @@
           }
         })
         .catch(error => {
-          // Error loading public cards
+          console.error('Error loading public cards:', error);
         });
     }
 
@@ -1267,10 +1276,14 @@
         const cardId = popup.dataset.cardId;
         const action = popup.dataset.action;
 
+        console.log('Confirmation button clicked:', action, 'for card:', cardId);
+
         if (cardId && action) {
           if (action === 'make-public') {
+            console.log('Calling makeCardPublic for card:', cardId);
             makeCardPublic(cardId);
           } else if (action === 'make-private') {
+            console.log('Calling makeCardPrivate for card:', cardId);
             makeCardPrivate(cardId);
           }
           hideConfirmationPopup();
@@ -1539,11 +1552,19 @@
 
     function makeCardPublic(cardId) {
       const card = completedCards.find(c => c.id === cardId);
-      if (!card) return;
+      if (!card) {
+        console.log('Card not found:', cardId);
+        return;
+      }
 
       // Get user ID from localStorage
       const userId = localStorage.getItem('userId');
-      if (!userId) return;
+      if (!userId) {
+        console.log('User ID not found in localStorage');
+        return;
+      }
+
+      console.log('Making card public:', cardId, 'for user:', userId);
 
       // Send API request to make card public
       const requestBody = {
@@ -1559,35 +1580,46 @@
         body: JSON.stringify(requestBody)
       })
         .then(response => {
+          console.log('API response status:', response.status);
           if (!response.ok) {
             throw new Error(`Failed to make card public: ${response.status} ${response.statusText}`);
           }
           return response.json();
         })
         .then(data => {
+          console.log('API response data:', data);
 
           // Add to public cards if not already there
           if (!publicCards.some(pc => pc.id === cardId)) {
             publicCards.unshift(card);
+            console.log('Added card to publicCards:', cardId);
             try {
               localStorage.setItem('publicCards', JSON.stringify(publicCards));
             } catch (e) {
               localStorage.clear();
               localStorage.setItem('publicCards', JSON.stringify(publicCards));
             }
+          } else {
+            console.log('Card already in publicCards:', cardId);
           }
 
           // Re-render the list with smooth transition
           const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'completed';
+          console.log('Re-rendering with filter:', currentTypeFilter);
           renderCardList(currentTypeFilter, currentCategoryFilter);
 
-          // Re-enable toggle
+          // Re-enable toggle and update its state
           const toggle = document.querySelector(`#toggle-${cardId}`);
           if (toggle) {
             toggle.disabled = false;
+            toggle.checked = true; // Ensure toggle shows as checked
+            console.log('Updated toggle state for card:', cardId);
+          } else {
+            console.log('Toggle not found for card:', cardId);
           }
         })
         .catch(error => {
+          console.error('Error making card public:', error);
           // Show error message to user
           alert('Failed to make card public. Please try again.');
 
@@ -1868,17 +1900,21 @@
           if (card.type === 'completed') {
             const toggle = cardEl.querySelector('input[type="checkbox"]');
             if (toggle) {
+              console.log('Setting up toggle for card:', card.id, 'isPublic:', publicCards.some(pc => pc.id === card.id));
               toggle.addEventListener('change', (e) => {
                 const isPublic = publicCards.some(pc => pc.id === card.id);
+                console.log('Toggle changed for card:', card.id, 'checked:', e.target.checked, 'wasPublic:', isPublic);
 
                 // Disable toggle during API call
                 toggle.disabled = true;
 
                 if (e.target.checked && !isPublic) {
                   // Making public
+                  console.log('Showing make-public confirmation for card:', card.id);
                   showConfirmationPopup(card.id, 'make-public');
                 } else if (!e.target.checked && isPublic) {
                   // Making private
+                  console.log('Showing make-private confirmation for card:', card.id);
                   showConfirmationPopup(card.id, 'make-private');
                 }
 
@@ -1886,6 +1922,7 @@
                 setTimeout(() => {
                   e.target.checked = isPublic;
                   toggle.disabled = false;
+                  console.log('Reset toggle for card:', card.id, 'to:', isPublic);
                 }, 150);
               });
             }
