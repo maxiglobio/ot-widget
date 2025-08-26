@@ -1829,23 +1829,24 @@
           cardEl.innerHTML = `
         <div class="card-category-tag ${card.category}">${categoryText}</div>
         <div class="card-image-placeholder">
-          <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}">
+          <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}">
           <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif" 
                alt="Add photo" 
                class="add-photo-icon"
-               style="display: ${isDefaultImage ? 'block' : 'none'}">
-          <input type="file" accept="image/*">
+               style="display: ${isDefaultImage ? 'block' : 'none'}"
+               data-card-id="${card.id}">
+          <input type="file" accept="image/*" data-card-id="${card.id}">
         </div>
         <h4>${card.title}</h4>
         <p>${card.description}</p>
         ${actionHtml}
         ${toggleHtml}
       `;
-          // Add image upload functionality
+          // Add image upload functionality - use specific selectors for this card
           const placeholder = cardEl.querySelector('.card-image-placeholder');
-          const img = cardEl.querySelector('.card-image-placeholder img[alt="Card image"]');
-          const addPhotoIcon = cardEl.querySelector('.add-photo-icon');
-          const input = cardEl.querySelector('input[type=file]');
+          const img = cardEl.querySelector(`img[data-card-id="${card.id}"][alt="Card image"]`);
+          const addPhotoIcon = cardEl.querySelector(`img[data-card-id="${card.id}"].add-photo-icon`);
+          const input = cardEl.querySelector(`input[data-card-id="${card.id}"]`);
 
           // Set initial classes based on image state
           if (isDefaultImage) {
@@ -1854,11 +1855,19 @@
             img.className = 'uploaded-image';
           }
 
+          console.log('Setting up image upload for card:', card.id, 'elements found:', {
+            img: !!img,
+            addPhotoIcon: !!addPhotoIcon,
+            input: !!input
+          });
+
           input.addEventListener('change', e => {
             const file = e.target.files[0];
             if (file) {
+              console.log('File selected for card:', card.id, 'file:', file.name);
               const reader = new FileReader();
               reader.onload = ev => {
+                console.log('File loaded for card:', card.id);
                 img.src = ev.target.result;
                 img.className = 'uploaded-image';
                 img.style.display = 'block';
@@ -1868,6 +1877,7 @@
                   // Update the card's image in saved cards
                   const savedIndex = savedCards.findIndex(c => c.id === card.id);
                   if (savedIndex !== -1) {
+                    console.log('Updating saved card image:', card.id);
                     savedCards[savedIndex].imageSrc = ev.target.result;
                     try {
                       localStorage.setItem('savedCards', JSON.stringify(savedCards));
@@ -1880,6 +1890,8 @@
                     // Re-render the list to show the complete button
                     const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'saved';
                     renderCardList(currentTypeFilter, currentCategoryFilter);
+                  } else {
+                    console.error('Saved card not found:', card.id);
                   }
                 }
               };
@@ -1890,6 +1902,7 @@
           // Add complete button functionality
           const completeBtn = cardEl.querySelector('.complete-thing-btn');
           if (completeBtn) {
+            console.log('Setting up complete button for card:', card.id);
             completeBtn.addEventListener('click', () => {
               // Move card from saved to completed
               const savedIndex = savedCards.findIndex(c => c.id === card.id);
