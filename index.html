@@ -17,6 +17,24 @@
     justify-content: flex-start;
     margin-top: 40px;
     text-align: center;
+    position: relative;
+  }
+
+  /* Ensure popups are positioned relative to viewport, not iframe */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Force popups to be positioned relative to viewport */
+  .one-thing-popup,
+  .confirmation-popup,
+  .referral-popup {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
   }
   /* Circular button styled like your original design */
   .one-thing-account-btn {
@@ -438,13 +456,13 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 999999;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -652,21 +670,21 @@
    }
 
    /* Card Popup Styles */
-   .one-thing-popup {
-     position: fixed;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 100%;
-     background: rgba(0, 0, 0, 0.5);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     z-index: 10000;
-     opacity: 0;
-     visibility: hidden;
-     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-   }
+     .one-thing-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
    .one-thing-popup.show {
      opacity: 1;
@@ -832,7 +850,7 @@
      align-items: center;
      gap: 8px;
      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-     z-index: 10001;
+     z-index: 999999;
      opacity: 0;
      transform: translateX(-100%);
      transition: all 0.3s ease;
@@ -918,13 +936,13 @@
      position: fixed;
      top: 0;
      left: 0;
-     width: 100%;
-     height: 100%;
+     width: 100vw;
+     height: 100vh;
      background: rgba(0, 0, 0, 0.5);
      display: flex;
      align-items: center;
      justify-content: center;
-     z-index: 10002;
+     z-index: 999999;
      opacity: 0;
      visibility: hidden;
      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1330,6 +1348,15 @@
     document.getElementById('popup-category-image').src = categoryIcon;
     popupTitle.textContent = card.title;
     popupDesc.textContent = card.description;
+    
+    // Ensure popup is positioned correctly
+    const popupElement = document.getElementById('one-thing-popup');
+    popupElement.style.position = 'fixed';
+    popupElement.style.top = '0';
+    popupElement.style.left = '0';
+    popupElement.style.width = '100vw';
+    popupElement.style.height = '100vh';
+    popupElement.style.zIndex = '999999';
     
     // Show popup with animation
     popup.classList.add('show');
