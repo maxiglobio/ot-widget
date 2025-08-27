@@ -808,6 +808,39 @@
     }
   }
 
+  /* Medium mobile adjustments */
+  @media (max-width: 500px) and (min-width: 401px) {
+    .filter-buttons {
+      gap: 10px;
+    }
+
+    .filter-group {
+      gap: 10px;
+    }
+
+    .filter-buttons button {
+      min-width: 52px;
+      height: 52px;
+      padding: 14px;
+    }
+
+    .filter-buttons button img {
+      width: 22px;
+      height: 22px;
+    }
+
+    .dropdown-trigger {
+      min-width: 52px;
+      height: 52px;
+      padding: 14px;
+    }
+
+    .dropdown-trigger svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
   /* Mobile adjustments */
   @media (max-width: 600px) {
     #one-thing-account-component {
@@ -837,31 +870,68 @@
     }
 
     .filter-buttons {
-      flex-direction: column;
-      gap: 12px;
+      flex-direction: row;
+      gap: 8px;
       align-items: center;
+      justify-content: center;
       width: 100%;
       max-width: 100%;
       padding: 0 10px;
     }
 
     .filter-group {
-      flex-direction: column;
+      flex-direction: row;
       gap: 8px;
       align-items: center;
-      width: 100%;
+      justify-content: center;
+      width: auto;
     }
 
     .filter-buttons button {
-      width: 100%;
-      max-width: 280px;
+      width: auto;
+      min-width: 48px;
+      height: 48px;
+      padding: 12px;
       justify-content: center;
+      border-radius: 50%;
+    }
+
+    .filter-buttons button span {
+      display: none;
+    }
+
+    .filter-buttons button img {
+      width: 20px;
+      height: 20px;
+      margin: 0;
     }
 
     .dropdown-trigger {
-      width: 100%;
-      max-width: 280px;
+      width: auto;
+      min-width: 48px;
+      height: 48px;
+      padding: 12px;
       justify-content: center;
+      border-radius: 50%;
+    }
+
+    .dropdown-trigger span {
+      display: none;
+    }
+
+    .dropdown-trigger svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .dropdown-menu {
+      min-width: 160px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    .dropdown-menu.show {
+      transform: translateX(-50%) translateY(0);
     }
 
     .filter-divider {
@@ -882,6 +952,43 @@
 
     .filter-buttons {
       padding: 0 5px;
+      gap: 6px;
+    }
+
+    .filter-group {
+      gap: 6px;
+    }
+
+    .filter-buttons button {
+      min-width: 44px;
+      height: 44px;
+      padding: 10px;
+    }
+
+    .filter-buttons button img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .dropdown-trigger {
+      min-width: 44px;
+      height: 44px;
+      padding: 10px;
+    }
+
+    .dropdown-trigger svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .dropdown-menu {
+      min-width: 140px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    .dropdown-menu.show {
+      transform: translateX(-50%) translateY(0);
     }
 
     .one-thing-card {
