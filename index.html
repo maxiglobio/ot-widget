@@ -830,9 +830,16 @@
     }
 
     .dropdown-trigger {
-      min-width: 52px;
+      min-width: 130px;
       height: 52px;
-      padding: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-trigger {
+      border-radius: 26px;
     }
 
     .dropdown-trigger svg {
@@ -873,7 +880,7 @@
       flex-direction: row;
       gap: 8px;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       width: 100%;
       max-width: 100%;
       padding: 0 10px;
@@ -883,7 +890,7 @@
       flex-direction: row;
       gap: 8px;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       width: auto;
     }
 
@@ -908,16 +915,17 @@
 
     .dropdown-trigger {
       width: auto;
-      min-width: 48px;
+      min-width: 120px;
       height: 48px;
-      padding: 12px;
+      padding: 12px 16px;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .dropdown-trigger span {
-      display: none;
-    }
+
 
     .dropdown-trigger svg {
       width: 16px;
@@ -935,7 +943,11 @@
     }
 
     .filter-divider {
-      display: none;
+      width: 2px;
+      height: 20px;
+      background: #E0E0E0;
+      border-radius: 1px;
+      margin: 0 4px;
     }
   }
 
@@ -971,9 +983,16 @@
     }
 
     .dropdown-trigger {
-      min-width: 44px;
+      min-width: 100px;
       height: 44px;
-      padding: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dropdown-trigger {
+      border-radius: 22px;
     }
 
     .dropdown-trigger svg {
@@ -1225,13 +1244,14 @@
     }
 
     .popup-buttons {
-      flex-direction: column;
+      flex-direction: row;
       gap: 12px;
+      width: 100%;
     }
 
     .popup-skip,
     .popup-save {
-      width: 100%;
+      flex: 1;
       padding: 16px 24px;
     }
   }
@@ -1261,9 +1281,13 @@
       font-size: 13px;
     }
 
+    .popup-buttons {
+      gap: 8px;
+    }
+
     .popup-skip,
     .popup-save {
-      padding: 12px 20px;
+      padding: 12px 16px;
       font-size: 14px;
     }
 
