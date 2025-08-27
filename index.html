@@ -484,7 +484,10 @@
     position: relative;
     overflow: hidden;
     align-self: center;
+    transition: all 0.3s ease;
   }
+
+
 
 
 
@@ -506,7 +509,21 @@
     width: 190px;
     height: 190px;
     opacity: 0.8;
+    transition: all 0.3s ease;
+    cursor: pointer;
   }
+
+  .card-image-placeholder:hover .add-photo-icon {
+    filter: brightness(0.95);
+    transform: scale(1.01);
+  }
+
+  .card-image-placeholder:active .add-photo-icon {
+    filter: brightness(0.88);
+    transform: scale(0.99);
+  }
+
+
 
 
 
@@ -780,7 +797,7 @@
   .empty-state-btn {
     background: #f8f8f8;
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: 24px;
     padding: 12px 24px;
     font-size: 14px;
     font-weight: 600;
@@ -1017,6 +1034,11 @@
 
     .card-image-placeholder {
       max-width: 150px;
+      height: 150px;
+    }
+
+    .card-image-placeholder .add-photo-icon {
+      width: 150px;
       height: 150px;
     }
 
@@ -1598,6 +1620,24 @@
   </div>
 </div>
 
+<!-- Community Empty State Popup -->
+<div id="community-empty-popup" class="referral-popup">
+  <div class="referral-popup-inner">
+    <h3>Expand Globio Community</h3>
+    <p>Here's your referral code. Copy it and share with friends to expand the Globio community in your area!</p>
+    <div class="referral-link-container">
+      <span class="referral-link" id="community-referral-link-text">
+        <span class="base-url">https://globio.io/ref/</span><span class="highlight"
+          id="community-referral-code">YOURCODE</span>
+      </span>
+      <button class="copy-btn" id="copy-community-referral-btn">Copy</button>
+    </div>
+    <div class="referral-popup-buttons">
+      <button class="btn-secondary" id="community-popup-close">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- Card popup -->
 <div id="one-thing-popup" class="one-thing-popup">
   <div class="one-thing-popup-inner">
@@ -1707,7 +1747,6 @@
               // localStorage quota exceeded
             }
             // Re-render if we're on completed tab
-            const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter');
             if (currentTypeFilter === 'completed') {
               renderCardList(currentTypeFilter, currentCategoryFilter);
             }
@@ -1725,6 +1764,7 @@
 
     let currentSuggestion = null;
     let currentCategoryFilter = localStorage.getItem('currentCategoryFilter') || 'all';
+    let currentTypeFilter = localStorage.getItem('currentTypeFilter') || 'saved';
 
     const btn = document.getElementById('one-thing-btn');
     const attemptsCounter = document.getElementById('attempts-counter');
@@ -1740,7 +1780,16 @@
     ensureUserId();
 
     updateCounterUI();
-    renderCardList('saved', currentCategoryFilter); // Start with saved cards by default
+
+    // Restore active state for filter buttons
+    filterButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+        btn.classList.add('active');
+      }
+    });
+
+    renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
 
     // Load public cards from API
     loadPublicCards();
@@ -1754,7 +1803,16 @@
     function initializeEventListeners() {
       // Initialize the UI
       updateCounterUI();
-      renderCardList('saved', currentCategoryFilter);
+
+      // Restore active state for filter buttons
+      filterButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-filter') === currentTypeFilter) {
+          btn.classList.add('active');
+        }
+      });
+
+      renderCardList(currentTypeFilter, currentCategoryFilter);
       loadPublicCards();
 
       // Confirmation popup handlers
@@ -1816,6 +1874,25 @@
         referralPopup.addEventListener('click', (e) => {
           if (e.target === referralPopup) {
             hideReferralPopup();
+          }
+        });
+      }
+
+      // Community empty state popup handlers
+      const copyCommunityBtn = document.getElementById('copy-community-referral-btn');
+      const communityCloseBtn = document.getElementById('community-popup-close');
+      const communityPopup = document.getElementById('community-empty-popup');
+
+      if (copyCommunityBtn) {
+        copyCommunityBtn.addEventListener('click', copyCommunityReferralLink);
+      }
+      if (communityCloseBtn) {
+        communityCloseBtn.addEventListener('click', hideCommunityEmptyPopup);
+      }
+      if (communityPopup) {
+        communityPopup.addEventListener('click', (e) => {
+          if (e.target === communityPopup) {
+            hideCommunityEmptyPopup();
           }
         });
       }
@@ -1884,6 +1961,14 @@
       });
       localStorage.setItem('savedCards', JSON.stringify(savedCards));
       decrementAttempts();
+
+      // Switch to Saved tab and update UI
+      filterButtons.forEach(b => b.classList.remove('active'));
+      const savedButton = document.querySelector('button[data-filter="saved"]');
+      if (savedButton) {
+        savedButton.classList.add('active');
+      }
+
       renderCardList('saved', currentCategoryFilter);
       hidePopup();
     });
@@ -1897,7 +1982,15 @@
         localStorage.setItem('completedCards', JSON.stringify(completedCards));
       }
       decrementAttempts();
-      renderCardList('saved', currentCategoryFilter);
+
+      // Switch to Completed tab and update UI
+      filterButtons.forEach(b => b.classList.remove('active'));
+      const completedButton = document.querySelector('button[data-filter="completed"]');
+      if (completedButton) {
+        completedButton.classList.add('active');
+      }
+
+      renderCardList('completed', currentCategoryFilter);
       hidePopup();
     });
 
@@ -1905,7 +1998,9 @@
       btn.addEventListener('click', () => {
         filterButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        renderCardList(btn.getAttribute('data-filter'), currentCategoryFilter);
+        currentTypeFilter = btn.getAttribute('data-filter');
+        localStorage.setItem('currentTypeFilter', currentTypeFilter);
+        renderCardList(currentTypeFilter, currentCategoryFilter);
       });
     });
 
@@ -2155,6 +2250,38 @@
       });
     }
 
+    function showCommunityEmptyPopup() {
+      const userId = ensureUserId();
+      const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+
+      document.getElementById('community-referral-code').textContent = referralCode;
+      document.getElementById('community-empty-popup').classList.add('show');
+    }
+
+    function hideCommunityEmptyPopup() {
+      document.getElementById('community-empty-popup').classList.remove('show');
+    }
+
+    function copyCommunityReferralLink() {
+      const userId = ensureUserId();
+      const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+      const fullLink = `https://globio.io/ref/${referralCode}`;
+
+      navigator.clipboard.writeText(fullLink).then(() => {
+        const copyBtn = document.getElementById('copy-community-referral-btn');
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy link. Please copy manually.');
+      });
+    }
+
     function makeCardPublic(cardId) {
       console.log('=== makeCardPublic called ===');
       console.log('cardId:', cardId);
@@ -2239,7 +2366,6 @@
           }
 
           // Re-render the list with smooth transition
-          const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'completed';
           console.log('🔄 Re-rendering with filter:', currentTypeFilter);
           renderCardList(currentTypeFilter, currentCategoryFilter);
 
@@ -2298,7 +2424,6 @@
             }
 
             // Re-render the list
-            const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'completed';
             renderCardList(currentTypeFilter, currentCategoryFilter);
 
             // Re-enable toggle and update its state
@@ -2367,7 +2492,6 @@
           }
 
           // Re-render the list with smooth transition
-          const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'completed';
           renderCardList(currentTypeFilter, currentCategoryFilter);
 
           // Re-enable toggle
@@ -2422,7 +2546,15 @@
         if (toShow.length === 0) {
           let emptyStateHtml = '';
 
-          if (filter === 'saved' || filter === 'completed') {
+          if (filter === 'saved') {
+            emptyStateHtml = `
+          <div class="empty-state">
+            <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+            <h3>No saved things yet</h3>
+            <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+            <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+          </div>`;
+          } else if (filter === 'completed') {
             emptyStateHtml = `
           <div class="empty-state">
             <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
@@ -2436,13 +2568,13 @@
             <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6894a725c6e8a617ce6d1fe2_no-things-community.svg" alt="">
             <h3>No community contributions yet</h3>
             <p>Here you'll see all the things completed by the Globio community in your area—helpful tips and experiences, tailored to your current location.</p>
-            <button class="empty-state-btn" onclick="showReferralPopup()">Invite a Friend</button>
+            <button class="empty-state-btn" onclick="showCommunityEmptyPopup()">Invite a Friend</button>
           </div>`;
           } else {
             emptyStateHtml = `
           <div class="empty-state">
             <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
-            <h3>No completed things yet</h3>
+            <h3>No saved things yet</h3>
             <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
             <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
           </div>`;
@@ -2616,7 +2748,6 @@
                         }
 
                         // Re-render the list to show the complete button
-                        const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'saved';
                         renderCardList(currentTypeFilter, currentCategoryFilter);
                       } else {
                         console.error('Saved card not found:', card.id);
@@ -2674,7 +2805,6 @@
                   showSuccessTooltip();
 
                   // Re-render both lists
-                  const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'saved';
                   renderCardList(currentTypeFilter, currentCategoryFilter);
                 }
               }
@@ -2728,8 +2858,7 @@
 
     // Update expiry count every hour (refreshes days left)
     setInterval(() => {
-      const currentFilter = document.querySelector('.filter-buttons button.active').getAttribute('data-filter');
-      renderCardList(currentFilter, currentCategoryFilter);
+      renderCardList(currentTypeFilter, currentCategoryFilter);
     }, 60 * 60 * 1000);
     // Keep attempts counter updated every minute
     setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
@@ -2798,10 +2927,7 @@
           currentCategoryFilter = category;
           localStorage.setItem('currentCategoryFilter', category);
 
-          // Get current type filter
-          const currentTypeFilter = document.querySelector('.filter-buttons button.active')?.getAttribute('data-filter') || 'saved';
-
-          // Trigger filter change
+          // Trigger filter change using saved type filter
           renderCardList(currentTypeFilter, currentCategoryFilter);
         });
       });
