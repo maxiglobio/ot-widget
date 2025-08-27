@@ -14,6 +14,9 @@
   }
 </script>
 
+<!-- Include HEIC to JPEG converter -->
+<script src="https://unpkg.com/heic2any@0.2.2/dist/heic2any.min.js"></script>
+
 <style>
   /* Reset and base styles for iframe compatibility */
   html,
@@ -2650,7 +2653,7 @@
                class="add-photo-icon"
                style="display: ${isDefaultImage ? 'block' : 'none'}"
                data-card-id="${card.id}">
-          <input type="file" accept="image/*" data-card-id="${card.id}">
+          <input type="file" accept="image/*,.heic,.heif" data-card-id="${card.id}">
           <div class="image-upload-loader" data-card-id="${card.id}">
             <div class="spinner"></div>
             <div class="loading-text">Uploading image...</div>
@@ -2702,7 +2705,7 @@
             input.addEventListener('change', e => {
               const file = e.target.files[0];
               if (file) {
-                console.log('File selected for card:', card.id, 'file:', file.name);
+                console.log('File selected for card:', card.id, 'file:', file.name, 'type:', file.type);
 
                 // Show loader
                 const loader = cardEl.querySelector(`.image-upload-loader[data-card-id="${card.id}"]`);
@@ -2713,57 +2716,90 @@
                   loader.classList.add('show');
                 }
 
-                const reader = new FileReader();
-                reader.onload = ev => {
-                  console.log('File loaded for card:', card.id);
+                // Function to process image (either HEIC or regular image)
+                const processImage = (imageBlob) => {
+                  const reader = new FileReader();
+                  reader.onload = ev => {
+                    console.log('File processed for card:', card.id);
 
-                  // Calculate how long the loader should be shown
-                  const elapsedTime = Date.now() - startTime;
-                  const remainingTime = Math.max(0, minLoadTime - elapsedTime);
+                    // Calculate how long the loader should be shown
+                    const elapsedTime = Date.now() - startTime;
+                    const remainingTime = Math.max(0, minLoadTime - elapsedTime);
 
-                  setTimeout(() => {
-                    // Hide loader
+                    setTimeout(() => {
+                      // Hide loader
+                      if (loader) {
+                        loader.classList.remove('show');
+                      }
+
+                      // Update image
+                      img.src = ev.target.result;
+                      img.className = 'uploaded-image';
+                      img.style.display = 'block';
+                      addPhotoIcon.style.display = 'none';
+
+                      if (card.type === 'saved') {
+                        // Update the card's image in saved cards
+                        const savedIndex = savedCards.findIndex(c => c.id === card.id);
+                        if (savedIndex !== -1) {
+                          console.log('Updating saved card image:', card.id);
+                          savedCards[savedIndex].imageSrc = ev.target.result;
+                          try {
+                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+                          } catch (e) {
+                            // Clear old data and try again
+                            localStorage.clear();
+                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+                          }
+
+                          // Re-render the list to show the complete button
+                          renderCardList(currentTypeFilter, currentCategoryFilter);
+                        } else {
+                          console.error('Saved card not found:', card.id);
+                        }
+                      }
+                    }, remainingTime);
+                  };
+
+                  reader.onerror = () => {
+                    console.error('Error reading file for card:', card.id);
                     if (loader) {
                       loader.classList.remove('show');
                     }
+                  };
 
-                    // Update image
-                    img.src = ev.target.result;
-                    img.className = 'uploaded-image';
-                    img.style.display = 'block';
-                    addPhotoIcon.style.display = 'none';
+                  reader.readAsDataURL(imageBlob);
+                };
 
-                    if (card.type === 'saved') {
-                      // Update the card's image in saved cards
-                      const savedIndex = savedCards.findIndex(c => c.id === card.id);
-                      if (savedIndex !== -1) {
-                        console.log('Updating saved card image:', card.id);
-                        savedCards[savedIndex].imageSrc = ev.target.result;
-                        try {
-                          localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                        } catch (e) {
-                          // Clear old data and try again
-                          localStorage.clear();
-                          localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                        }
+                // Check if file is HEIC/HEIF format
+                const isHeic = file.name.toLowerCase().endsWith('.heic') ||
+                  file.name.toLowerCase().endsWith('.heif') ||
+                  file.type === 'image/heic' ||
+                  file.type === 'image/heif';
 
-                        // Re-render the list to show the complete button
-                        renderCardList(currentTypeFilter, currentCategoryFilter);
-                      } else {
-                        console.error('Saved card not found:', card.id);
-                      }
+                if (isHeic && typeof heic2any !== 'undefined') {
+                  console.log('Converting HEIC file to JPEG for card:', card.id);
+
+                  // Convert HEIC to JPEG
+                  heic2any({
+                    blob: file,
+                    toType: 'image/jpeg',
+                    quality: 0.8
+                  }).then(convertedBlob => {
+                    console.log('HEIC converted successfully for card:', card.id);
+                    processImage(convertedBlob);
+                  }).catch(error => {
+                    console.error('Error converting HEIC file for card:', card.id, error);
+                    if (loader) {
+                      loader.classList.remove('show');
                     }
-                  }, remainingTime);
-                };
-
-                reader.onerror = () => {
-                  console.error('Error reading file for card:', card.id);
-                  if (loader) {
-                    loader.classList.remove('show');
-                  }
-                };
-
-                reader.readAsDataURL(file);
+                    alert('Error converting HEIC image. Please try a different image format.');
+                  });
+                } else {
+                  // Process regular image file
+                  console.log('Processing regular image file for card:', card.id);
+                  processImage(file);
+                }
               }
             });
           }
