@@ -2,6 +2,7 @@
     const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
     const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
     const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
+    const API_SET_CARD_PUBLISH = 'https://x8ki-letl-twmt.n7.xano.app/api:WT6s5fz4/set_card_params'
     const MAX_ATTEMPTS = 3;
     const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -273,9 +274,7 @@
     btnSave.addEventListener('click', () => {
       if (!currentSuggestion) return;
       const userId = ensureUserId();
-
       console.log('currentSuggestion', currentSuggestion);
-
 
       if (userId && currentSuggestion.id) {
         fetch(API_SAVE, {
@@ -290,10 +289,8 @@
         imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
         expiresAt: Date.now() + EXPIRY_MS
       });
-<!--      localStorage.setItem('savedCards', JSON.stringify(savedCards));-->
+
       loadUserCards();
-
-
 
       decrementAttempts();
 
@@ -650,10 +647,10 @@
 
     function makeApiCall(requestBody, card) {
       console.log('=== Making API call ===');
-      console.log('API URL:', 'https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards');
+      console.log('API URL:', API_SET_CARD_PUBLISH);
       console.log('Request body:', requestBody);
 
-      fetch('https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards', {
+      fetch(API_SET_CARD_PUBLISH, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -854,16 +851,12 @@
       cardList.style.transform = 'scale(0.98)';
       cardList.style.transition = 'all 0.2s ease';
 
-      console.log(filter);
-      console.log(categoryFilter);
-
-
       setTimeout(() => {
         cardList.innerHTML = '';
         // Remove expired saved cards
         const now = Date.now();
         savedCards = savedCards.filter(card => card.expiresAt > now);
-<!--        localStorage.setItem('savedCards', JSON.stringify(savedCards));-->
+
         let toShow = [];
 
         // Filter by type (saved/completed/community)
