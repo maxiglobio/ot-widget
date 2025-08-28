@@ -16,6 +16,9 @@
     var completedCards = [];
     var publicCards = [];
 
+    const savedButton = document.querySelector('button[data-filter="saved"]');
+    const completedButton = document.querySelector('button[data-filter="completed"]');
+
 
     // Function to ensure userId is set in localStorage
     function ensureUserId() {
@@ -77,6 +80,9 @@
 //            }
             // Re-render if we're on completed tab
             if (currentTypeFilter === 'completed') {
+
+
+                console.log('loadPublicCards 111');
               renderCardList(currentTypeFilter, currentCategoryFilter);
             }
           }
@@ -125,7 +131,8 @@
 
 
     // Load public cards from API
-    loadUserCards();
+//    loadUserCards();
+    loadSavedUserCards();
 
     // Initialize dropdown functionality
     initializeDropdown();
@@ -285,7 +292,7 @@
         fetch(API_SAVE, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id })
+          body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id, expired_at: Date.now() + 1000 * 60 * 60 * 24 * 30 })
         }).catch(err => console.error(err));
       }
       // Add expiry timestamp with default image
@@ -1143,6 +1150,9 @@
           if (completeBtn) {
             console.log('Setting up complete button for card:', card.id);
             completeBtn.addEventListener('click', () => {
+//                alert('dddd');
+
+
               if (card.type === 'saved') {
                 // Move card from saved to completed
                 const savedIndex = savedCards.findIndex(c => c.id === card.id);
@@ -1183,6 +1193,8 @@
 
           // Add toggle switch functionality for completed cards
           if (card.type === 'completed') {
+
+            console.log('ccccc');
             const toggle = cardEl.querySelector('input[type="checkbox"]');
             if (toggle) {
               console.log('Setting up toggle for card:', card.id, 'isPublic:', publicCards.some(pc => pc.id === card.id));
@@ -1248,8 +1260,51 @@
 
 
 
-    // Load public cards from API on initialization
-    function loadUserCards() {
+//    // Load public cards from API on initialization
+//    function loadUserCards() {
+//
+//      const userId = ensureUserId();
+//      if (!userId) {
+//        console.log('No userId found for loadUserCards');
+//        return;
+//      }
+//
+//      fetch(API_USERS + '/' + userId)
+//        .then(response => {
+//          console.log('loadUserCards response status:', response.status);
+//          return response.json();
+//        })
+//        .then(data => {
+//          if (data) {
+//            const usersCards = data.users_cards.map(item => item.card);
+//
+//
+//
+//            console.log('usersCards', usersCards);
+//
+//            const formattedCards = usersCards.map(card => ({
+//              id: card.name, // или card.id, если нужен числовой
+//              title: card.name,
+//              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+//              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+//              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+//              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+//            }));
+//
+//            savedCards = formattedCards;
+//
+////            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+//            renderCardList('saved', currentCategoryFilter);
+//          }
+//        })
+//        .catch(error => {
+//          console.error('Error loading public cards:', error);
+//        });
+//    }
+
+
+
+    function loadSavedUserCards() {
 
       const userId = ensureUserId();
       if (!userId) {
@@ -1264,7 +1319,22 @@
         })
         .then(data => {
           if (data) {
-            const usersCards = data.users_cards.map(item => item.card);
+//                const usersCards = data.users_cards.map(item => item.card);
+
+//            const usersCards = data.users_cards
+//              .filter(item => item.completed === false) // фильтр по completed
+//              .map(item => item.card); // берём только card
+
+
+            const usersCards = data.users_cards
+              .filter(item => item.completed === false) // фильтр по completed
+              .map(item => ({
+                ...item.card,
+                expired_at: item.expired_at
+              }));
+
+
+            console.log('loadSavedUserCards', usersCards);
 
             const formattedCards = usersCards.map(card => ({
               id: card.name, // или card.id, если нужен числовой
@@ -1272,7 +1342,8 @@
               description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
               category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
               imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
-              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+//              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+              expiresAt: card.expired_at
             }));
 
             savedCards = formattedCards;
@@ -1285,6 +1356,60 @@
           console.error('Error loading public cards:', error);
         });
     }
+
+
+     function loadCompletedUserCards() {
+          const userId = ensureUserId();
+          if (!userId) {
+            console.log('No userId found for loadUserCards');
+            return;
+          }
+
+          fetch(API_USERS + '/' + userId)
+            .then(response => {
+              console.log('loadUserCards response status:', response.status);
+              return response.json();
+            })
+            .then(data => {
+              if (data) {
+                const usersCards = data.users_cards
+                  .filter(item => item.completed === true) // фильтр по completed
+                  .map(item => item.card); // берём только card
+
+                console.log('loadSavedUserCards', usersCards);
+
+                const formattedCards = usersCards.map(card => ({
+                  id: card.name, // или card.id, если нужен числовой
+                  title: card.name,
+                  description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                  category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                  imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+                  expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+                }));
+
+                savedCards = formattedCards;
+
+    //            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+                renderCardList('saved', currentCategoryFilter);
+              }
+            })
+            .catch(error => {
+              console.error('Error loading public cards:', error);
+            });
+        }
+
+
+
+
+    completedButton.addEventListener('click', () => {
+        loadCompletedUserCards();
+    });
+
+
+    savedButton.addEventListener('click', () => {
+        loadSavedUserCards();
+    });
+
 
 
 
