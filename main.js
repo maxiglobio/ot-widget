@@ -1,5 +1,5 @@
   (function () {
-    const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:gKTIZw3x/oneThing';
+    const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
     const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
     const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
     const MAX_ATTEMPTS = 3;
@@ -14,6 +14,7 @@
     // Function to ensure userId is set in localStorage
     function ensureUserId() {
       let userId = localStorage.getItem('userId');
+      userId = 265;
 
       if (!userId) {
         // Try to get from auth object
