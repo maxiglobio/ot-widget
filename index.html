@@ -1683,6 +1683,7 @@
   (function () {
     const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:gKTIZw3x/oneThing';
     const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
+    const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
     const MAX_ATTEMPTS = 3;
     const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -1796,6 +1797,10 @@
 
     // Load public cards from API
     loadPublicCards();
+
+
+    // Load public cards from API
+    loadUserCards();
 
     // Initialize dropdown functionality
     initializeDropdown();
@@ -2522,12 +2527,16 @@
       cardList.style.transform = 'scale(0.98)';
       cardList.style.transition = 'all 0.2s ease';
 
+      console.log(filter);
+      console.log(categoryFilter);
+
+
       setTimeout(() => {
         cardList.innerHTML = '';
         // Remove expired saved cards
         const now = Date.now();
         savedCards = savedCards.filter(card => card.expiresAt > now);
-        localStorage.setItem('savedCards', JSON.stringify(savedCards));
+<!--        localStorage.setItem('savedCards', JSON.stringify(savedCards));-->
         let toShow = [];
 
         // Filter by type (saved/completed/community)
@@ -2898,6 +2907,92 @@
     }, 60 * 60 * 1000);
     // Keep attempts counter updated every minute
     setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
+
+
+
+    function loadCards(userId1) {
+<!--      if (!currentSuggestion) return;-->
+<!--      const userId = ensureUserId();-->
+<!--      if (userId && currentSuggestion.id) {-->
+        let user = fetch(API_USERS + '/' + userId1, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }).catch(err => console.error(err));
+
+
+<!--        console.log(user);-->
+<!--        renderCardList('saved', currentCategoryFilter);-->
+
+
+<!--      }-->
+
+    }
+
+
+
+    // Load public cards from API on initialization
+    function loadUserCards() {
+        let userId1 = 265
+<!--      const userId = ensureUserId();-->
+<!--      if (!userId) {-->
+<!--        console.log('No userId found for loadUserCards');-->
+<!--        return;-->
+<!--      }-->
+
+<!--      console.log('Loading public cards for user:', userId);-->
+      fetch(API_USERS + '/' + userId1)
+        .then(response => {
+          console.log('loadUserCards response status:', response.status);
+          return response.json();
+        })
+        .then(data => {
+<!--          console.log('loadUserCards data:', data);-->
+
+
+
+
+<!--          if (data && Array.isArray(data)) {-->
+
+              if (data) {
+<!--            usersCards = data.users_cards;-->
+<!--            console.log('Updated usersCards:', usersCards);-->
+
+            const usersCards = data.users_cards.map(item => item.card);
+
+
+            const formattedCards = usersCards.map(card => ({
+              id: card.name, // или card.id, если нужен числовой
+              title: card.name,
+              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+            }));
+
+
+          console.log('formattedCards :', formattedCards);
+          localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+<!--          decrementAttempts();-->
+
+<!--          // Switch to Saved tab and update UI-->
+<!--          filterButtons.forEach(b => b.classList.remove('active'));-->
+<!--          const savedButton = document.querySelector('button[data-filter="saved"]');-->
+<!--          if (savedButton) {-->
+<!--            savedButton.classList.add('active');-->
+<!--          }-->
+
+          renderCardList('saved', currentCategoryFilter);
+<!--          hidePopup();-->
+
+
+          }
+        })
+        .catch(error => {
+          console.error('Error loading public cards:', error);
+        });
+    }
+
+
 
 
 
