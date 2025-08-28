@@ -8,9 +8,14 @@
 
     let attemptsLeft = parseInt(localStorage.getItem('attemptsLeftAccount')) || MAX_ATTEMPTS;
     let resetTime = parseInt(localStorage.getItem('resetTimeAccount')) || getMidnightTimestamp();
-    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
-    let completedCards = JSON.parse(localStorage.getItem('completedCards')) || [];
-    let publicCards = JSON.parse(localStorage.getItem('publicCards')) || [];
+//    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
+//    let completedCards = JSON.parse(localStorage.getItem('completedCards')) || [];
+//    let publicCards = JSON.parse(localStorage.getItem('publicCards')) || [];
+
+    var savedCards = [];
+    var completedCards = [];
+    var publicCards = [];
+
 
     // Function to ensure userId is set in localStorage
     function ensureUserId() {
@@ -64,12 +69,12 @@
           console.log('LoadPublicCards data:', data);
           if (data && Array.isArray(data)) {
             publicCards = data;
-            console.log('Updated publicCards:', publicCards);
-            try {
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            } catch (e) {
-              // localStorage quota exceeded
-            }
+//            console.log('Updated publicCards:', publicCards);
+//            try {
+//              localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//            } catch (e) {
+//              // localStorage quota exceeded
+//            }
             // Re-render if we're on completed tab
             if (currentTypeFilter === 'completed') {
               renderCardList(currentTypeFilter, currentCategoryFilter);
@@ -311,7 +316,7 @@
           ...currentSuggestion,
           imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'
         });
-        localStorage.setItem('completedCards', JSON.stringify(completedCards));
+//        localStorage.setItem('completedCards', JSON.stringify(completedCards));
       }
       decrementAttempts();
 
@@ -686,13 +691,13 @@
 
             publicCards.unshift(publicCard);
             console.log('✅ Added card to publicCards:', cardId, 'with author:', authorName);
-            try {
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            } catch (e) {
-              console.warn('localStorage quota exceeded, clearing old data');
-              localStorage.clear();
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            }
+//            try {
+//              localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//            } catch (e) {
+//              console.warn('localStorage quota exceeded, clearing old data');
+//              localStorage.clear();
+//              localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//            }
           } else {
             console.log('ℹ️ Card already in publicCards:', cardId);
           }
@@ -746,13 +751,13 @@
 
               publicCards.unshift(publicCard);
               console.log('✅ Added card to publicCards (local):', cardId, 'with author:', authorName);
-              try {
-                localStorage.setItem('publicCards', JSON.stringify(publicCards));
-              } catch (e) {
-                console.warn('localStorage quota exceeded, clearing old data');
-                localStorage.clear();
-                localStorage.setItem('publicCards', JSON.stringify(publicCards));
-              }
+//              try {
+//                localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//              } catch (e) {
+//                console.warn('localStorage quota exceeded, clearing old data');
+//                localStorage.clear();
+//                localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//              }
             }
 
             // Re-render the list
@@ -815,13 +820,13 @@
 
           // Remove from public cards
           publicCards = publicCards.filter(pc => pc.id !== cardId);
-          try {
-            localStorage.setItem('publicCards', JSON.stringify(publicCards));
-          } catch (e) {
-            console.warn('localStorage quota exceeded, clearing old data');
-            localStorage.clear();
-            localStorage.setItem('publicCards', JSON.stringify(publicCards));
-          }
+//          try {
+//            localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//          } catch (e) {
+//            console.warn('localStorage quota exceeded, clearing old data');
+//            localStorage.clear();
+//            localStorage.setItem('publicCards', JSON.stringify(publicCards));
+//          }
 
           // Re-render the list with smooth transition
           renderCardList(currentTypeFilter, currentCategoryFilter);
@@ -1073,13 +1078,13 @@
                         if (savedIndex !== -1) {
                           console.log('Updating saved card image:', card.id);
                           savedCards[savedIndex].imageSrc = ev.target.result;
-                          try {
-                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                          } catch (e) {
-                            // Clear old data and try again
-                            localStorage.clear();
-                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                          }
+//                          try {
+//                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                          } catch (e) {
+//                            // Clear old data and try again
+//                            localStorage.clear();
+//                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                          }
 
                           // Re-render the list to show the complete button
                           renderCardList(currentTypeFilter, currentCategoryFilter);
@@ -1144,13 +1149,13 @@
                 if (savedIndex !== -1) {
                   // Remove from saved cards
                   savedCards.splice(savedIndex, 1);
-                  try {
-                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                  } catch (e) {
-                    console.warn('localStorage quota exceeded, clearing old data');
-                    localStorage.clear();
-                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                  }
+//                  try {
+//                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                  } catch (e) {
+//                    console.warn('localStorage quota exceeded, clearing old data');
+//                    localStorage.clear();
+//                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                  }
 
                   // Add to completed cards
                   completedCards.unshift({
@@ -1158,13 +1163,13 @@
                     type: 'completed',
                     completedAt: Date.now()
                   });
-                  try {
-                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
-                  } catch (e) {
-                    console.warn('localStorage quota exceeded, clearing old data');
-                    localStorage.clear();
-                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
-                  }
+//                  try {
+//                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
+//                  } catch (e) {
+//                    console.warn('localStorage quota exceeded, clearing old data');
+//                    localStorage.clear();
+//                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
+//                  }
 
                   // Show success tooltip
                   showSuccessTooltip();
@@ -1230,16 +1235,16 @@
 
 
 
-    function loadCards() {
-      if (!currentSuggestion) return;
-      const userId = ensureUserId();
-      if (userId && currentSuggestion.id) {
-        let user = fetch(API_USERS + '/' + userId, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }).catch(err => console.error(err));
-      }
-    }
+//    function loadCards() {
+//      if (!currentSuggestion) return;
+//      const userId = ensureUserId();
+//      if (userId && currentSuggestion.id) {
+//        let user = fetch(API_USERS + '/' + userId, {
+//          method: 'GET',
+//          headers: { 'Content-Type': 'application/json' },
+//        }).catch(err => console.error(err));
+//      }
+//    }
 
 
 
@@ -1270,7 +1275,9 @@
               expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
             }));
 
-            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+            savedCards = formattedCards;
+
+//            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
             renderCardList('saved', currentCategoryFilter);
           }
         })
