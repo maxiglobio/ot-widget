@@ -1237,22 +1237,15 @@
 
 
 
-    function loadCards(userId1) {
-<!--      if (!currentSuggestion) return;-->
-<!--      const userId = ensureUserId();-->
-<!--      if (userId && currentSuggestion.id) {-->
-        let user = fetch(API_USERS + '/' + userId1, {
+    function loadCards() {
+      if (!currentSuggestion) return;
+      const userId = ensureUserId();
+      if (userId && currentSuggestion.id) {
+        let user = fetch(API_USERS + '/' + userId, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         }).catch(err => console.error(err));
-
-
-<!--        console.log(user);-->
-<!--        renderCardList('saved', currentCategoryFilter);-->
-
-
-<!--      }-->
-
+      }
     }
 
 
@@ -1266,7 +1259,7 @@
         return;
       }
 
-      fetch(API_USERS + '/' + userId1)
+      fetch(API_USERS + '/' + userId)
         .then(response => {
           console.log('loadUserCards response status:', response.status);
           return response.json();
