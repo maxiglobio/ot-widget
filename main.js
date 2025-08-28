@@ -1259,33 +1259,21 @@
 
     // Load public cards from API on initialization
     function loadUserCards() {
-        let userId1 = 265
-<!--      const userId = ensureUserId();-->
-<!--      if (!userId) {-->
-<!--        console.log('No userId found for loadUserCards');-->
-<!--        return;-->
-<!--      }-->
 
-<!--      console.log('Loading public cards for user:', userId);-->
+      const userId = ensureUserId();
+      if (!userId) {
+        console.log('No userId found for loadUserCards');
+        return;
+      }
+
       fetch(API_USERS + '/' + userId1)
         .then(response => {
           console.log('loadUserCards response status:', response.status);
           return response.json();
         })
         .then(data => {
-<!--          console.log('loadUserCards data:', data);-->
-
-
-
-
-<!--          if (data && Array.isArray(data)) {-->
-
-              if (data) {
-<!--            usersCards = data.users_cards;-->
-<!--            console.log('Updated usersCards:', usersCards);-->
-
+          if (data) {
             const usersCards = data.users_cards.map(item => item.card);
-
 
             const formattedCards = usersCards.map(card => ({
               id: card.name, // или card.id, если нужен числовой
@@ -1296,22 +1284,8 @@
               expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
             }));
 
-
-          console.log('formattedCards :', formattedCards);
-          localStorage.setItem('savedCards', JSON.stringify(formattedCards));
-<!--          decrementAttempts();-->
-
-<!--          // Switch to Saved tab and update UI-->
-<!--          filterButtons.forEach(b => b.classList.remove('active'));-->
-<!--          const savedButton = document.querySelector('button[data-filter="saved"]');-->
-<!--          if (savedButton) {-->
-<!--            savedButton.classList.add('active');-->
-<!--          }-->
-
-          renderCardList('saved', currentCategoryFilter);
-<!--          hidePopup();-->
-
-
+            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+            renderCardList('saved', currentCategoryFilter);
           }
         })
         .catch(error => {
