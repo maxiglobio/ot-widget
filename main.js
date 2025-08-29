@@ -2,7 +2,7 @@
     const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
     const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
     const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
-    const API_SET_CARD_PUBLISH = 'https://x8ki-letl-twmt.n7.xano.app/api:WT6s5fz4/set_card_params'
+    const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
     const MAX_ATTEMPTS = 3;
     const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -23,7 +23,7 @@
     // Function to ensure userId is set in localStorage
     function ensureUserId() {
       let userId = localStorage.getItem('userId');
-      userId = 265;
+      userId = 266;
 
       if (!userId) {
         // Try to get from auth object
@@ -657,6 +657,28 @@
       makeApiCall(requestBody, card);
     }
 
+     function makeCardCompleted(one_thing_user_card_id) {
+          const userId = ensureUserId();
+
+          const card = completedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+            if (!card) {
+              console.error('❌ Card not found in completedCards:', one_thing_user_card_id);
+              console.log('Available card IDs:', completedCards.map(c => c.one_thing_user_card_id));
+              return;
+            }
+
+            console.log('CARD', card);
+
+
+
+          const requestBody = {
+            one_thing_user_card_id: one_thing_user_card_id,
+            completed: true,
+          };
+
+          makeApiCall(requestBody, card);
+        }
+
     function makeApiCall(requestBody, card) {
       console.log('=== Making API call ===');
       console.log('API URL:', API_SET_CARD_PUBLISH);
@@ -1146,14 +1168,16 @@
           }
 
           // Add complete button functionality
-          const completeBtn = cardEl.querySelector('.complete-thing-btn');
-          if (completeBtn) {
+          const completeBtnPopup = cardEl.querySelector('.complete-thing-btn');
+          if (completeBtnPopup) {
+//            console.log("CARD", card);
+
+
             console.log('Setting up complete button for card:', card.id);
-            completeBtn.addEventListener('click', () => {
-//                alert('dddd');
-
-
+            completeBtnPopup.addEventListener('click', () => {
               if (card.type === 'saved') {
+                    console.log('1111');
+
                 // Move card from saved to completed
                 const savedIndex = savedCards.findIndex(c => c.id === card.id);
                 if (savedIndex !== -1) {
@@ -1180,6 +1204,13 @@
 //                    localStorage.clear();
 //                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
 //                  }
+
+
+
+                   console.log('dddd ',card);
+
+                   makeCardCompleted(card.one_thing_user_card_id);
+
 
                   // Show success tooltip
                   showSuccessTooltip();
@@ -1319,31 +1350,26 @@
         })
         .then(data => {
           if (data) {
-//                const usersCards = data.users_cards.map(item => item.card);
-
-//            const usersCards = data.users_cards
-//              .filter(item => item.completed === false) // фильтр по completed
-//              .map(item => item.card); // берём только card
-
-
             const usersCards = data.users_cards
-              .filter(item => item.completed === false) // фильтр по completed
+              .filter(item => item.completed === false)
               .map(item => ({
                 ...item.card,
-                expired_at: item.expired_at
+                expired_at: item.expired_at,
+                one_thing_user_card_id: item.id
               }));
 
 
             console.log('loadSavedUserCards', usersCards);
 
             const formattedCards = usersCards.map(card => ({
-              id: card.name, // или card.id, если нужен числовой
+              id: card.id, // или card.id, если нужен числовой
               title: card.name,
               description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
               category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
               imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
 //              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
-              expiresAt: card.expired_at
+              expiresAt: card.expired_at,
+              one_thing_user_card_id: card.one_thing_user_card_id
             }));
 
             savedCards = formattedCards;
