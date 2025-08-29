@@ -1680,9 +1680,10 @@
 </div>
 
 <script>
-  (function () {
-    const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:gKTIZw3x/oneThing';
+    (function () {
+    const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
     const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
+    const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
     const MAX_ATTEMPTS = 3;
     const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -1796,6 +1797,10 @@
 
     // Load public cards from API
     loadPublicCards();
+
+
+    // Load public cards from API
+    loadUserCards();
 
     // Initialize dropdown functionality
     initializeDropdown();
@@ -1949,6 +1954,10 @@
     btnSave.addEventListener('click', () => {
       if (!currentSuggestion) return;
       const userId = ensureUserId();
+
+      console.log('currentSuggestion', currentSuggestion);
+
+
       if (userId && currentSuggestion.id) {
         fetch(API_SAVE, {
           method: 'POST',
@@ -1962,7 +1971,11 @@
         imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
         expiresAt: Date.now() + EXPIRY_MS
       });
-      localStorage.setItem('savedCards', JSON.stringify(savedCards));
+
+      loadUserCards();
+
+
+
       decrementAttempts();
 
       // Switch to Saved tab and update UI
@@ -2522,12 +2535,16 @@
       cardList.style.transform = 'scale(0.98)';
       cardList.style.transition = 'all 0.2s ease';
 
+      console.log(filter);
+      console.log(categoryFilter);
+
+
       setTimeout(() => {
         cardList.innerHTML = '';
         // Remove expired saved cards
         const now = Date.now();
         savedCards = savedCards.filter(card => card.expiresAt > now);
-        localStorage.setItem('savedCards', JSON.stringify(savedCards));
+<!--        localStorage.setItem('savedCards', JSON.stringify(savedCards));-->
         let toShow = [];
 
         // Filter by type (saved/completed/community)
@@ -2648,8 +2665,8 @@
             imageHtml = `
         <div class="card-image-placeholder">
           <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}">
-          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif" 
-               alt="Add photo" 
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif"
+               alt="Add photo"
                class="add-photo-icon"
                style="display: ${isDefaultImage ? 'block' : 'none'}"
                data-card-id="${card.id}">
@@ -2898,6 +2915,61 @@
     }, 60 * 60 * 1000);
     // Keep attempts counter updated every minute
     setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
+
+
+
+    function loadCards() {
+      if (!currentSuggestion) return;
+      const userId = ensureUserId();
+      if (userId && currentSuggestion.id) {
+        let user = fetch(API_USERS + '/' + userId, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        }).catch(err => console.error(err));
+      }
+    }
+
+
+
+    // Load public cards from API on initialization
+    function loadUserCards() {
+
+      const userId = ensureUserId();
+      if (!userId) {
+        console.log('No userId found for loadUserCards');
+        return;
+      }
+
+      fetch(API_USERS + '/' + userId)
+        .then(response => {
+          console.log('loadUserCards response status:', response.status);
+          return response.json();
+        })
+        .then(data => {
+          if (data) {
+            const usersCards = data.users_cards.map(item => item.card);
+
+            const formattedCards = usersCards.map(card => ({
+              id: card.name, // или card.id, если нужен числовой
+              title: card.name,
+              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+            }));
+
+            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+            renderCardList('saved', currentCategoryFilter);
+          }
+        })
+        .catch(error => {
+          console.error('Error loading public cards:', error);
+        });
+    }
+
+
+
+
 
     // All Categories Dropdown Functionality
     function initializeDropdown() {
