@@ -3,6 +3,7 @@
     const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
     const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
     const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
+    const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
     const MAX_ATTEMPTS = 3;
     const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -879,6 +880,40 @@
         });
     }
 
+    function uploadFile(file) {
+        const formData = new FormData();
+        formData.append("workspace_id", "1-0"); // ← сюда свой ID воркспейса
+        formData.append("type", "image"); // можно "attachment", "video", "audio"
+        formData.append("content", file);
+
+        fetch(API_SET_CARD_UPLOAD_IMAGE, {
+            method: 'POST',
+            headers: {
+            },
+            body: formData
+        })
+       .then(response => {
+         console.log('✅ API response status:', response.status);
+         return response.json(); // превращаем поток в JSON
+       })
+       .then(data => {
+         console.log('✅ API response data:', data);
+
+         // вытаскиваем именно path
+         const imagePath = data.path;
+         console.log('🎯 111 Path:', imagePath);
+
+
+
+
+         // например, можешь сразу сохранить куда-то
+         return imagePath;
+       })
+        .catch(error => {
+          console.error('❌ Error making card public:', error);
+        });
+  };
+
     function renderCardList(filter = 'all', categoryFilter = 'all') {
       // Add fade out effect
       cardList.style.opacity = '0.7';
@@ -979,6 +1014,9 @@
           // Check if the image is the default add-photo icon
           const isDefaultImage = card.imageSrc.includes('add-photo');
 
+//          console.log('CARD' , card);
+
+
           // Create expiry HTML or complete button based on image state
           let actionHtml = '';
           if (card.type === 'saved') {
@@ -1066,9 +1104,30 @@
             });
 
             input.addEventListener('change', e => {
+//                console.log('changing file');
+
               const file = e.target.files[0];
               if (file) {
                 console.log('File selected for card:', card.id, 'file:', file.name, 'type:', file.type);
+
+                console.log("CARDS", card.one_thing_user_card_id);
+
+
+
+                imagePath = uploadFile(file);
+
+              const requestBody = {
+                 one_thing_user_card_id: card.one_thing_user_card_id,
+                 image: imagePath,
+             };
+
+                 makeApiCall(requestBody, card);
+
+
+
+
+
+
 
                 // Show loader
                 const loader = cardEl.querySelector(`.image-upload-loader[data-card-id="${card.id}"]`);
@@ -1355,7 +1414,9 @@
               .map(item => ({
                 ...item.card,
                 expired_at: item.expired_at,
-                one_thing_user_card_id: item.id
+                one_thing_user_card_id: item.id,
+                completed: item.completed,
+                published: item.published
               }));
 
 
@@ -1369,7 +1430,9 @@
               imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
 //              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
               expiresAt: card.expired_at,
-              one_thing_user_card_id: card.one_thing_user_card_id
+              one_thing_user_card_id: card.one_thing_user_card_id,
+              completed: card.completed,
+              published: card.published
             }));
 
             savedCards = formattedCards;
