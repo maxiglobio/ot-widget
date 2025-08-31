@@ -654,6 +654,7 @@
         const requestBody = {
             one_thing_user_card_id: one_thing_user_card_id,
             completed: true,
+            published: false
         };
         makeApiCall(requestBody, card);
     }
@@ -960,13 +961,13 @@
           let toggleHtml = '';
 
           if (card.type === 'completed') {
-            const isPublic = publicCards.some(pc => pc.id === card.id);
-            console.log('Rendering completed card:', card.id, 'isPublic:', isPublic);
+//            const isPublic = savedCards.some(pc => pc.id === card.id);
+            console.log('Rendering completed card:', card.id, 'isPublic:', card.published);
             toggleHtml = `
           <div class="toggle-container">
-            <span class="toggle-label">${isPublic ? 'Public' : 'Make Public'}</span>
+            <span class="toggle-label">${card.published ? 'Public' : 'Make Public'}</span>
             <div class="toggle-switch">
-              <input type="checkbox" id="toggle-${card.id}" ${isPublic ? 'checked' : ''}>
+              <input type="checkbox" id="toggle-${card.id}" ${card.published ? 'checked' : ''}>
               <label class="toggle-slider" for="toggle-${card.id}"></label>
             </div>
           </div>
