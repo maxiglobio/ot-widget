@@ -10,12 +10,8 @@
     let attemptsLeft = parseInt(localStorage.getItem('attemptsLeftAccount')) || MAX_ATTEMPTS;
     let resetTime = parseInt(localStorage.getItem('resetTimeAccount')) || getMidnightTimestamp();
 //    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
-//    let completedCards = JSON.parse(localStorage.getItem('completedCards')) || [];
-//    let publicCards = JSON.parse(localStorage.getItem('publicCards')) || [];
 
     var savedCards = [];
-    var completedCards = [];
-    var publicCards = [];
 
     const savedButton = document.querySelector('button[data-filter="saved"]');
     const completedButton = document.querySelector('button[data-filter="completed"]');
@@ -56,44 +52,6 @@
 
 
 
-    // Load public cards from API on initialization
-    function loadPublicCards() {
-      const userId = ensureUserId();
-      if (!userId) {
-        console.log('No userId found for loadPublicCards');
-        return;
-      }
-
-      console.log('Loading public cards for user:', userId);
-      fetch(`https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards?one_thing_users_id=${userId}`)
-        .then(response => {
-          console.log('LoadPublicCards response status:', response.status);
-          return response.json();
-        })
-        .then(data => {
-          console.log('LoadPublicCards data:', data);
-          if (data && Array.isArray(data)) {
-            publicCards = data;
-//            console.log('Updated publicCards:', publicCards);
-//            try {
-//              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//            } catch (e) {
-//              // localStorage quota exceeded
-//            }
-            // Re-render if we're on completed tab
-            if (currentTypeFilter === 'completed') {
-
-
-                console.log('loadPublicCards 111');
-              renderCardList(currentTypeFilter, currentCategoryFilter);
-            }
-          }
-        })
-        .catch(error => {
-          console.error('Error loading public cards:', error);
-        });
-    }
-
 
 
 
@@ -128,18 +86,10 @@
 
     renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
 
-    // Load public cards from API
-    loadPublicCards();
-
-
-    // Load public cards from API
-//    loadUserCards();
     loadSavedUserCards();
 
     // Initialize dropdown functionality
     initializeDropdown();
-
-
 
     // Initialize event listeners when DOM is ready
     function initializeEventListeners() {
@@ -155,7 +105,6 @@
       });
 
       renderCardList(currentTypeFilter, currentCategoryFilter);
-      loadPublicCards();
 
       // Confirmation popup handlers
       const cancelBtn = document.getElementById('confirmation-cancel');
@@ -178,10 +127,8 @@
           if (cardId && action) {
 
             if (action === 'make-public') {
-              console.log('Calling makeCardPublic for card:', cardId);
               makeCardPublic(cardId);
             } else if (action === 'make-private') {
-              console.log('Calling makeCardPrivate for card:', cardId);
               makeCardPrivate(cardId);
             }
             hideConfirmationPopup();
@@ -320,13 +267,6 @@
     });
 
     btnSkip.addEventListener('click', () => {
-      if (currentSuggestion) {
-        completedCards.unshift({
-          ...currentSuggestion,
-          imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'
-        });
-//        localStorage.setItem('completedCards', JSON.stringify(completedCards));
-      }
       decrementAttempts();
 
       // Switch to Completed tab and update UI
@@ -632,7 +572,7 @@
       cardId = parseInt(cardId);
       const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
       if (!card) {
-        console.error('❌tetttt Card not found in savedCards:', cardId);
+        console.error('Error makeCardPublic');
         return;
       }
       const userId = ensureUserId();
@@ -646,9 +586,9 @@
 
      function makeCardCompleted(one_thing_user_card_id) {
         const userId = ensureUserId();
-        const card = completedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+        const card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
         if (!card) {
-            console.log('Available card IDs:', completedCards.map(c => c.one_thing_user_card_id));
+            console.log('Error makeCardCompleted');
             return;
         }
         const requestBody = {
@@ -669,7 +609,7 @@
       })
         .then(response => {
           if (!response.ok) {
-            console.error('❌ API response not ok:', response.status, response.statusText);
+            console.error('❌ API response not ok:');
             throw new Error(`Failed to make card public: ${response.status} ${response.statusText}`);
           }
           return response.json();
@@ -677,32 +617,7 @@
         .then(data => {
           // Add to public cards if not already there
           const cardId = requestBody.one_thing_cards_id;
-          if (!publicCards.some(pc => pc.id === cardId)) {
-            // Add author information to the card
-            const userInfo = JSON.parse(localStorage.getItem('auth') || '{}');
-            const authorName = userInfo.name || userInfo.username || 'Anonymous';
 
-            const publicCard = {
-              ...card,
-              author_name: authorName,
-              user_name: authorName
-            };
-
-            publicCards.unshift(publicCard);
-            console.log('✅ Added card to publicCards:', cardId, 'with author:', authorName);
-//            try {
-//              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//            } catch (e) {
-//              console.warn('localStorage quota exceeded, clearing old data');
-//              localStorage.clear();
-//              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//            }
-          } else {
-            console.log('ℹ️ Card already in publicCards:', cardId);
-          }
-
-          // Re-render the list with smooth transition
-          console.log('🔄 Re-rendering with filter:', currentTypeFilter);
           renderCardList(currentTypeFilter, currentCategoryFilter);
 
           // Re-enable toggle and update its state
@@ -729,58 +644,6 @@
 
           const cardId = requestBody.one_thing_cards_id;
 
-          // For local testing, simulate success if API is unavailable
-          if (error.message.includes('Failed to fetch') ||
-            error.message.includes('ERR_NAME_NOT_RESOLVED') ||
-            error.message.includes('NetworkError') ||
-            error.message.includes('CORS')) {
-            console.log('🌐 API unavailable, simulating success for local testing');
-
-            // Add to public cards if not already there
-            if (!publicCards.some(pc => pc.id === cardId)) {
-              // Add author information to the card
-              const userInfo = JSON.parse(localStorage.getItem('auth') || '{}');
-              const authorName = userInfo.name || userInfo.username || 'Anonymous';
-
-              const publicCard = {
-                ...card,
-                author_name: authorName,
-                user_name: authorName
-              };
-
-              publicCards.unshift(publicCard);
-              console.log('✅ Added card to publicCards (local):', cardId, 'with author:', authorName);
-//              try {
-//                localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//              } catch (e) {
-//                console.warn('localStorage quota exceeded, clearing old data');
-//                localStorage.clear();
-//                localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//              }
-            }
-
-            // Re-render the list
-            renderCardList(currentTypeFilter, currentCategoryFilter);
-
-            // Re-enable toggle and update its state
-            const toggle = document.querySelector(`#toggle-${cardId}`);
-            if (toggle) {
-              toggle.disabled = false;
-              toggle.checked = true;
-              console.log('✅ Updated toggle state for card (local):', cardId);
-            }
-
-            // Show success tooltip
-            showSuccessTooltip();
-            console.log('🎉 Successfully made card public (local)!');
-
-            return;
-          }
-
-          // Show error message to user for other errors
-          console.error('❌ API error, showing alert to user');
-          alert(`Failed to make card public: ${error.message}. Please try again.`);
-
           // Re-enable toggle on error
           const toggle = document.querySelector(`#toggle-${cardId}`);
           if (toggle) {
@@ -792,61 +655,19 @@
     }
 
     function makeCardPrivate(cardId) {
-      const card = completedCards.find(c => c.id === cardId);
-      if (!card) return;
-
-      // Get user ID from localStorage (ensure it exists)
-      const userId = ensureUserId();
-      if (!userId) {
-        console.error('❌ No userId available for makeCardPrivate');
-        return;
-      }
-
-      // Send API request to make card private (delete from public cards)
-      fetch(`https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards?one_thing_users_id=${userId}&one_thing_cards_id=${cardId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
+        cardId = parseInt(cardId);
+        const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+        if (!card) {
+          console.error('Error makeCardPrivate');
+          return;
         }
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to make card private');
-          }
-          return response.json();
-        })
-        .then(data => {
-
-          // Remove from public cards
-          publicCards = publicCards.filter(pc => pc.id !== cardId);
-//          try {
-//            localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//          } catch (e) {
-//            console.warn('localStorage quota exceeded, clearing old data');
-//            localStorage.clear();
-//            localStorage.setItem('publicCards', JSON.stringify(publicCards));
-//          }
-
-          // Re-render the list with smooth transition
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-
-          // Re-enable toggle
-          const toggle = document.querySelector(`#toggle-${cardId}`);
-          if (toggle) {
-            toggle.disabled = false;
-          }
-        })
-        .catch(error => {
-          // Show error message to user
-          alert('Failed to make card private. Please try again.');
-
-          // Re-enable toggle on error
-          const toggle = document.querySelector(`#toggle-${cardId}`);
-          if (toggle) {
-            toggle.disabled = false;
-            toggle.checked = true; // Reset to public state
-          }
-        });
+        const userId = ensureUserId();
+        const requestBody = {
+          one_thing_user_card_id: cardId,
+          published: false,
+          completed: true
+        };
+        makeApiCall(requestBody, card);
     }
 
     function uploadFile(file) {
@@ -961,8 +782,6 @@
           let toggleHtml = '';
 
           if (card.type === 'completed') {
-//            const isPublic = savedCards.some(pc => pc.id === card.id);
-            console.log('Rendering completed card:', card.id, 'isPublic:', card.published);
             toggleHtml = `
           <div class="toggle-container">
             <span class="toggle-label">${card.published ? 'Public' : 'Make Public'}</span>
@@ -980,14 +799,8 @@
           // Check if the image is the default add-photo icon
           const isDefaultImage = card.imageSrc.includes('add-photo');
 
-//          console.log('CARD' , card);
-
-
           // Create expiry HTML or complete button based on image state
           let actionHtml = '';
-
-          console.log('CARD ID', card.id);
-          console.log('CARD type', card);
 
           if (card.type === 'saved') {
             if (isDefaultImage) {
@@ -1205,47 +1018,15 @@
           // Add complete button functionality
           const completeBtnPopup = cardEl.querySelector('.complete-thing-btn');
           if (completeBtnPopup) {
-//            console.log("CARD", card);
-
-
-            console.log('Setting up complete button for card:', card.id);
             completeBtnPopup.addEventListener('click', () => {
               if (card.type === 'saved') {
-                    console.log('1111');
-
                 // Move card from saved to completed
                 const savedIndex = savedCards.findIndex(c => c.id === card.id);
                 if (savedIndex !== -1) {
                   // Remove from saved cards
                   savedCards.splice(savedIndex, 1);
-//                  try {
-//                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
-//                  } catch (e) {
-//                    console.warn('localStorage quota exceeded, clearing old data');
-//                    localStorage.clear();
-//                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
-//                  }
 
-                  // Add to completed cards
-                  completedCards.unshift({
-                    ...card,
-                    type: 'completed',
-                    completedAt: Date.now()
-                  });
-//                  try {
-//                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
-//                  } catch (e) {
-//                    console.warn('localStorage quota exceeded, clearing old data');
-//                    localStorage.clear();
-//                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
-//                  }
-
-
-
-                   console.log('dddd ',card);
-
-                   makeCardCompleted(card.one_thing_user_card_id);
-
+                  makeCardCompleted(card.one_thing_user_card_id);
 
                   // Show success tooltip
                   showSuccessTooltip();
@@ -1263,19 +1044,18 @@
             console.log('ccccc');
             const toggle = cardEl.querySelector('input[type="checkbox"]');
             if (toggle) {
-              console.log('Setting up toggle for card:', card.id, 'isPublic:', publicCards.some(pc => pc.id === card.id));
+
               toggle.addEventListener('change', (e) => {
-                const isPublic = publicCards.some(pc => pc.id === card.id);
-                console.log('Toggle changed for card:', card.id, 'checked:', e.target.checked, 'wasPublic:', isPublic);
+
 
                 // Disable toggle during API call
                 toggle.disabled = true;
 
-                if (e.target.checked && !isPublic) {
+                if (e.target.checked && !card.published) {
                   // Making public
                   console.log('Showing make-public confirmation for card:', card.id);
                   showConfirmationPopup(card.one_thing_user_card_id, 'make-public');
-                } else if (!e.target.checked && isPublic) {
+                } else if (!e.target.checked && card.published) {
                   // Making private
                   console.log('Showing make-private confirmation for card:', card.id);
                   showConfirmationPopup(card.one_thing_user_card_id, 'make-private');
@@ -1285,9 +1065,9 @@
 
                 // Reset the toggle to current state until confirmed with smooth animation
                 setTimeout(() => {
-                  e.target.checked = isPublic;
+                  e.target.checked = card.published;
                   toggle.disabled = false;
-                  console.log('Reset toggle for card:', card.id, 'to:', isPublic);
+                  console.log('Reset toggle for card:', card.id, 'to:', card.published);
                 }, 150);
               });
             }
