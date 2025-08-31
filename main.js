@@ -17,6 +17,8 @@
     const completedButton = document.querySelector('button[data-filter="completed"]');
     const communityButton = document.querySelector('button[data-filter="community"]');
 
+    var uploadFileName = '';
+
 
     // Function to ensure userId is set in localStorage
     function ensureUserId() {
@@ -586,7 +588,11 @@
 
      function makeCardCompleted(one_thing_user_card_id) {
         const userId = ensureUserId();
-        const card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+
+
+        console.log('one_thing_user_card_id', one_thing_user_card_id);
+        console.log('savedCards', savedCards);
+        const card = savedCards.find(c => c.one_thing_user_card_id == one_thing_user_card_id);
         if (!card) {
             console.log('Error makeCardCompleted');
             return;
@@ -809,7 +815,7 @@
               actionHtml = `<div class="card-expiry">${daysLeft} days left</div>`;
             } else {
               // Show complete button for cards with photos
-              actionHtml = `<button class="complete-thing-btn" data-card-id="${card.id}">Complete Thing</button>`;
+              actionHtml = `<button class="complete-thing-btn" data-card-id="${card.one_thing_user_card_id}">Complete Thing</button>`;
             }
           } else if (card.type === 'completed') {
             // For completed cards, no action button needed - just show the image
@@ -887,23 +893,19 @@
             });
 
             input.addEventListener('change', e => {
-//                console.log('changing file');
-
               const file = e.target.files[0];
               if (file) {
-                console.log('File selected for card:', card.id, 'file:', file.name, 'type:', file.type);
-
-                console.log("CARDS", card.one_thing_user_card_id);
-
                 var userCardId = card.one_thing_user_card_id;
+
                  uploadFile(file)
                    .then(function(imagePath) {
-                     const requestBody = {
-                       one_thing_user_card_id: userCardId,
-                       image: imagePath,
-                     };
+//                    uploadFileName = imagePath;
+//                     const requestBody = {
+//                       one_thing_user_card_id: userCardId,
+//                       image: imagePath
+//                     };
 
-                     return makeApiCall(requestBody, card);
+//                     return makeApiCall(requestBody, card);
                    })
                    .then(function(response) {
                      console.log("✅ Всё прошло успешно", response);
@@ -1021,19 +1023,28 @@
             completeBtnPopup.addEventListener('click', () => {
               if (card.type === 'saved') {
                 // Move card from saved to completed
-                const savedIndex = savedCards.findIndex(c => c.id === card.id);
-                if (savedIndex !== -1) {
-                  // Remove from saved cards
-                  savedCards.splice(savedIndex, 1);
+//                const savedIndex = savedCards.findIndex(c => c.id === card.id);
+//                if (savedIndex !== -1) {
+//                  // Remove from saved cards
+//                  savedCards.splice(savedIndex, 1);
+
+
+
+                  console.log('complete-thing-btn');
 
                   makeCardCompleted(card.one_thing_user_card_id);
+
+
+
+
+
 
                   // Show success tooltip
                   showSuccessTooltip();
 
                   // Re-render both lists
                   renderCardList(currentTypeFilter, currentCategoryFilter);
-                }
+//                }
               }
             });
           }
