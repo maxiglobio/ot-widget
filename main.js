@@ -19,6 +19,7 @@
 
     const savedButton = document.querySelector('button[data-filter="saved"]');
     const completedButton = document.querySelector('button[data-filter="completed"]');
+    const communityButton = document.querySelector('button[data-filter="community"]');
 
 
     // Function to ensure userId is set in localStorage
@@ -303,7 +304,7 @@
         expiresAt: Date.now() + EXPIRY_MS
       });
 
-      loadUserCards();
+      loadSavedUserCards();
 
       decrementAttempts();
 
@@ -895,7 +896,8 @@
           toShow = savedCards;
         }
         if (filter === 'community' || filter === 'all') {
-          toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
+//          toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
+          toShow = savedCards;
         }
 
 
@@ -1368,10 +1370,9 @@
 
 
     function loadSavedUserCards() {
-
       const userId = ensureUserId();
       if (!userId) {
-        console.log('No userId found for loadUserCards');
+        console.log('No userId');
         return;
       }
 
@@ -1392,26 +1393,19 @@
                 published: item.published
               }));
 
-
-            console.log('loadSavedUserCards', usersCards);
-
             var formattedCards = usersCards.map(card => ({
-              id: card.id, // или card.id, если нужен числовой
+              id: card.id,
               title: card.name,
               description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
               category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
-//              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif",
               expiresAt: card.expired_at,
               one_thing_user_card_id: card.one_thing_user_card_id,
               completed: card.completed,
               published: card.published,
               type: "saved"
             }));
-
             savedCards = formattedCards;
-
-//            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
             renderCardList('saved', currentCategoryFilter);
           }
         })
@@ -1424,13 +1418,12 @@
      function loadCompletedUserCards() {
           const userId = ensureUserId();
           if (!userId) {
-            console.log('No userId found for loadUserCards');
+            console.log('No userId');
             return;
           }
 
           fetch(API_USERS + '/' + userId)
             .then(response => {
-              console.log('loadUserCards response status:', response.status);
               return response.json();
             })
             .then(data => {
@@ -1446,8 +1439,6 @@
                       imageSrc: item.image
                     }));
 
-                console.log('111 loadCompletedUserCards', usersCards);
-
                 var formattedCards = usersCards.map(card => ({
                   id: card.id,
                   title: card.name,
@@ -1460,11 +1451,54 @@
                   published: card.published,
                   type: "completed"
                 }));
-
                 savedCards = formattedCards;
-
-    //            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
                 renderCardList('completed', currentCategoryFilter);
+              }
+            })
+            .catch(error => {
+              console.error('Error loading public cards:', error);
+            });
+    }
+
+     function loadCommunityUserCards() {
+
+          const userId = ensureUserId();
+          if (!userId) {
+            console.log('No userId');
+            return;
+          }
+
+          fetch(API_USERS + '/' + userId)
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+              if (data) {
+                var usersCards = data.users_cards
+                  .filter(item => item.published === true)
+                  .map(item => ({
+                    ...item.card,
+                    expired_at: item.expired_at,
+                    one_thing_user_card_id: item.id,
+                    completed: item.completed,
+                      published: item.published,
+                      imageSrc: item.image
+                  }));
+
+                var formattedCards = usersCards.map(card => ({
+                  id: card.id,
+                    title: card.name,
+                    description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                    category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                    imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                    expiresAt: card.expired_at,
+                    one_thing_user_card_id: card.one_thing_user_card_id,
+                    completed: card.completed,
+                    published: card.published,
+                  type: "community"
+                }));
+                savedCards = formattedCards;
+                renderCardList('community', currentCategoryFilter);
               }
             })
             .catch(error => {
@@ -1482,6 +1516,10 @@
 
     savedButton.addEventListener('click', () => {
         loadSavedUserCards();
+    });
+
+    communityButton.addEventListener('click', () => {
+        loadCommunityUserCards();
     });
 
 
