@@ -646,8 +646,8 @@
 
       const requestBody = {
         one_thing_user_card_id: cardId,
-        publish: true,
-//        completed: true
+        published: true,
+        completed: true
       };
 
       console.log('Request body:', requestBody);
