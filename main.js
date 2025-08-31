@@ -1497,7 +1497,7 @@
                 savedCards = formattedCards;
 
     //            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
-                renderCardList('saved', currentCategoryFilter);
+                renderCardList('completed', currentCategoryFilter);
               }
             })
             .catch(error => {
