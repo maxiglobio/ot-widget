@@ -175,7 +175,7 @@
           console.log('Confirmation button clicked:', action, 'for card:', cardId);
 
           if (cardId && action) {
-            console.log('Processing confirmation:', { cardId, action });
+
             if (action === 'make-public') {
               console.log('Calling makeCardPublic for card:', cardId);
               makeCardPublic(cardId);
@@ -511,12 +511,12 @@
       }
     }
 
-    function showConfirmationPopup(cardId, action) {
-      console.log('showConfirmationPopup called:', cardId, action);
+    function showConfirmationPopup(one_thing_user_card_id, action) {
+//      console.log('showConfirmationPopup called:', cardId, action);
 
-      const card = savedCards.find(c => c.id === cardId);
+      const card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
       if (!card) {
-        console.log('Card not found in savedCards:', cardId);
+        console.log('Card not found in savedCards:', one_thing_user_card_id);
         return;
       }
 
@@ -539,10 +539,10 @@
       // Store the card ID and action for confirmation
       const popup = document.getElementById('confirmation-popup');
       if (popup) {
-        popup.dataset.cardId = cardId;
+        popup.dataset.cardId = one_thing_user_card_id;
         popup.dataset.action = action;
         popup.classList.add('show');
-        console.log('Popup shown with data:', { cardId, action });
+        console.log('Popup shown with data:', { one_thing_user_card_id, action });
         console.log('Popup dataset after setting:', popup.dataset);
       } else {
         console.error('Confirmation popup element not found');
@@ -628,29 +628,26 @@
     }
 
     function makeCardPublic(cardId) {
-      console.log('=== makeCardPublic called ===');
 
+      console.log('savedCards ', savedCards);
+      console.log('cardId ', cardId);
+      cardId = parseInt(cardId);
 
-      console.log('savedCards', savedCards);
-
-      const card = savedCards.find(c => c.id === cardId);
+      const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
       if (!card) {
-        console.error('❌ Card not found in savedCards:', cardId);
+        console.error('❌tetttt Card not found in savedCards:', cardId);
         return;
       }
 
-      console.log('✅ Found card:', card);
 
-      // Get user ID from localStorage (ensure it exists)
+    console.error('❌1111111 :', cardId);
+
       const userId = ensureUserId();
-      console.log('✅ userId for API call:', userId);
 
-      console.log('✅ Making card public:', cardId, 'for user:', userId);
-
-      // Send API request to make card public
       const requestBody = {
-        one_thing_users_id: userId,
-        one_thing_cards_id: cardId
+        one_thing_user_card_id: cardId,
+        publish: true,
+//        completed: true
       };
 
       console.log('Request body:', requestBody);
@@ -1303,11 +1300,11 @@
                 if (e.target.checked && !isPublic) {
                   // Making public
                   console.log('Showing make-public confirmation for card:', card.id);
-                  showConfirmationPopup(card.id, 'make-public');
+                  showConfirmationPopup(card.one_thing_user_card_id, 'make-public');
                 } else if (!e.target.checked && isPublic) {
                   // Making private
                   console.log('Showing make-private confirmation for card:', card.id);
-                  showConfirmationPopup(card.id, 'make-private');
+                  showConfirmationPopup(card.one_thing_user_card_id, 'make-private');
                 } else {
                   console.log('No action needed - toggle state matches public state');
                 }
