@@ -920,14 +920,20 @@
 
         // Filter by type (saved/completed/community)
         if (filter === 'saved' || filter === 'all') {
-          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved' })));
+//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved111' })));
+          toShow = savedCards;
         }
         if (filter === 'completed' || filter === 'all') {
-          toShow = toShow.concat(completedCards.map(c => ({ ...c, type: 'completed' })));
+//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'completed2222' })));
+          toShow = savedCards;
         }
         if (filter === 'community' || filter === 'all') {
           toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
         }
+
+
+
+        console.log('to show', toShow);
 
         // Filter by category
         if (categoryFilter !== 'all') {
@@ -1009,6 +1015,10 @@
 
           // Create expiry HTML or complete button based on image state
           let actionHtml = '';
+
+          console.log('CARD ID', card.id);
+          console.log('CARD type', card);
+
           if (card.type === 'saved') {
             if (isDefaultImage) {
               // Show expiry counter for cards without photos
@@ -1102,19 +1112,7 @@
 
                 console.log("CARDS", card.one_thing_user_card_id);
 
-//                imagePath = uploadFile(file);
-//
-//                  const requestBody = {
-//                     one_thing_user_card_id: card.one_thing_user_card_id,
-//                     image: imagePath,
-//                 };
-//
-//                 makeApiCall(requestBody, card);
-
-
                 var userCardId = card.one_thing_user_card_id;
-
-
                  uploadFile(file)
                    .then(function(imagePath) {
                      const requestBody = {
@@ -1122,7 +1120,7 @@
                        image: imagePath,
                      };
 
-                     return makeApiCall(requestBody, card); // вернём промис
+                     return makeApiCall(requestBody, card);
                    })
                    .then(function(response) {
                      console.log("✅ Всё прошло успешно", response);
@@ -1417,7 +1415,7 @@
         })
         .then(data => {
           if (data) {
-            const usersCards = data.users_cards
+            var usersCards = data.users_cards
               .filter(item => item.completed === false)
               .map(item => ({
                 ...item.card,
@@ -1430,7 +1428,7 @@
 
             console.log('loadSavedUserCards', usersCards);
 
-            const formattedCards = usersCards.map(card => ({
+            var formattedCards = usersCards.map(card => ({
               id: card.id, // или card.id, если нужен числовой
               title: card.name,
               description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
@@ -1440,7 +1438,8 @@
               expiresAt: card.expired_at,
               one_thing_user_card_id: card.one_thing_user_card_id,
               completed: card.completed,
-              published: card.published
+              published: card.published,
+              type: "saved"
             }));
 
             savedCards = formattedCards;
@@ -1469,19 +1468,30 @@
             })
             .then(data => {
               if (data) {
-                const usersCards = data.users_cards
+                var usersCards = data.users_cards
                   .filter(item => item.completed === true) // фильтр по completed
-                  .map(item => item.card); // берём только card
+                  .map(item => ({
+                      ...item.card,
+                      expired_at: item.expired_at,
+                      one_thing_user_card_id: item.id,
+                      completed: item.completed,
+                      published: item.published,
+                      imageSrc: item.image
+                    }));
 
-                console.log('loadSavedUserCards', usersCards);
+                console.log('111 loadCompletedUserCards', usersCards);
 
-                const formattedCards = usersCards.map(card => ({
-                  id: card.name, // или card.id, если нужен числовой
+                var formattedCards = usersCards.map(card => ({
+                  id: card.id,
                   title: card.name,
                   description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
                   category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-                  imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
-                  expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                  expiresAt: card.expired_at,
+                  one_thing_user_card_id: card.one_thing_user_card_id,
+                  completed: card.completed,
+                  published: card.published,
+                  type: "completed"
                 }));
 
                 savedCards = formattedCards;
