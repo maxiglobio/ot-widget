@@ -628,59 +628,36 @@
     }
 
     function makeCardPublic(cardId) {
-
-      console.log('savedCards ', savedCards);
-      console.log('cardId ', cardId);
       cardId = parseInt(cardId);
-
       const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
       if (!card) {
         console.error('❌tetttt Card not found in savedCards:', cardId);
         return;
       }
-
-
-    console.error('❌1111111 :', cardId);
-
       const userId = ensureUserId();
-
       const requestBody = {
         one_thing_user_card_id: cardId,
         published: true,
         completed: true
       };
-
-      console.log('Request body:', requestBody);
       makeApiCall(requestBody, card);
     }
 
      function makeCardCompleted(one_thing_user_card_id) {
-          const userId = ensureUserId();
-
-          const card = completedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
-            if (!card) {
-              console.error('❌ Card not found in completedCards:', one_thing_user_card_id);
-              console.log('Available card IDs:', completedCards.map(c => c.one_thing_user_card_id));
-              return;
-            }
-
-            console.log('CARD', card);
-
-
-
-          const requestBody = {
+        const userId = ensureUserId();
+        const card = completedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+        if (!card) {
+            console.log('Available card IDs:', completedCards.map(c => c.one_thing_user_card_id));
+            return;
+        }
+        const requestBody = {
             one_thing_user_card_id: one_thing_user_card_id,
             completed: true,
-          };
-
-          makeApiCall(requestBody, card);
-        }
+        };
+        makeApiCall(requestBody, card);
+    }
 
     function makeApiCall(requestBody, card) {
-      console.log('=== Making API call ===');
-      console.log('API URL:', API_SET_CARD_PUBLISH);
-      console.log('Request body:', requestBody);
-
       fetch(API_SET_CARD_PUBLISH, {
         method: 'POST',
         headers: {
@@ -689,19 +666,13 @@
         body: JSON.stringify(requestBody)
       })
         .then(response => {
-          console.log('✅ API response status:', response.status);
-          console.log('✅ API response headers:', response.headers);
-
           if (!response.ok) {
             console.error('❌ API response not ok:', response.status, response.statusText);
             throw new Error(`Failed to make card public: ${response.status} ${response.statusText}`);
           }
-
           return response.json();
         })
         .then(data => {
-          console.log('✅ API response data:', data);
-
           // Add to public cards if not already there
           const cardId = requestBody.one_thing_cards_id;
           if (!publicCards.some(pc => pc.id === cardId)) {
