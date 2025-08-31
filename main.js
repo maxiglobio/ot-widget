@@ -514,9 +514,9 @@
     function showConfirmationPopup(cardId, action) {
       console.log('showConfirmationPopup called:', cardId, action);
 
-      const card = completedCards.find(c => c.id === cardId);
+      const card = savedCards.find(c => c.id === cardId);
       if (!card) {
-        console.log('Card not found in completedCards:', cardId);
+        console.log('Card not found in savedCards:', cardId);
         return;
       }
 
@@ -629,14 +629,13 @@
 
     function makeCardPublic(cardId) {
       console.log('=== makeCardPublic called ===');
-      console.log('cardId:', cardId);
-      console.log('completedCards length:', completedCards.length);
-      console.log('completedCards:', completedCards);
 
-      const card = completedCards.find(c => c.id === cardId);
+
+      console.log('savedCards', savedCards);
+
+      const card = savedCards.find(c => c.id === cardId);
       if (!card) {
-        console.error('❌ Card not found in completedCards:', cardId);
-        console.log('Available card IDs:', completedCards.map(c => c.id));
+        console.error('❌ Card not found in savedCards:', cardId);
         return;
       }
 
