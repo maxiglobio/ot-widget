@@ -886,27 +886,17 @@
         formData.append("type", "image"); // можно "attachment", "video", "audio"
         formData.append("content", file);
 
-        fetch(API_SET_CARD_UPLOAD_IMAGE, {
+        return fetch(API_SET_CARD_UPLOAD_IMAGE, {
             method: 'POST',
             headers: {
             },
             body: formData
         })
        .then(response => {
-         console.log('✅ API response status:', response.status);
-         return response.json(); // превращаем поток в JSON
+         return response.json();
        })
        .then(data => {
-         console.log('✅ API response data:', data);
-
-         // вытаскиваем именно path
          const imagePath = data.path;
-         console.log('🎯 111 Path:', imagePath);
-
-
-
-
-         // например, можешь сразу сохранить куда-то
          return imagePath;
        })
         .catch(error => {
@@ -1112,16 +1102,34 @@
 
                 console.log("CARDS", card.one_thing_user_card_id);
 
+//                imagePath = uploadFile(file);
+//
+//                  const requestBody = {
+//                     one_thing_user_card_id: card.one_thing_user_card_id,
+//                     image: imagePath,
+//                 };
+//
+//                 makeApiCall(requestBody, card);
 
 
-                imagePath = uploadFile(file);
+                var userCardId = card.one_thing_user_card_id;
 
-              const requestBody = {
-                 one_thing_user_card_id: card.one_thing_user_card_id,
-                 image: imagePath,
-             };
 
-                 makeApiCall(requestBody, card);
+                 uploadFile(file)
+                   .then(function(imagePath) {
+                     const requestBody = {
+                       one_thing_user_card_id: userCardId,
+                       image: imagePath,
+                     };
+
+                     return makeApiCall(requestBody, card); // вернём промис
+                   })
+                   .then(function(response) {
+                     console.log("✅ Всё прошло успешно", response);
+                   })
+                   .catch(function(error) {
+                     console.error("❌ Ошибка:", error);
+                   });
 
 
 
