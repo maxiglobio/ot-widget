@@ -249,7 +249,7 @@
           return response.json();
         })
         .then(data => {
-            console.log("RFEFRESH");
+//            console.log("RFEFRESH");
             loadSavedUserCards();
         })
         .catch(err => console.error(err));
@@ -611,6 +611,9 @@
             published: false
         };
         makeApiCall(requestBody, card);
+
+        loadSavedUserCards();
+
     }
 
     function makeApiCall(requestBody, card) {
@@ -1191,7 +1194,8 @@
                 one_thing_user_card_id: item.id,
                 completed: item.completed,
                 published: item.published
-              }));
+              }))
+              .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
 
             var formattedCards = usersCards.map(card => ({
               id: card.id,
@@ -1237,7 +1241,8 @@
                       completed: item.completed,
                       published: item.published,
                       imageSrc: item.image
-                    }));
+                    }))
+                    .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
 
                 var formattedCards = usersCards.map(card => ({
                   id: card.id,
@@ -1283,7 +1288,8 @@
                     completed: item.completed,
                       published: item.published,
                       imageSrc: item.image
-                  }));
+                  }))
+                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
 
                 var formattedCards = usersCards.map(card => ({
                   id: card.id,
