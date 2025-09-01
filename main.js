@@ -899,13 +899,13 @@
 
                  uploadFile(file)
                    .then(function(imagePath) {
-//                    uploadFileName = imagePath;
-//                     const requestBody = {
-//                       one_thing_user_card_id: userCardId,
-//                       image: imagePath
-//                     };
+                    uploadFileName = imagePath;
+                     const requestBody = {
+                       one_thing_user_card_id: userCardId,
+                       image: imagePath
+                     };
 
-//                     return makeApiCall(requestBody, card);
+                     return makeApiCall(requestBody, card);
                    })
                    .then(function(response) {
                      console.log("✅ Всё прошло успешно", response);
