@@ -1,0 +1,3114 @@
+<!-- Import Manrope font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+  rel="stylesheet">
+
+<!-- Include Lottie player for the button animation -->
+<script>
+  // Prevent duplicate lottie-player registration
+  if (!customElements.get('lottie-player')) {
+    const script = document.createElement('script');
+    script.src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js";
+    document.head.appendChild(script);
+  }
+</script>
+
+<!-- Include HEIC to JPEG converter -->
+<script src="https://unpkg.com/heic2any@0.2.2/dist/heic2any.min.js"></script>
+
+<style>
+  /* Reset and base styles for iframe compatibility */
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Global font family */
+  * {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Ensure buttons and interactive elements use Manrope */
+  button,
+  input,
+  select,
+  textarea {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Ensure popup elements use Manrope */
+  .one-thing-popup h3,
+  .one-thing-popup p,
+  .confirmation-popup h3,
+  .confirmation-popup p,
+  .referral-popup h3,
+  .referral-popup p {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Ensure card elements use Manrope */
+  .one-thing-card h4,
+  .one-thing-card p,
+  .card-category-tag,
+  .card-expiry,
+  .complete-thing-btn {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Ensure filter and dropdown elements use Manrope */
+  .filter-buttons button,
+  .dropdown-trigger,
+  .dropdown-item,
+  .toggle-label {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Ensure all UI elements use Manrope */
+  #attempts-counter,
+  .empty-state h3,
+  .empty-state p,
+  .empty-state-btn,
+  .success-tooltip {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* Container to center the button and filters */
+  #one-thing-account-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 20px;
+    width: 100%;
+    min-height: 100vh;
+    text-align: center;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* Ensure popups are positioned relative to viewport, not iframe */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Force popups to be positioned relative to viewport */
+  .one-thing-popup,
+  .confirmation-popup,
+  .referral-popup {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+  }
+
+  /* Circular button styled like your original design */
+  .one-thing-account-btn {
+    position: relative;
+    width: 185px;
+    height: 185px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.1),
+      inset -4px -9px 3px rgba(0, 0, 0, 0),
+      inset -2px -6px 2px rgba(0, 0, 0, 0.01),
+      inset -1px -3px 2px rgba(0, 0, 0, 0.03),
+      inset -1px -1px 2px rgba(0, 0, 0, 0.05),
+      inset 0 0 1px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    animation: softPulse 3s ease-in-out infinite;
+  }
+
+  .one-thing-account-btn.loading {
+    pointer-events: none;
+  }
+
+  .one-thing-account-btn.inactive {
+    cursor: not-allowed;
+    opacity: 0.6;
+    animation: none;
+    pointer-events: none;
+  }
+
+  .one-thing-account-btn.inactive lottie-player {
+    filter: grayscale(100%);
+  }
+
+  /* Spinner ring appears only when loading */
+  .spinner-ring-account {
+    position: absolute;
+    width: 185px;
+    height: 185px;
+    border-radius: 50%;
+    border: 4px solid transparent;
+    border-top: 4px solid #B1E530;
+    border-right: 4px solid #ffffff;
+    animation: spin 1s linear infinite;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .one-thing-account-btn.loading .spinner-ring-account {
+    opacity: 1;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes softPulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.1),
+        inset -4px -9px 3px rgba(0, 0, 0, 0),
+        inset -2px -6px 2px rgba(0, 0, 0, 0.01),
+        inset -1px -3px 2px rgba(0, 0, 0, 0.03),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.05),
+        inset 0 0 1px rgba(0, 0, 0, 0.06);
+    }
+
+    50% {
+      transform: scale(1.05);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.15),
+        inset -4px -9px 3px rgba(0, 0, 0, 0),
+        inset -2px -6px 2px rgba(0, 0, 0, 0.01),
+        inset -1px -3px 2px rgba(0, 0, 0, 0.03),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.05),
+        inset 0 0 1px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  /* Attempts counter */
+  #attempts-counter {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #141414;
+    display: inline-block;
+  }
+
+  #attempts-counter.no-attempts {
+    color: #999;
+  }
+
+  /* Filters styled to match your screenshot */
+  .filter-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-divider {
+    width: 2px;
+    height: 20px;
+    background: #E0E0E0;
+    border-radius: 1px;
+    margin: 0 4px;
+  }
+
+  .filter-buttons button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #E6E6E6;
+    background: transparent;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #808080;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    justify-content: center;
+  }
+
+  .filter-buttons button img {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+  }
+
+  .filter-buttons button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .filter-buttons button.active {
+    color: #141414;
+  }
+
+  .filter-buttons button.active img {
+    opacity: 1;
+  }
+
+  /* All Categories Dropdown Styles */
+  .dropdown-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #E6E6E6;
+    background: transparent;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    justify-content: center;
+  }
+
+  .dropdown-trigger:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .dropdown-trigger.active {
+    color: #141414;
+  }
+
+  .dropdown-trigger.active svg {
+    stroke: #141414;
+  }
+
+  .dropdown-arrow {
+    transition: transform 0.3s ease;
+    stroke: #999;
+  }
+
+  .dropdown-trigger.active .dropdown-arrow {
+    transform: rotate(180deg);
+    stroke: #141414;
+  }
+
+
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: 12px;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+  }
+
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 14px;
+    font-weight: 600;
+    color: #141414;
+  }
+
+  .dropdown-item:hover {
+    background: #f8f8f8;
+  }
+
+  .dropdown-item.selected {
+    background: #E6F5D8;
+    color: #141414;
+    font-weight: 600;
+  }
+
+  .category-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .category-indicator.daily {
+    background: #AAB40F;
+  }
+
+  .category-indicator.places {
+    background: #58AD95;
+  }
+
+  .category-indicator.local {
+    background: #A670BC;
+  }
+
+  .category-indicator.all {
+    background: #9E9E9E;
+  }
+
+  /* Saved/completed cards grid */
+  #one-thing-card-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  /* Card styling */
+  .one-thing-card {
+    background: #ffffff;
+    border: 1px solid #E6E6E6;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 320px;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+
+  /* Category tag */
+  .card-category-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    align-self: center;
+    border: 1px solid;
+  }
+
+  .card-category-tag.daily {
+    background: transparent;
+    color: #AAB40F;
+    border: 1.5px solid rgba(170, 180, 15, 0.3);
+  }
+
+  .card-category-tag.places {
+    background: transparent !important;
+    color: #58AD95 !important;
+    border: 1.5px solid rgba(88, 173, 149, 0.3) !important;
+  }
+
+  .card-category-tag.local {
+    background: transparent;
+    color: #A670BC;
+    border: 1.5px solid rgba(166, 112, 188, 0.3);
+  }
+
+  .card-category-tag.daily-things {
+    background: transparent;
+    color: #AAB40F;
+    border: 1.5px solid rgba(170, 180, 15, 0.3);
+  }
+
+  .card-category-tag.local-context {
+    background: transparent;
+    color: #A670BC;
+    border: 1.5px solid rgba(166, 112, 188, 0.3);
+  }
+
+  /* Image placeholder */
+  .card-image-placeholder {
+    width: 100%;
+    max-width: 190px;
+    height: 190px;
+    border: none;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    cursor: pointer;
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+    align-self: center;
+    transition: all 0.3s ease;
+  }
+
+
+
+
+
+  .card-image-placeholder img {
+    width: 190px;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  .card-image-placeholder .uploaded-image {
+    width: 180px;
+    height: 180px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-image-placeholder .add-photo-icon {
+    width: 190px;
+    height: 190px;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .card-image-placeholder:hover .add-photo-icon {
+    filter: brightness(0.95);
+    transform: scale(1.01);
+  }
+
+  .card-image-placeholder:active .add-photo-icon {
+    filter: brightness(0.88);
+    transform: scale(0.99);
+  }
+
+
+
+
+
+  .card-image-placeholder input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* Card content */
+  .one-thing-card h4 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #333;
+    text-align: left;
+  }
+
+  .one-thing-card p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    color: #666;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .card-expiry {
+    font-size: 12px;
+    color: #888;
+    margin-top: auto;
+    text-align: center;
+    padding: 8px 16px;
+    background: #ffffff;
+    border-radius: 999px;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    align-self: center;
+    width: fit-content;
+    min-width: fit-content;
+  }
+
+  .card-author {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* Image upload loader */
+  .image-upload-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .image-upload-loader.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .image-upload-loader .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .image-upload-loader .loading-text {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .complete-thing-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: auto;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+    width: 100%;
+  }
+
+
+
+  /* Referral popup */
+  .referral-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .referral-popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .referral-popup-inner {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 480px;
+    width: 95%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .referral-popup.show .referral-popup-inner {
+    transform: scale(1) translateY(0);
+  }
+
+  .referral-popup h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  .referral-popup p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    color: #666;
+  }
+
+  .referral-link-container {
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .referral-link {
+    font-family: monospace;
+    font-size: 14px;
+    color: #999;
+    word-break: break-all;
+    flex: 1;
+  }
+
+  .referral-link .highlight {
+    color: #333;
+    font-weight: 600;
+  }
+
+  .copy-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .copy-btn:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+  }
+
+  .copy-btn.copied {
+    background: #666;
+  }
+
+  .referral-popup-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .referral-popup button {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .referral-popup .btn-secondary {
+    background: #f8f8f8;
+    color: #666;
+    border: 1px solid #e0e0e0;
+  }
+
+  .referral-popup .btn-secondary:hover {
+    background: #f0f0f0;
+  }
+
+  /* Empty state */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 40px;
+    color: #666;
+  }
+
+  .empty-state img {
+    width: auto;
+    height: 150px;
+    margin-bottom: 20px;
+  }
+
+  .empty-state h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  .empty-state p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    color: #666;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .empty-state-btn {
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .empty-state-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px);
+  }
+
+  /* Tablet adjustments */
+  @media (max-width: 900px) and (min-width: 601px) {
+    #one-thing-card-list {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 800px;
+    }
+
+    .filter-buttons {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+  }
+
+  /* Medium mobile adjustments */
+  @media (max-width: 500px) and (min-width: 401px) {
+    .filter-buttons {
+      gap: 10px;
+    }
+
+    .filter-group {
+      gap: 10px;
+    }
+
+    .filter-buttons button {
+      min-width: 52px;
+      height: 52px;
+      padding: 14px;
+    }
+
+    .filter-buttons button img {
+      width: 22px;
+      height: 22px;
+    }
+
+    .dropdown-trigger {
+      min-width: 130px;
+      height: 52px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-trigger {
+      border-radius: 26px;
+    }
+
+    .dropdown-trigger svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 600px) {
+    #one-thing-account-component {
+      padding: 10px;
+    }
+
+    #one-thing-card-list {
+      grid-template-columns: 1fr;
+      padding: 0 10px;
+      gap: 16px;
+      margin: 20px auto;
+    }
+
+    .one-thing-account-btn {
+      width: 140px;
+      height: 140px;
+    }
+
+    .spinner-ring-account {
+      width: 140px;
+      height: 140px;
+    }
+
+    .one-thing-account-btn lottie-player {
+      width: 80px !important;
+      height: 80px !important;
+    }
+
+    .filter-buttons {
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 100%;
+      padding: 0 10px;
+    }
+
+    .filter-group {
+      flex-direction: row;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      width: auto;
+    }
+
+    .filter-buttons button {
+      width: auto;
+      min-width: 48px;
+      height: 48px;
+      padding: 12px;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .filter-buttons button span {
+      display: none;
+    }
+
+    .filter-buttons button img {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+    }
+
+    .dropdown-trigger {
+      width: auto;
+      min-width: 120px;
+      height: 48px;
+      padding: 12px 16px;
+      justify-content: center;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+
+
+    .dropdown-trigger svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .dropdown-menu {
+      min-width: 160px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    .dropdown-menu.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .filter-divider {
+      width: 2px;
+      height: 20px;
+      background: #E0E0E0;
+      border-radius: 1px;
+      margin: 0 4px;
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 400px) {
+    #one-thing-account-component {
+      padding: 5px;
+    }
+
+    #one-thing-card-list {
+      padding: 0 5px;
+      gap: 12px;
+    }
+
+    .filter-buttons {
+      padding: 0 5px;
+      gap: 6px;
+    }
+
+    .filter-group {
+      gap: 6px;
+    }
+
+    .filter-buttons button {
+      min-width: 44px;
+      height: 44px;
+      padding: 10px;
+    }
+
+    .filter-buttons button img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .dropdown-trigger {
+      min-width: 100px;
+      height: 44px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dropdown-trigger {
+      border-radius: 22px;
+    }
+
+    .dropdown-trigger svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .dropdown-menu {
+      min-width: 140px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    .dropdown-menu.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .one-thing-card {
+      padding: 16px;
+      min-height: 280px;
+    }
+
+    .card-image-placeholder {
+      max-width: 150px;
+      height: 150px;
+    }
+
+    .card-image-placeholder .add-photo-icon {
+      width: 150px;
+      height: 150px;
+    }
+
+    .one-thing-account-btn {
+      width: 120px;
+      height: 120px;
+    }
+
+    .spinner-ring-account {
+      width: 120px;
+      height: 120px;
+    }
+
+    .one-thing-account-btn lottie-player {
+      width: 60px !important;
+      height: 60px !important;
+    }
+  }
+
+  /* Card Popup Styles */
+  .one-thing-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .one-thing-popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .one-thing-popup-inner {
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 8px 8px 32px 8px;
+    width: 90%;
+    max-width: 380px;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .popup-content-wrapper {
+    display: flex;
+    padding: 24px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    align-self: stretch;
+    border-radius: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    background: #FFF;
+    box-shadow: 0 45px 13px 0 rgba(0, 0, 0, 0.00), 0 29px 12px 0 rgba(0, 0, 0, 0.01), 0 16px 10px 0 rgba(0, 0, 0, 0.02), 0 7px 7px 0 rgba(0, 0, 0, 0.03), 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+    gap: 16px;
+  }
+
+  .one-thing-popup.show .one-thing-popup-inner {
+    transform: scale(1) translateY(0);
+  }
+
+  /* Category pill */
+  .popup-category-pill {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .popup-category-pill.daily {
+    background: transparent !important;
+    color: #AAB40F !important;
+    border: 1.5px solid rgba(170, 180, 15, 0.3) !important;
+  }
+
+  .popup-category-pill.places {
+    background: transparent !important;
+    color: #58AD95 !important;
+    border: 1.5px solid rgba(88, 173, 149, 0.3) !important;
+  }
+
+  .popup-category-pill.local {
+    background: transparent !important;
+    color: #A670BC !important;
+    border: 1.5px solid rgba(166, 112, 188, 0.3) !important;
+  }
+
+  .popup-category-pill.daily-things {
+    background: transparent !important;
+    color: #AAB40F !important;
+    border: 1.5px solid rgba(170, 180, 15, 0.3) !important;
+  }
+
+  .popup-category-pill.local-context {
+    background: transparent !important;
+    color: #A670BC !important;
+    border: 1.5px solid rgba(166, 112, 188, 0.3) !important;
+  }
+
+  /* Category icon */
+  .popup-category-icon {
+    margin: 0;
+  }
+
+  .popup-category-icon img {
+    width: 242px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  }
+
+  /* Title and description */
+  .one-thing-popup-inner h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #333;
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  .one-thing-popup-inner p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    font-weight: 400;
+    text-align: left;
+  }
+
+  /* Action buttons */
+  .popup-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .popup-skip,
+  .popup-save {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 140px;
+    justify-content: center;
+  }
+
+  .popup-skip {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #222;
+  }
+
+  .popup-skip:hover {
+    background: #f8f8f8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .popup-save {
+    background: #222;
+    color: #ffffff;
+  }
+
+  .popup-save:hover {
+    background: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .popup-skip img,
+  .popup-save img {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Mobile adjustments for popup */
+  @media (max-width: 600px) {
+    .one-thing-popup-inner {
+      padding: 8px 8px 32px 8px;
+      width: 95%;
+      max-width: 380px;
+    }
+
+    .popup-content-wrapper {
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .popup-category-icon img {
+      width: 200px;
+      height: 100px;
+    }
+
+    .one-thing-popup-inner h3 {
+      font-size: 20px;
+    }
+
+    .one-thing-popup-inner p {
+      font-size: 14px;
+    }
+
+    .popup-buttons {
+      flex-direction: row;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .popup-skip,
+    .popup-save {
+      flex: 1;
+      padding: 16px 24px;
+    }
+  }
+
+  /* Extra small screens for popup */
+  @media (max-width: 400px) {
+    .one-thing-popup-inner {
+      width: 98%;
+      padding: 4px 4px 24px 4px;
+    }
+
+    .popup-content-wrapper {
+      padding: 12px;
+      gap: 8px;
+    }
+
+    .popup-category-icon img {
+      width: 150px;
+      height: 75px;
+    }
+
+    .one-thing-popup-inner h3 {
+      font-size: 18px;
+    }
+
+    .one-thing-popup-inner p {
+      font-size: 13px;
+    }
+
+    .popup-buttons {
+      gap: 8px;
+    }
+
+    .popup-skip,
+    .popup-save {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
+    .referral-popup-inner,
+    .confirmation-popup-inner {
+      width: 98%;
+      padding: 20px;
+    }
+  }
+
+  /* Success tooltip styles */
+  .success-tooltip {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    z-index: 999999;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    max-width: calc(100vw - 40px);
+  }
+
+  .success-tooltip.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .success-tooltip img {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Mobile adjustments for tooltip */
+  @media (max-width: 600px) {
+    .success-tooltip {
+      top: 10px;
+      right: 10px;
+      left: 10px;
+      transform: translateY(-100%);
+      max-width: none;
+    }
+
+    .success-tooltip.show {
+      transform: translateY(0);
+    }
+  }
+
+  /* Toggle switch styles */
+  .toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f8f8;
+    border-radius: 20px;
+    padding: 8px 12px;
+    margin-top: 12px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .toggle-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #E0E0E0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 24px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .toggle-switch input:checked+.toggle-slider {
+    background-color: #4CAF50;
+  }
+
+  .toggle-switch input:checked+.toggle-slider:before {
+    transform: translateX(20px);
+  }
+
+  /* Confirmation popup styles */
+  .confirmation-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .confirmation-popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .confirmation-popup-inner {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 400px;
+    width: 95%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .confirmation-popup.show .confirmation-popup-inner {
+    transform: scale(1) translateY(0);
+  }
+
+  .confirmation-popup h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: #141414;
+  }
+
+  .confirmation-popup p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #666;
+    margin: 0 0 24px 0;
+  }
+
+  .confirmation-popup-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .confirmation-popup button {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    min-width: 100px;
+  }
+
+  .confirmation-cancel {
+    background: #f5f5f5;
+    color: #666;
+  }
+
+  .confirmation-cancel:hover {
+    background: #e0e0e0;
+  }
+
+  .confirmation-confirm {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .confirmation-confirm:hover {
+    background: #45a049;
+  }
+</style>
+
+<div id="one-thing-account-component">
+  <!-- Main button -->
+  <div id="one-thing-btn" class="one-thing-account-btn">
+    <div class="spinner-ring-account"></div>
+    <lottie-player
+      src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/66da138e010ced8db19ff94b_preloader-web.json"
+      background="transparent" speed="1" style="width: 100px; height: 100px;" loop autoplay>
+    </lottie-player>
+  </div>
+  <div id="attempts-counter"></div>
+  <!-- Filters with icons -->
+  <div class="filter-buttons">
+    <div class="dropdown-container">
+      <button class="dropdown-trigger active" id="all-categories-dropdown">
+        <span>All Categories</span>
+        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+      <div class="dropdown-menu" id="categories-dropdown-menu">
+        <div class="dropdown-item" data-category="all">
+          <div class="category-indicator all"></div>
+          <span>All Categories</span>
+        </div>
+        <div class="dropdown-item" data-category="daily">
+          <div class="category-indicator daily"></div>
+          <span>Daily Things</span>
+        </div>
+        <div class="dropdown-item" data-category="places">
+          <div class="category-indicator places"></div>
+          <span>Places</span>
+        </div>
+        <div class="dropdown-item" data-category="local">
+          <div class="category-indicator local"></div>
+          <span>Local Context</span>
+        </div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <button data-filter="saved" class="active">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/689626252407e18c78a483d3_saved-icon.svg"
+          alt="Saved" width="16" height="16">
+        <span>Saved</span>
+      </button>
+      <button data-filter="completed">
+        <img
+          src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68962640c9b2c3eb35cd53d1_completed-icon.svg"
+          alt="Completed" width="16" height="16">
+        <span>Completed</span>
+      </button>
+      <div class="filter-divider"></div>
+      <button data-filter="community">
+        <img
+          src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68962655c9b2c3eb35cd5a48_community-icon.svg"
+          alt="Community" width="16" height="16">
+        <span>Community</span>
+      </button>
+    </div>
+  </div>
+  <div id="one-thing-card-list"></div>
+</div>
+
+<!-- Success tooltip -->
+<div id="success-tooltip" class="success-tooltip">
+  <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
+    alt="Success" width="16" height="16">
+  <span>Thing completed! 🎉</span>
+</div>
+
+<!-- Confirmation popup -->
+<div id="confirmation-popup" class="confirmation-popup">
+  <div class="confirmation-popup-inner">
+    <h3 id="confirmation-title">Make Thing Public?</h3>
+    <p id="confirmation-description">This will make your completed thing visible to the community. Other users will be
+      able to see and get inspired by your experience.</p>
+    <div class="confirmation-popup-buttons">
+      <button class="confirmation-cancel" id="confirmation-cancel">Cancel</button>
+      <button class="confirmation-confirm" id="confirmation-confirm">Make Thing Public</button>
+    </div>
+  </div>
+</div>
+
+<!-- Referral Popup -->
+<div id="referral-popup" class="referral-popup">
+  <div class="referral-popup-inner">
+    <h3>Invite Friends</h3>
+    <p>Share your personal referral link with friends and help them discover amazing things in your area!</p>
+    <div class="referral-link-container">
+      <span class="referral-link" id="referral-link-text">
+        <span class="base-url">https://globio.io/ref/</span><span class="highlight" id="referral-code">YOURCODE</span>
+      </span>
+      <button class="copy-btn" id="copy-referral-btn">Copy</button>
+    </div>
+    <div class="referral-popup-buttons">
+      <button class="btn-secondary" id="referral-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Community Empty State Popup -->
+<div id="community-empty-popup" class="referral-popup">
+  <div class="referral-popup-inner">
+    <h3>Expand Globio Community</h3>
+    <p>Here's your referral code. Copy it and share with friends to expand the Globio community in your area!</p>
+    <div class="referral-link-container">
+      <span class="referral-link" id="community-referral-link-text">
+        <span class="base-url">https://globio.io/ref/</span><span class="highlight"
+          id="community-referral-code">YOURCODE</span>
+      </span>
+      <button class="copy-btn" id="copy-community-referral-btn">Copy</button>
+    </div>
+    <div class="referral-popup-buttons">
+      <button class="btn-secondary" id="community-popup-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Card popup -->
+<div id="one-thing-popup" class="one-thing-popup">
+  <div class="one-thing-popup-inner">
+    <!-- Content wrapper with pill, icon, title, and description -->
+    <div class="popup-content-wrapper">
+      <!-- Category pill -->
+      <div class="popup-category-pill" id="popup-category">
+        <span id="popup-category-text">Places</span>
+      </div>
+
+      <!-- Category icon -->
+      <div class="popup-category-icon" id="popup-category-icon">
+        <img id="popup-category-image" src="" alt="Category icon">
+      </div>
+
+      <!-- Title and description -->
+      <h3 id="popup-title"></h3>
+      <p id="popup-desc"></p>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="popup-buttons">
+      <button id="popup-skip" class="popup-skip">
+        <img
+          src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b6797ea854969e2c43ab_skip-card-icon.svg"
+          alt="Skip" width="16" height="16">
+        <span>Skip</span>
+      </button>
+      <button id="popup-save" class="popup-save">
+        <img
+          src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
+          alt="Save" width="16" height="16">
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+  const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
+  const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
+  const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
+  const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
+  const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
+  const MAX_ATTEMPTS = 3;
+  const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+  let attemptsLeft = parseInt(localStorage.getItem('attemptsLeftAccount')) || MAX_ATTEMPTS;
+  let resetTime = parseInt(localStorage.getItem('resetTimeAccount')) || getMidnightTimestamp();
+//    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
+
+  var savedCards = [];
+
+  const savedButton = document.querySelector('button[data-filter="saved"]');
+  const completedButton = document.querySelector('button[data-filter="completed"]');
+  const communityButton = document.querySelector('button[data-filter="community"]');
+
+  var uploadFileName = '';
+
+
+  // Function to ensure userId is set in localStorage
+  function ensureUserId() {
+    let userId = localStorage.getItem('userId');
+
+    if (!userId) {
+      // Try to get from auth object
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        try {
+          const authObj = JSON.parse(auth);
+          if (authObj.id) {
+            userId = authObj.id;
+            localStorage.setItem('userId', userId);
+            console.log('✅ Set userId from auth object:', userId);
+          }
+        } catch (e) {
+          console.error('Error parsing auth object:', e);
+        }
+      }
+
+      // If still no userId, generate a temporary one for testing
+      if (!userId) {
+        userId = 'temp-user-' + Date.now();
+        localStorage.setItem('userId', userId);
+        console.log('⚠️ Generated temporary userId for testing:', userId);
+      }
+    }
+
+    return userId;
+  }
+
+
+
+
+
+
+
+
+  let currentSuggestion = null;
+  let currentCategoryFilter = localStorage.getItem('currentCategoryFilter') || 'all';
+  let currentTypeFilter = localStorage.getItem('currentTypeFilter') || 'saved';
+
+  const btn = document.getElementById('one-thing-btn');
+  const attemptsCounter = document.getElementById('attempts-counter');
+  const popup = document.getElementById('one-thing-popup');
+  const popupTitle = document.getElementById('popup-title');
+  const popupDesc = document.getElementById('popup-desc');
+  const btnSave = document.getElementById('popup-save');
+  const btnSkip = document.getElementById('popup-skip');
+  const cardList = document.getElementById('one-thing-card-list');
+  const filterButtons = document.querySelectorAll('.filter-buttons button');
+
+  // Ensure userId is set
+  ensureUserId();
+
+  updateCounterUI();
+
+  // Restore active state for filter buttons
+  filterButtons.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-filter') === currentTypeFilter) {
+      btn.classList.add('active');
+    }
+  });
+
+  renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
+
+  loadSavedUserCards();
+
+  // Initialize dropdown functionality
+  initializeDropdown();
+
+  // Initialize event listeners when DOM is ready
+  function initializeEventListeners() {
+    // Initialize the UI
+    updateCounterUI();
+
+    // Restore active state for filter buttons
+    filterButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+        btn.classList.add('active');
+      }
+    });
+
+    renderCardList(currentTypeFilter, currentCategoryFilter);
+
+    // Confirmation popup handlers
+    const cancelBtn = document.getElementById('confirmation-cancel');
+    const confirmBtn = document.getElementById('confirmation-confirm');
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', hideConfirmationPopup);
+    } else {
+      console.error('Confirmation cancel button not found');
+    }
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        const popup = document.getElementById('confirmation-popup');
+        const cardId = popup.dataset.cardId;
+        const action = popup.dataset.action;
+
+        console.log('Confirmation button clicked:', action, 'for card:', cardId);
+
+        if (cardId && action) {
+
+          if (action === 'make-public') {
+            makeCardPublic(cardId);
+          } else if (action === 'make-private') {
+            makeCardPrivate(cardId);
+          }
+          hideConfirmationPopup();
+        } else {
+          console.error('Missing cardId or action:', { cardId, action });
+        }
+      });
+    }
+
+    // Close confirmation popup when clicking outside
+    const confirmationPopup = document.getElementById('confirmation-popup');
+    if (confirmationPopup) {
+      confirmationPopup.addEventListener('click', (e) => {
+        if (e.target === confirmationPopup) {
+          hideConfirmationPopup();
+        }
+      });
+    }
+
+    // Referral popup handlers
+    const copyBtn = document.getElementById('copy-referral-btn');
+    const referralCloseBtn = document.getElementById('referral-close');
+    const referralPopup = document.getElementById('referral-popup');
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', copyReferralLink);
+    }
+    if (referralCloseBtn) {
+      referralCloseBtn.addEventListener('click', hideReferralPopup);
+    }
+    if (referralPopup) {
+      referralPopup.addEventListener('click', (e) => {
+        if (e.target === referralPopup) {
+          hideReferralPopup();
+        }
+      });
+    }
+
+    // Community empty state popup handlers
+    const copyCommunityBtn = document.getElementById('copy-community-referral-btn');
+    const communityCloseBtn = document.getElementById('community-popup-close');
+    const communityPopup = document.getElementById('community-empty-popup');
+
+    if (copyCommunityBtn) {
+      copyCommunityBtn.addEventListener('click', copyCommunityReferralLink);
+    }
+    if (communityCloseBtn) {
+      communityCloseBtn.addEventListener('click', hideCommunityEmptyPopup);
+    }
+    if (communityPopup) {
+      communityPopup.addEventListener('click', (e) => {
+        if (e.target === communityPopup) {
+          hideCommunityEmptyPopup();
+        }
+      });
+    }
+  }
+
+  // Initialize event listeners when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEventListeners);
+  } else {
+    initializeEventListeners();
+  }
+
+  btn.addEventListener('click', () => {
+    if (attemptsLeft <= 0) return;
+    btn.classList.add('loading');
+    startLoadingAnimation();
+    const context = window.getUserContext ? window.getUserContext() : {};
+    let qs = '?';
+    for (const key in context) {
+      if (context.hasOwnProperty(key)) qs += encodeURIComponent(key) + '=' + encodeURIComponent(context[key]) + '&';
+    }
+    fetch(API_SUGGEST + qs, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'one-thing-session-id': generateUUID() }
+    })
+      .then(res => res.json())
+      .then(data => {
+        btn.classList.remove('loading');
+        stopLoadingAnimation();
+
+        console.log('API response debug:', data);
+
+        currentSuggestion = {
+          id: data.id || data.card_id || data.cardId || data.card?.id || data.item?.id || data.thing?.id || data.name || 'generated-' + Date.now(),
+          title: data.title || data.name || 'No Tip This Time',
+          description: data.description || 'Sometimes even the best advice needs a rest. Come back later.',
+          category: data.category || data.card?.category || data.item?.category || data.thing?.category || 'places'
+        };
+
+        console.log('Current suggestion debug:', currentSuggestion);
+
+        showPopup(currentSuggestion);
+      })
+      .catch(err => {
+        btn.classList.remove('loading');
+        stopLoadingAnimation();
+        console.error(err);
+      });
+  });
+
+  btnSave.addEventListener('click', () => {
+    if (!currentSuggestion) return;
+    const userId = ensureUserId();
+    console.log('currentSuggestion', currentSuggestion);
+
+    if (userId && currentSuggestion.id) {
+      fetch(API_SAVE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id, expired_at: Date.now() + 1000 * 60 * 60 * 24 * 30 })
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+//            console.log("RFEFRESH");
+          loadSavedUserCards();
+      })
+      .catch(err => console.error(err));
+    }
+    // Add expiry timestamp with default image
+    savedCards.unshift({
+      ...currentSuggestion,
+      imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
+      expiresAt: Date.now() + EXPIRY_MS
+    });
+
+    loadSavedUserCards();
+
+    decrementAttempts();
+
+    // Switch to Saved tab and update UI
+    filterButtons.forEach(b => b.classList.remove('active'));
+    const savedButton = document.querySelector('button[data-filter="saved"]');
+    if (savedButton) {
+      savedButton.classList.add('active');
+    }
+
+    renderCardList('saved', currentCategoryFilter);
+    hidePopup();
+  });
+
+  btnSkip.addEventListener('click', () => {
+    decrementAttempts();
+
+    // Switch to Completed tab and update UI
+    filterButtons.forEach(b => b.classList.remove('active'));
+    const completedButton = document.querySelector('button[data-filter="completed"]');
+    if (completedButton) {
+      completedButton.classList.add('active');
+    }
+
+    renderCardList('completed', currentCategoryFilter);
+    hidePopup();
+  });
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTypeFilter = btn.getAttribute('data-filter');
+      localStorage.setItem('currentTypeFilter', currentTypeFilter);
+      renderCardList(currentTypeFilter, currentCategoryFilter);
+    });
+  });
+
+  // Remove ability to close popup by clicking outside or escape key
+  // User must choose either Save or Skip to proceed
+
+  function showPopup(card) {
+    // Set category and icon based on card data
+    const category = card.category || 'places'; // Default to places if not specified
+    const categoryText = getCategoryText(category);
+    const categoryIcon = getCategoryIcon(category);
+
+    console.log('Popup category debug:', {
+      originalCategory: card.category,
+      finalCategory: category,
+      categoryText: categoryText,
+      pillClass: 'popup-category-pill ' + category
+    });
+
+    // Update popup content
+    const categoryPill = document.getElementById('popup-category');
+    const categoryTextElement = document.getElementById('popup-category-text');
+    const categoryImage = document.getElementById('popup-category-image');
+
+    categoryTextElement.textContent = categoryText;
+    categoryImage.src = categoryIcon;
+    popupTitle.textContent = card.title;
+    popupDesc.textContent = card.description;
+
+    // Update pill classes based on category
+    const categoryClass = category.toLowerCase().replace(/\s+/g, '-');
+    categoryPill.className = 'popup-category-pill ' + categoryClass;
+
+    // Ensure popup is positioned correctly
+    const popupElement = document.getElementById('one-thing-popup');
+    popupElement.style.position = 'fixed';
+    popupElement.style.top = '0';
+    popupElement.style.left = '0';
+    popupElement.style.width = '100vw';
+    popupElement.style.height = '100vh';
+    popupElement.style.zIndex = '999999';
+
+    // Show popup with animation
+    popup.classList.add('show');
+  }
+
+  function hidePopup() {
+    popup.classList.remove('show');
+    currentSuggestion = null;
+  }
+
+  function getCategoryText(category) {
+    const categories = {
+      'places': 'Places',
+      'daily': 'Daily Things',
+      'local': 'Local Context',
+      'DAILY THINGS': 'Daily Things',
+      'PLACES': 'Places',
+      'LOCAL CONTEXT': 'Local Context'
+    };
+    return categories[category] || 'Places';
+  }
+
+  function getCategoryIcon(category) {
+    const icons = {
+      'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
+      'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
+      'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif',
+      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
+      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
+      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif'
+    };
+    return icons[category] || icons['places'];
+  }
+
+  function decrementAttempts() {
+    attemptsLeft--;
+    localStorage.setItem('attemptsLeftAccount', attemptsLeft);
+    localStorage.setItem('resetTimeAccount', resetTime);
+    updateCounterUI();
+  }
+  // Loading phrases for dynamic text
+  const loadingPhrases = [
+    "Gathering one thing…",
+    "Asking locals for secrets…",
+    "Digging for hidden gems…",
+    "Searching cozy nooks…",
+    "Extracting calm in chaos…",
+    "Sneaking past tourist traps…"
+  ];
+
+  let currentLoadingIndex = 0;
+  let loadingInterval = null;
+
+  function updateCounterUI() {
+    const oneThingBtn = document.getElementById('one-thing-btn');
+
+    if (attemptsLeft > 0) {
+      attemptsCounter.textContent = `${attemptsLeft} / ${MAX_ATTEMPTS} left today`;
+      attemptsCounter.classList.remove('no-attempts');
+      oneThingBtn.classList.remove('inactive');
+    } else {
+      attemptsCounter.textContent = `Next in: ${getTimeLeft()}`;
+      attemptsCounter.classList.add('no-attempts');
+      oneThingBtn.classList.add('inactive');
+    }
+  }
+
+  function startLoadingAnimation() {
+    currentLoadingIndex = 0;
+    attemptsCounter.textContent = loadingPhrases[0];
+    attemptsCounter.classList.remove('no-attempts');
+
+    loadingInterval = setInterval(() => {
+      currentLoadingIndex = (currentLoadingIndex + 1) % loadingPhrases.length;
+      attemptsCounter.textContent = loadingPhrases[currentLoadingIndex];
+    }, 2000);
+  }
+
+  function stopLoadingAnimation() {
+    if (loadingInterval) {
+      clearInterval(loadingInterval);
+      loadingInterval = null;
+    }
+    updateCounterUI();
+  }
+  function getMidnightTimestamp() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
+  }
+  function getTimeLeft() {
+    const dist = resetTime - Date.now();
+    if (dist <= 0) {
+      resetTime = getMidnightTimestamp();
+      attemptsLeft = MAX_ATTEMPTS;
+      localStorage.setItem('attemptsLeftAccount', attemptsLeft);
+      localStorage.setItem('resetTimeAccount', resetTime);
+      return '00h 00m';
+    }
+    const h = Math.floor(dist / (1000 * 60 * 60));
+    const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+    return `${h}h ${m}m`;
+  }
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function showSuccessTooltip() {
+    const tooltip = document.getElementById('success-tooltip');
+    if (tooltip) {
+      tooltip.classList.add('show');
+      console.log('Success tooltip shown');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        console.log('Success tooltip hidden');
+      }, 3000);
+    } else {
+      console.error('Success tooltip element not found');
+    }
+  }
+
+  function showConfirmationPopup(one_thing_user_card_id, action) {
+//      console.log('showConfirmationPopup called:', cardId, action);
+
+    const card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+    if (!card) {
+      console.log('Card not found in savedCards:', one_thing_user_card_id);
+      return;
+    }
+
+    const titleEl = document.getElementById('confirmation-title');
+    const descriptionEl = document.getElementById('confirmation-description');
+    const confirmBtn = document.getElementById('confirmation-confirm');
+
+    console.log('Found elements:', { titleEl: !!titleEl, descriptionEl: !!descriptionEl, confirmBtn: !!confirmBtn });
+
+    if (action === 'make-public') {
+      titleEl.textContent = 'Make Thing Public?';
+      descriptionEl.textContent = 'This will make your completed thing visible to the community. Other users will be able to see and get inspired by your experience.';
+      confirmBtn.textContent = 'Make Thing Public';
+    } else if (action === 'make-private') {
+      titleEl.textContent = 'Make Thing Private?';
+      descriptionEl.innerHTML = 'Are you sure you want to remove this from the community? <br><br><strong>Your experience could inspire others!</strong> 🌟<br><br>By keeping it public, you\'re helping create a vibrant community of people sharing their adventures and discoveries.';
+      confirmBtn.textContent = 'Make Private';
+    }
+
+    // Store the card ID and action for confirmation
+    const popup = document.getElementById('confirmation-popup');
+    if (popup) {
+      popup.dataset.cardId = one_thing_user_card_id;
+      popup.dataset.action = action;
+      popup.classList.add('show');
+      console.log('Popup shown with data:', { one_thing_user_card_id, action });
+      console.log('Popup dataset after setting:', popup.dataset);
+    } else {
+      console.error('Confirmation popup element not found');
+    }
+  }
+
+  function hideConfirmationPopup() {
+    document.getElementById('confirmation-popup').classList.remove('show');
+    delete document.getElementById('confirmation-popup').dataset.cardId;
+    delete document.getElementById('confirmation-popup').dataset.action;
+  }
+
+  // Global functions for empty state buttons
+  function scrollToGetOneThing() {
+    const oneThingBtn = document.getElementById('one-thing-btn');
+    if (oneThingBtn) {
+      oneThingBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function showReferralPopup() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+
+    document.getElementById('referral-code').textContent = referralCode;
+    document.getElementById('referral-popup').classList.add('show');
+  }
+
+  function hideReferralPopup() {
+    document.getElementById('referral-popup').classList.remove('show');
+  }
+
+  function copyReferralLink() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+    const fullLink = `https://globio.io/ref/${referralCode}`;
+
+    navigator.clipboard.writeText(fullLink).then(() => {
+      const copyBtn = document.getElementById('copy-referral-btn');
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+      alert('Failed to copy link. Please copy manually.');
+    });
+  }
+
+  function showCommunityEmptyPopup() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+
+    document.getElementById('community-referral-code').textContent = referralCode;
+    document.getElementById('community-empty-popup').classList.add('show');
+  }
+
+  function hideCommunityEmptyPopup() {
+    document.getElementById('community-empty-popup').classList.remove('show');
+  }
+
+  function copyCommunityReferralLink() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+    const fullLink = `https://globio.io/ref/${referralCode}`;
+
+    navigator.clipboard.writeText(fullLink).then(() => {
+      const copyBtn = document.getElementById('copy-community-referral-btn');
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+      alert('Failed to copy link. Please copy manually.');
+    });
+  }
+
+  function makeCardPublic(cardId) {
+    cardId = parseInt(cardId);
+    const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+    if (!card) {
+      console.error('Error makeCardPublic');
+      return;
+    }
+    const userId = ensureUserId();
+    const requestBody = {
+      one_thing_user_card_id: cardId,
+      published: true,
+      completed: true
+    };
+    makeApiCall(requestBody, card);
+  }
+
+   function makeCardCompleted(one_thing_user_card_id) {
+      const userId = ensureUserId();
+
+
+      console.log('one_thing_user_card_id', one_thing_user_card_id);
+      console.log('savedCards', savedCards);
+      const card = savedCards.find(c => c.one_thing_user_card_id == one_thing_user_card_id);
+      if (!card) {
+          console.log('Error makeCardCompleted');
+          return;
+      }
+      const requestBody = {
+          one_thing_user_card_id: one_thing_user_card_id,
+          completed: true,
+          published: false
+      };
+      makeApiCall(requestBody, card);
+
+      loadSavedUserCards();
+
+  }
+
+  function makeApiCall(requestBody, card) {
+    fetch(API_SET_CARD_PUBLISH, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error('❌ API response not ok:');
+          throw new Error(`Failed to make card public: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Add to public cards if not already there
+        const cardId = requestBody.one_thing_cards_id;
+
+        renderCardList(currentTypeFilter, currentCategoryFilter);
+
+        // Re-enable toggle and update its state
+        const toggle = document.querySelector(`#toggle-${cardId}`);
+        if (toggle) {
+          toggle.disabled = false;
+          toggle.checked = true; // Ensure toggle shows as checked
+          console.log('✅ Updated toggle state for card:', cardId);
+        } else {
+          console.log('⚠️ Toggle not found for card:', cardId);
+        }
+
+        // Show success tooltip
+        showSuccessTooltip();
+        console.log('🎉 Successfully made card public!');
+      })
+      .catch(error => {
+        console.error('❌ Error making card public:', error);
+        console.error('❌ Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+
+        const cardId = requestBody.one_thing_cards_id;
+
+        // Re-enable toggle on error
+        const toggle = document.querySelector(`#toggle-${cardId}`);
+        if (toggle) {
+          toggle.disabled = false;
+          toggle.checked = false; // Reset to private state
+          console.log('🔄 Reset toggle to private state due to error');
+        }
+      });
+  }
+
+  function makeCardPrivate(cardId) {
+      cardId = parseInt(cardId);
+      const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+      if (!card) {
+        console.error('Error makeCardPrivate');
+        return;
+      }
+      const userId = ensureUserId();
+      const requestBody = {
+        one_thing_user_card_id: cardId,
+        published: false,
+        completed: true
+      };
+      makeApiCall(requestBody, card);
+  }
+
+  function uploadFile(file) {
+      const formData = new FormData();
+      formData.append("workspace_id", "1-0"); // ← сюда свой ID воркспейса
+      formData.append("type", "image"); // можно "attachment", "video", "audio"
+      formData.append("content", file);
+
+      return fetch(API_SET_CARD_UPLOAD_IMAGE, {
+          method: 'POST',
+          headers: {
+          },
+          body: formData
+      })
+     .then(response => {
+       return response.json();
+     })
+     .then(data => {
+       const imagePath = data.path;
+       return imagePath;
+     })
+      .catch(error => {
+        console.error('❌ Error making card public:', error);
+      });
+};
+
+  function renderCardList(filter = 'all', categoryFilter = 'all') {
+    // Add fade out effect
+    cardList.style.opacity = '0.7';
+    cardList.style.transform = 'scale(0.98)';
+    cardList.style.transition = 'all 0.2s ease';
+
+    setTimeout(() => {
+      cardList.innerHTML = '';
+      // Remove expired saved cards
+      const now = Date.now();
+      savedCards = savedCards.filter(card => card.expiresAt > now);
+
+      let toShow = [];
+
+      // Filter by type (saved/completed/community)
+      if (filter === 'saved' || filter === 'all') {
+//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved111' })));
+        toShow = savedCards;
+      }
+      if (filter === 'completed' || filter === 'all') {
+//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'completed2222' })));
+        toShow = savedCards;
+      }
+      if (filter === 'community' || filter === 'all') {
+//          toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
+        toShow = savedCards;
+      }
+
+
+
+      console.log('to show', toShow);
+
+      // Filter by category
+      if (categoryFilter !== 'all') {
+        toShow = toShow.filter(card => card.category === categoryFilter);
+      }
+
+      if (toShow.length === 0) {
+        let emptyStateHtml = '';
+
+        if (filter === 'saved') {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+          <h3>No saved things yet</h3>
+          <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+          <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+        </div>`;
+        } else if (filter === 'completed') {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+          <h3>No completed things yet</h3>
+          <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+          <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+        </div>`;
+        } else if (filter === 'community') {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6894a725c6e8a617ce6d1fe2_no-things-community.svg" alt="">
+          <h3>No community contributions yet</h3>
+          <p>Here you'll see all the things completed by the Globio community in your area—helpful tips and experiences, tailored to your current location.</p>
+          <button class="empty-state-btn" onclick="showCommunityEmptyPopup()">Invite a Friend</button>
+        </div>`;
+        } else {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+          <h3>No saved things yet</h3>
+          <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+          <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+        </div>`;
+        }
+
+        cardList.innerHTML = emptyStateHtml;
+        return;
+      }
+      toShow.forEach((card, idx) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'one-thing-card';
+        let expiryHtml = '';
+        if (card.type === 'saved') {
+          const daysLeft = Math.ceil((card.expiresAt - now) / (1000 * 60 * 60 * 24));
+          expiryHtml = `<div class="card-expiry">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
+        }
+        let toggleHtml = '';
+
+        if (card.type === 'completed') {
+          toggleHtml = `
+        <div class="toggle-container">
+          <span class="toggle-label">${card.published ? 'Public' : 'Make Public'}</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="toggle-${card.id}" ${card.published ? 'checked' : ''}>
+            <label class="toggle-slider" for="toggle-${card.id}"></label>
+          </div>
+        </div>
+      `;
+        }
+
+        // Get category text
+        const categoryText = getCategoryText(card.category);
+
+        // Check if the image is the default add-photo icon
+        const isDefaultImage = card.imageSrc.includes('add-photo');
+
+        // Create expiry HTML or complete button based on image state
+        let actionHtml = '';
+
+        if (card.type === 'saved') {
+          if (isDefaultImage) {
+            // Show expiry counter for cards without photos
+            const daysLeft = Math.ceil((card.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+            actionHtml = `<div class="card-expiry">${daysLeft} days left</div>`;
+          } else {
+            // Show complete button for cards with photos
+            actionHtml = `<button class="complete-thing-btn" data-card-id="${card.one_thing_user_card_id}">Complete Thing</button>`;
+          }
+        } else if (card.type === 'completed') {
+          // For completed cards, no action button needed - just show the image
+          actionHtml = '';
+        } else {
+          actionHtml = expiryHtml;
+        }
+
+        // Add author name for community cards
+        let authorHtml = '';
+        if (card.type === 'community') {
+          const authorName = card.author_name || card.user_name || 'Anonymous';
+          authorHtml = `<div class="card-author">by ${authorName}</div>`;
+        }
+
+        // Create different HTML for saved vs completed cards
+        let imageHtml = '';
+        if (card.type === 'saved') {
+          // For saved cards, show interactive image upload
+          imageHtml = `
+      <div class="card-image-placeholder">
+        <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif"
+             alt="Add photo"
+             class="add-photo-icon"
+             style="display: ${isDefaultImage ? 'block' : 'none'}"
+             data-card-id="${card.id}">
+        <input type="file" accept="image/*,.heic,.heif" data-card-id="${card.id}">
+        <div class="image-upload-loader" data-card-id="${card.id}">
+          <div class="spinner"></div>
+          <div class="loading-text">Uploading image...</div>
+        </div>
+      </div>`;
+        } else if (card.type === 'completed') {
+          // For completed cards, show static image only
+          imageHtml = `
+      <div class="card-image-placeholder">
+        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
+      </div>`;
+        } else {
+          // For community cards, show static image
+          imageHtml = `
+      <div class="card-image-placeholder">
+        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
+      </div>`;
+        }
+
+        cardEl.innerHTML = `
+      <div class="card-category-tag ${card.category}">${categoryText}</div>
+      ${imageHtml}
+      <h4>${card.title}</h4>
+      <p>${card.description}</p>
+      ${actionHtml}
+      ${toggleHtml}
+      ${authorHtml}
+    `;
+        // Add image upload functionality only for saved cards
+        if (card.type === 'saved') {
+          const placeholder = cardEl.querySelector('.card-image-placeholder');
+          const img = cardEl.querySelector(`img[data-card-id="${card.id}"][alt="Card image"]`);
+          const addPhotoIcon = cardEl.querySelector(`img[data-card-id="${card.id}"].add-photo-icon`);
+          const input = cardEl.querySelector(`input[data-card-id="${card.id}"]`);
+
+          // Set initial classes based on image state
+          if (isDefaultImage) {
+            img.className = 'add-photo-icon';
+          } else {
+            img.className = 'uploaded-image';
+          }
+
+          console.log('Setting up image upload for card:', card.id, 'elements found:', {
+            img: !!img,
+            addPhotoIcon: !!addPhotoIcon,
+            input: !!input
+          });
+
+          input.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+              var userCardId = card.one_thing_user_card_id;
+
+               uploadFile(file)
+                 .then(function(imagePath) {
+                  uploadFileName = imagePath;
+                   const requestBody = {
+                     one_thing_user_card_id: userCardId,
+                     image: imagePath
+                   };
+
+                   return makeApiCall(requestBody, card);
+                 })
+                 .then(function(response) {
+                   console.log("✅ Всё прошло успешно", response);
+                 })
+                 .catch(function(error) {
+                   console.error("❌ Ошибка:", error);
+                 });
+
+
+
+
+
+
+
+              // Show loader
+              const loader = cardEl.querySelector(`.image-upload-loader[data-card-id="${card.id}"]`);
+              const startTime = Date.now();
+              const minLoadTime = 1000; // Minimum 1 second
+
+              if (loader) {
+                loader.classList.add('show');
+              }
+
+              // Function to process image (either HEIC or regular image)
+              const processImage = (imageBlob) => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                  console.log('File processed for card:', card.id);
+
+                  // Calculate how long the loader should be shown
+                  const elapsedTime = Date.now() - startTime;
+                  const remainingTime = Math.max(0, minLoadTime - elapsedTime);
+
+                  setTimeout(() => {
+                    // Hide loader
+                    if (loader) {
+                      loader.classList.remove('show');
+                    }
+
+                    // Update image
+                    img.src = ev.target.result;
+                    img.className = 'uploaded-image';
+                    img.style.display = 'block';
+                    addPhotoIcon.style.display = 'none';
+
+                    if (card.type === 'saved') {
+                      // Update the card's image in saved cards
+                      const savedIndex = savedCards.findIndex(c => c.id === card.id);
+                      if (savedIndex !== -1) {
+                        console.log('Updating saved card image:', card.id);
+                        savedCards[savedIndex].imageSrc = ev.target.result;
+//                          try {
+//                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                          } catch (e) {
+//                            // Clear old data and try again
+//                            localStorage.clear();
+//                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                          }
+
+                        // Re-render the list to show the complete button
+                        renderCardList(currentTypeFilter, currentCategoryFilter);
+                      } else {
+                        console.error('Saved card not found:', card.id);
+                      }
+                    }
+                  }, remainingTime);
+                };
+
+                reader.onerror = () => {
+                  console.error('Error reading file for card:', card.id);
+                  if (loader) {
+                    loader.classList.remove('show');
+                  }
+                };
+
+                reader.readAsDataURL(imageBlob);
+              };
+
+              // Check if file is HEIC/HEIF format
+              const isHeic = file.name.toLowerCase().endsWith('.heic') ||
+                file.name.toLowerCase().endsWith('.heif') ||
+                file.type === 'image/heic' ||
+                file.type === 'image/heif';
+
+              if (isHeic && typeof heic2any !== 'undefined') {
+                console.log('Converting HEIC file to JPEG for card:', card.id);
+
+                // Convert HEIC to JPEG
+                heic2any({
+                  blob: file,
+                  toType: 'image/jpeg',
+                  quality: 0.8
+                }).then(convertedBlob => {
+                  console.log('HEIC converted successfully for card:', card.id);
+                  processImage(convertedBlob);
+                }).catch(error => {
+                  console.error('Error converting HEIC file for card:', card.id, error);
+                  if (loader) {
+                    loader.classList.remove('show');
+                  }
+                  alert('Error converting HEIC image. Please try a different image format.');
+                });
+              } else {
+                // Process regular image file
+                console.log('Processing regular image file for card:', card.id);
+                processImage(file);
+              }
+            }
+          });
+        }
+
+        // Add complete button functionality
+        const completeBtnPopup = cardEl.querySelector('.complete-thing-btn');
+        if (completeBtnPopup) {
+          completeBtnPopup.addEventListener('click', () => {
+            if (card.type === 'saved') {
+              // Move card from saved to completed
+//                const savedIndex = savedCards.findIndex(c => c.id === card.id);
+//                if (savedIndex !== -1) {
+//                  // Remove from saved cards
+//                  savedCards.splice(savedIndex, 1);
+
+
+
+                console.log('complete-thing-btn');
+
+                makeCardCompleted(card.one_thing_user_card_id);
+
+
+
+
+
+
+                // Show success tooltip
+                showSuccessTooltip();
+
+                // Re-render both lists
+                renderCardList(currentTypeFilter, currentCategoryFilter);
+//                }
+            }
+          });
+        }
+
+        // Add toggle switch functionality for completed cards
+        if (card.type === 'completed') {
+
+          console.log('ccccc');
+          const toggle = cardEl.querySelector('input[type="checkbox"]');
+          if (toggle) {
+
+            toggle.addEventListener('change', (e) => {
+
+
+              // Disable toggle during API call
+              toggle.disabled = true;
+
+              if (e.target.checked && !card.published) {
+                // Making public
+                console.log('Showing make-public confirmation for card:', card.id);
+                showConfirmationPopup(card.one_thing_user_card_id, 'make-public');
+              } else if (!e.target.checked && card.published) {
+                // Making private
+                console.log('Showing make-private confirmation for card:', card.id);
+                showConfirmationPopup(card.one_thing_user_card_id, 'make-private');
+              } else {
+                console.log('No action needed - toggle state matches public state');
+              }
+
+              // Reset the toggle to current state until confirmed with smooth animation
+              setTimeout(() => {
+                e.target.checked = card.published;
+                toggle.disabled = false;
+                console.log('Reset toggle for card:', card.id, 'to:', card.published);
+              }, 150);
+            });
+          }
+        }
+
+        cardList.appendChild(cardEl);
+      });
+
+      // Add fade in effect
+      setTimeout(() => {
+        cardList.style.opacity = '1';
+        cardList.style.transform = 'scale(1)';
+      }, 50);
+    });
+  }
+
+  // Update expiry count every hour (refreshes days left)
+  setInterval(() => {
+    renderCardList(currentTypeFilter, currentCategoryFilter);
+  }, 60 * 60 * 1000);
+  // Keep attempts counter updated every minute
+  setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
+
+
+
+//    function loadCards() {
+//      if (!currentSuggestion) return;
+//      const userId = ensureUserId();
+//      if (userId && currentSuggestion.id) {
+//        let user = fetch(API_USERS + '/' + userId, {
+//          method: 'GET',
+//          headers: { 'Content-Type': 'application/json' },
+//        }).catch(err => console.error(err));
+//      }
+//    }
+
+
+
+//    // Load public cards from API on initialization
+//    function loadUserCards() {
+//
+//      const userId = ensureUserId();
+//      if (!userId) {
+//        console.log('No userId found for loadUserCards');
+//        return;
+//      }
+//
+//      fetch(API_USERS + '/' + userId)
+//        .then(response => {
+//          console.log('loadUserCards response status:', response.status);
+//          return response.json();
+//        })
+//        .then(data => {
+//          if (data) {
+//            const usersCards = data.users_cards.map(item => item.card);
+//
+//
+//
+//            console.log('usersCards', usersCards);
+//
+//            const formattedCards = usersCards.map(card => ({
+//              id: card.name, // или card.id, если нужен числовой
+//              title: card.name,
+//              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+//              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+//              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+//              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+//            }));
+//
+//            savedCards = formattedCards;
+//
+////            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+//            renderCardList('saved', currentCategoryFilter);
+//          }
+//        })
+//        .catch(error => {
+//          console.error('Error loading public cards:', error);
+//        });
+//    }
+
+
+
+  function loadSavedUserCards() {
+    const userId = ensureUserId();
+    if (!userId) {
+      console.log('No userId');
+      return;
+    }
+
+    fetch(API_USERS + '/' + userId)
+      .then(response => {
+        console.log('loadUserCards response status:', response.status);
+        return response.json();
+      })
+      .then(data => {
+        if (data) {
+          var usersCards = data.users_cards
+            .filter(item => item.completed === false)
+            .map(item => ({
+              ...item.card,
+              expired_at: item.expired_at,
+              one_thing_user_card_id: item.id,
+              completed: item.completed,
+              published: item.published
+            }))
+            .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
+          var formattedCards = usersCards.map(card => ({
+            id: card.id,
+            title: card.name,
+            description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+            category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+            imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif",
+            expiresAt: card.expired_at,
+            one_thing_user_card_id: card.one_thing_user_card_id,
+            completed: card.completed,
+            published: card.published,
+            type: "saved"
+          }));
+          savedCards = formattedCards;
+          renderCardList('saved', currentCategoryFilter);
+        }
+      })
+      .catch(error => {
+        console.error('Error loading public cards:', error);
+      });
+  }
+
+
+   function loadCompletedUserCards() {
+        const userId = ensureUserId();
+        if (!userId) {
+          console.log('No userId');
+          return;
+        }
+
+        fetch(API_USERS + '/' + userId)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            if (data) {
+              var usersCards = data.users_cards
+                .filter(item => item.completed === true) // фильтр по completed
+                .map(item => ({
+                    ...item.card,
+                    expired_at: item.expired_at,
+                    one_thing_user_card_id: item.id,
+                    completed: item.completed,
+                    published: item.published,
+                    imageSrc: item.image
+                  }))
+                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
+              var formattedCards = usersCards.map(card => ({
+                id: card.id,
+                title: card.name,
+                description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                expiresAt: card.expired_at,
+                one_thing_user_card_id: card.one_thing_user_card_id,
+                completed: card.completed,
+                published: card.published,
+                type: "completed"
+              }));
+              savedCards = formattedCards;
+              renderCardList('completed', currentCategoryFilter);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading public cards:', error);
+          });
+  }
+
+   function loadCommunityUserCards() {
+
+        const userId = ensureUserId();
+        if (!userId) {
+          console.log('No userId');
+          return;
+        }
+
+        fetch(API_USERS + '/' + userId)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            if (data) {
+              var usersCards = data.users_cards
+                .filter(item => item.published === true)
+                .map(item => ({
+                  ...item.card,
+                  expired_at: item.expired_at,
+                  one_thing_user_card_id: item.id,
+                  completed: item.completed,
+                    published: item.published,
+                    imageSrc: item.image
+                }))
+                .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
+              var formattedCards = usersCards.map(card => ({
+                id: card.id,
+                  title: card.name,
+                  description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                  category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                  expiresAt: card.expired_at,
+                  one_thing_user_card_id: card.one_thing_user_card_id,
+                  completed: card.completed,
+                  published: card.published,
+                type: "community"
+              }));
+              savedCards = formattedCards;
+              renderCardList('community', currentCategoryFilter);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading public cards:', error);
+          });
+      }
+
+
+
+
+  completedButton.addEventListener('click', () => {
+      loadCompletedUserCards();
+  });
+
+
+  savedButton.addEventListener('click', () => {
+      loadSavedUserCards();
+  });
+
+  communityButton.addEventListener('click', () => {
+      loadCommunityUserCards();
+  });
+
+
+
+
+
+
+  // All Categories Dropdown Functionality
+  function initializeDropdown() {
+    const dropdownTrigger = document.getElementById('all-categories-dropdown');
+    const dropdownMenu = document.getElementById('categories-dropdown-menu');
+    const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+
+    if (!dropdownTrigger || !dropdownMenu) return;
+
+    // Set initial active state based on saved category filter
+    dropdownItems.forEach(item => {
+      if (item.getAttribute('data-category') === currentCategoryFilter) {
+        item.classList.add('selected');
+        dropdownTrigger.querySelector('span').textContent = item.querySelector('span').textContent;
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+
+    // Toggle dropdown
+    dropdownTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('Dropdown clicked, current state:', {
+        isActive: dropdownTrigger.classList.contains('active'),
+        isShow: dropdownMenu.classList.contains('show')
+      });
+
+      dropdownTrigger.classList.toggle('active');
+      dropdownMenu.classList.toggle('show');
+
+      // Ensure dropdown trigger stays active
+      if (!dropdownMenu.classList.contains('show')) {
+        dropdownTrigger.classList.add('active');
+      }
+
+      console.log('Dropdown state after toggle:', {
+        isActive: dropdownTrigger.classList.contains('active'),
+        isShow: dropdownMenu.classList.contains('show')
+      });
+    });
+
+    // Handle dropdown item selection
+    dropdownItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const category = item.getAttribute('data-category');
+
+        // Update dropdown trigger text
+        dropdownTrigger.querySelector('span').textContent = item.querySelector('span').textContent;
+
+        // Update active states
+        dropdownItems.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+
+        // Close dropdown but keep trigger active
+        dropdownTrigger.classList.remove('active');
+        dropdownMenu.classList.remove('show');
+
+        // Keep dropdown trigger button always active
+        dropdownTrigger.classList.add('active');
+
+        // Update category filter
+        currentCategoryFilter = category;
+        localStorage.setItem('currentCategoryFilter', category);
+
+        // Trigger filter change using saved type filter
+        renderCardList(currentTypeFilter, currentCategoryFilter);
+      });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownTrigger.classList.remove('active');
+        dropdownMenu.classList.remove('show');
+
+        // Keep dropdown trigger button always active
+        dropdownTrigger.classList.add('active');
+      }
+    });
+
+    // Close dropdown on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        dropdownTrigger.classList.remove('active');
+        dropdownMenu.classList.remove('show');
+
+        // Keep dropdown trigger button always active
+        dropdownTrigger.classList.add('active');
+      }
+    });
+  }
+})();
+
+
+
+
+</script>
+
