@@ -608,7 +608,8 @@
         const requestBody = {
             one_thing_user_card_id: one_thing_user_card_id,
             completed: true,
-            published: false
+            published: false,
+            completed_at: Date.now()
         };
         makeApiCall(requestBody, card);
 
@@ -1186,16 +1187,17 @@
         })
         .then(data => {
           if (data) {
-            var usersCards = data.users_cards
-              .filter(item => item.completed === false)
-              .map(item => ({
-                ...item.card,
-                expired_at: item.expired_at,
-                one_thing_user_card_id: item.id,
-                completed: item.completed,
-                published: item.published
-              }))
-              .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+         var usersCards = data.users_cards
+               .filter(item => item.created_at !== null)
+               .map(item => ({
+                 ...item.card,
+                 expired_at: item.expired_at,
+                 one_thing_user_card_id: item.id,
+                 completed: item.completed,
+                 published: item.published,
+                 created_at: item.created_at
+               }))
+               .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             var formattedCards = usersCards.map(card => ({
               id: card.id,
@@ -1233,16 +1235,17 @@
             .then(data => {
               if (data) {
                 var usersCards = data.users_cards
-                  .filter(item => item.completed === true) // фильтр по completed
+                  .filter(item => item.completed_at !== null)
                   .map(item => ({
-                      ...item.card,
-                      expired_at: item.expired_at,
-                      one_thing_user_card_id: item.id,
-                      completed: item.completed,
-                      published: item.published,
-                      imageSrc: item.image
-                    }))
-                    .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+                    ...item.card,
+                    expired_at: item.expired_at,
+                    one_thing_user_card_id: item.id,
+                    completed: item.completed,
+                    published: item.published,
+                    imageSrc: item.image,
+                    completed_at: item.completed_at
+                  }))
+                  .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
 
                 var formattedCards = usersCards.map(card => ({
                   id: card.id,
