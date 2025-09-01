@@ -244,7 +244,15 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id, expired_at: Date.now() + 1000 * 60 * 60 * 24 * 30 })
-        }).catch(err => console.error(err));
+        })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+            console.log("RFEFRESH");
+            loadSavedUserCards();
+        })
+        .catch(err => console.error(err));
       }
       // Add expiry timestamp with default image
       savedCards.unshift({
