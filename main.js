@@ -589,9 +589,11 @@
       const requestBody = {
         one_thing_user_card_id: cardId,
         published: true,
-        completed: true
+        completed: true,
+        published_at: Date.now()
       };
       makeApiCall(requestBody, card);
+//      loadCommunityUserCards();
     }
 
      function makeCardCompleted(one_thing_user_card_id) {
@@ -1282,17 +1284,31 @@
             })
             .then(data => {
               if (data) {
+//                var usersCards = data.users_cards
+//                  .filter(item => item.published === true)
+//                  .map(item => ({
+//                    ...item.card,
+//                    expired_at: item.expired_at,
+//                    one_thing_user_card_id: item.id,
+//                    completed: item.completed,
+//                      published: item.published,
+//                      imageSrc: item.image
+//                  }))
+//                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
                 var usersCards = data.users_cards
-                  .filter(item => item.published === true)
+                  .filter(item => item.published_at !== null)
                   .map(item => ({
                     ...item.card,
                     expired_at: item.expired_at,
                     one_thing_user_card_id: item.id,
                     completed: item.completed,
-                      published: item.published,
-                      imageSrc: item.image
+                    published: item.published,
+                    imageSrc: item.image,
+                    published_at: item.published_at
                   }))
-                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+                  .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
 
                 var formattedCards = usersCards.map(card => ({
                   id: card.id,
