@@ -1722,14 +1722,20 @@
         }
       }
 
-      // If still no userId, generate a temporary one for testing
+      // If still no userId, use test userId 266 for testing
       if (!userId) {
-        userId = 'temp-user-' + Date.now();
         localStorage.setItem('userId', userId);
-        console.log('⚠️ Generated temporary userId for testing:', userId);
+        console.log('🧪 Set test userId for testing:', userId);
       }
     }
 
+    return userId;
+  }
+
+  // Function to set test userId for development
+  function setTestUserId(userId) {
+    localStorage.setItem('userId', userId);
+    console.log('🧪 Test userId set to:', userId);
     return userId;
   }
 
@@ -3105,9 +3111,34 @@
       }
     });
   }
+
+  // Add global test functions for easy testing
+  window.setTestUserId = setTestUserId;
+  window.getCurrentUserId = function() {
+    return localStorage.getItem('userId');
+  };
+  
+  // Function to reset and reload with new userId
+  window.resetWithUserId = function(userId) {
+    console.log('🔄 Resetting with userId:', userId);
+    localStorage.clear();
+    setTestUserId(userId);
+    location.reload();
+  };
+
+  console.log('🧪 Test functions available:');
+  console.log('  - setTestUserId(userId) - установить тестовый userId');
+  console.log('  - getCurrentUserId() - получить текущий userId');
+  console.log('  - resetWithUserId(userId) - сбросить и перезагрузить с новым userId');
+  console.log('🧪 Current test userId:', getCurrentUserId());
+  console.log('💡 To change userId, use: resetWithUserId(newUserId)');
+
 })();
 
 
 
 
 </script>
+
+
+
