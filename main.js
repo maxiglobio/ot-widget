@@ -104,12 +104,21 @@
       btn.classList.remove('active');
       if (btn.getAttribute('data-filter') === currentTypeFilter) {
         btn.classList.add('active');
+
+
+        if (currentTypeFilter === 'saved') {
+            loadSavedUserCards();
+        }
+        if (currentTypeFilter === 'completed') {
+            loadCompletedUserCards();
+        }
+        if (currentTypeFilter === 'community') {
+            loadCommunityUserCards();
+        }
       }
     });
 
     renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
-
-    loadSavedUserCards();
 
     // Initialize dropdown functionality
     initializeDropdown();
