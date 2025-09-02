@@ -254,14 +254,16 @@
         })
         .catch(err => console.error(err));
       }
-      // Add expiry timestamp with default image
-      savedCards.unshift({
-        ...currentSuggestion,
-        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
-        expiresAt: Date.now() + EXPIRY_MS
-      });
 
-      loadSavedUserCards();
+      console.log('test');
+      // Add expiry timestamp with default image
+//      savedCards.unshift({
+//        ...currentSuggestion,
+//        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
+//        expiresAt: Date.now() + EXPIRY_MS
+//      });
+
+//      loadSavedUserCards();
 
       decrementAttempts();
 
@@ -744,7 +746,10 @@
 
 
 
+
+
         console.log('to show', toShow);
+        console.log('to savedCards', savedCards);
 
         // Filter by category
         if (categoryFilter !== 'all') {
@@ -1065,14 +1070,9 @@
 
           // Add toggle switch functionality for completed cards
           if (card.type === 'completed') {
-
-            console.log('ccccc');
             const toggle = cardEl.querySelector('input[type="checkbox"]');
             if (toggle) {
-
               toggle.addEventListener('change', (e) => {
-
-
                 // Disable toggle during API call
                 toggle.disabled = true;
 
