@@ -72,6 +72,13 @@
     const btnSkip = document.getElementById('popup-skip');
     const cardList = document.getElementById('one-thing-card-list');
     const filterButtons = document.querySelectorAll('.filter-buttons button');
+    const filterButtonsDropdown = document.querySelectorAll('.filter-buttons dropdown-container button');
+    const filterButtonsGroup = document.querySelectorAll('.filter-buttons .filter-group button');
+
+
+    console.log('filterButtonsDropdown', filterButtonsDropdown);
+    console.log('filterButtonsGroup', filterButtonsGroup);
+
 
     // Ensure userId is set
     ensureUserId();
@@ -79,7 +86,21 @@
     updateCounterUI();
 
     // Restore active state for filter buttons
-    filterButtons.forEach(btn => {
+//    filterButtons.forEach(btn => {
+//      btn.classList.remove('active');
+//      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+//        btn.classList.add('active');
+//      }
+//    });
+
+    filterButtonsDropdown.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+        btn.classList.add('active');
+      }
+    });
+
+    filterButtonsGroup.forEach(btn => {
       btn.classList.remove('active');
       if (btn.getAttribute('data-filter') === currentTypeFilter) {
         btn.classList.add('active');
@@ -99,12 +120,26 @@
       updateCounterUI();
 
       // Restore active state for filter buttons
-      filterButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-filter') === currentTypeFilter) {
-          btn.classList.add('active');
-        }
-      });
+//      filterButtons.forEach(btn => {
+//        btn.classList.remove('active');
+//        if (btn.getAttribute('data-filter') === currentTypeFilter) {
+//          btn.classList.add('active');
+//        }
+//      });
+
+
+        filterButtonsDropdown.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.getAttribute('data-filter') === currentTypeFilter) {
+            btn.classList.add('active');
+          }
+        });
+        filterButtonsGroup.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.getAttribute('data-filter') === currentTypeFilter) {
+            btn.classList.add('active');
+          }
+        });
 
       renderCardList(currentTypeFilter, currentCategoryFilter);
 
@@ -268,7 +303,13 @@
       decrementAttempts();
 
       // Switch to Saved tab and update UI
-      filterButtons.forEach(b => b.classList.remove('active'));
+//      filterButtons.forEach(b => b.classList.remove('active'));
+//      const savedButton = document.querySelector('button[data-filter="saved"]');
+//      if (savedButton) {
+//        savedButton.classList.add('active');
+//      }
+
+      filterButtonsGroup.forEach(b => b.classList.remove('active'));
       const savedButton = document.querySelector('button[data-filter="saved"]');
       if (savedButton) {
         savedButton.classList.add('active');
@@ -282,7 +323,15 @@
       decrementAttempts();
 
       // Switch to Completed tab and update UI
-      filterButtons.forEach(b => b.classList.remove('active'));
+      console.log('BUTTON SKIP');
+
+//      filterButtons.forEach(b => b.classList.remove('active'));
+//      const completedButton = document.querySelector('button[data-filter="completed"]');
+//      if (completedButton) {
+//        completedButton.classList.add('active');
+//      }
+
+      filterButtonsGroup.forEach(b => b.classList.remove('active'));
       const completedButton = document.querySelector('button[data-filter="completed"]');
       if (completedButton) {
         completedButton.classList.add('active');
@@ -292,12 +341,52 @@
       hidePopup();
     });
 
-    filterButtons.forEach(btn => {
+//    filterButtons.forEach(btn => {
+//      btn.addEventListener('click', () => {
+//        console.log('BUTTON FILTER');
+//        console.log('filterButtons = ', filterButtons);
+//        filterButtons.forEach(b => b.classList.remove('active'));
+//
+//
+//        btn.classList.add('active');
+//        currentTypeFilter = btn.getAttribute('data-filter');
+//
+//        console.log('SET FILTER', currentTypeFilter);
+//
+//        localStorage.setItem('currentTypeFilter', currentTypeFilter);
+//        renderCardList(currentTypeFilter, currentCategoryFilter);
+//      });
+//    });
+
+
+    filterButtonsGroup.forEach(btn => {
       btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
+        console.log('BUTTON FILTER GROUP');
+        console.log('filterButtons group = ', filterButtons);
+        filterButtonsGroup.forEach(b => b.classList.remove('active'));
+
         btn.classList.add('active');
         currentTypeFilter = btn.getAttribute('data-filter');
+
+        console.log('SET FILTER', currentTypeFilter);
         localStorage.setItem('currentTypeFilter', currentTypeFilter);
+        renderCardList(currentTypeFilter, currentCategoryFilter);
+      });
+    });
+
+    filterButtonsDropdown.forEach(btn => {
+      btn.addEventListener('click', () => {
+        console.log('BUTTON FILTER dropdown');
+        console.log('filterButtons dropdown = ', filterButtonsDropdown);
+        filterButtonsDropdown.forEach(b => b.classList.remove('active'));
+
+
+        btn.classList.add('active');
+        currentTypeFilter = btn.getAttribute('data-filter');
+
+        console.log('SET FILTER', currentTypeFilter);
+
+        localStorage.setItem('currentCategoryFilter', currentTypeFilter);
         renderCardList(currentTypeFilter, currentCategoryFilter);
       });
     });
@@ -730,9 +819,13 @@
 
         let toShow = [];
 
+
+
+
         // Filter by type (saved/completed/community)
         if (filter === 'saved' || filter === 'all') {
 //          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved111' })));
+
           toShow = savedCards;
         }
         if (filter === 'completed' || filter === 'all') {
@@ -748,12 +841,26 @@
 
 
 
+        console.log('to filter', filter);
         console.log('to show', toShow);
+        console.log('to categoryFilter', categoryFilter);
         console.log('to savedCards', savedCards);
 
         // Filter by category
-        if (categoryFilter !== 'all') {
-          toShow = toShow.filter(card => card.category === categoryFilter);
+//        if (categoryFilter !== 'all') {
+//          toShow = toShow.filter(card => card.category === categoryFilter);
+//        }
+
+        if (categoryFilter === 'daily') {
+            toShow = toShow.filter(card => card.category == "DAILY THINGS");
+        }
+
+        if (categoryFilter === 'places') {
+            toShow = toShow.filter(card => card.category == "PLACES");
+        }
+
+        if (categoryFilter === 'local') {
+            toShow = toShow.filter(card => card.category == "LOCAL CONTEXT");
         }
 
         if (toShow.length === 0) {
@@ -905,11 +1012,11 @@
               img.className = 'uploaded-image';
             }
 
-            console.log('Setting up image upload for card:', card.id, 'elements found:', {
-              img: !!img,
-              addPhotoIcon: !!addPhotoIcon,
-              input: !!input
-            });
+//            console.log('Setting up image upload for card:', card.id, 'elements found:', {
+//              img: !!img,
+//              addPhotoIcon: !!addPhotoIcon,
+//              input: !!input
+//            });
 
             input.addEventListener('change', e => {
               const file = e.target.files[0];
@@ -1110,11 +1217,11 @@
     }
 
     // Update expiry count every hour (refreshes days left)
-    setInterval(() => {
-      renderCardList(currentTypeFilter, currentCategoryFilter);
-    }, 60 * 60 * 1000);
+//    setInterval(() => {
+//      renderCardList(currentTypeFilter, currentCategoryFilter);
+//    }, 60 * 60 * 1000);
     // Keep attempts counter updated every minute
-    setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
+//    setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
 
 
 
@@ -1405,6 +1512,7 @@
           dropdownItems.forEach(i => i.classList.remove('selected'));
           item.classList.add('selected');
 
+console.log('BUTTON DROP down');
           // Close dropdown but keep trigger active
           dropdownTrigger.classList.remove('active');
           dropdownMenu.classList.remove('show');
@@ -1424,6 +1532,7 @@
       // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
         if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            console.log('BUTTON CLICK');
           dropdownTrigger.classList.remove('active');
           dropdownMenu.classList.remove('show');
 
@@ -1435,6 +1544,7 @@
       // Close dropdown on escape key
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+            console.log('BUTTONEscape');
           dropdownTrigger.classList.remove('active');
           dropdownMenu.classList.remove('show');
 
