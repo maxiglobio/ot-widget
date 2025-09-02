@@ -776,7 +776,8 @@
         const requestBody = {
           one_thing_user_card_id: cardId,
           published: false,
-          completed: true
+          completed: true,
+          published_at: null
         };
         makeApiCall(requestBody, card);
     }
