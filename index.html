@@ -1,20 +1,3 @@
-<!-- 
-  GLOBAL POPUP INTEGRATION
-  ========================
-  This widget now sends popup data to parent window via postMessage.
-  
-  Parent window should listen for 'OPEN_GLOBAL_POPUP' messages and
-  respond with 'GLOBAL_POPUP_RESULT' containing action: 'save' or 'skip'.
-  
-  Example parent window listener:
-  window.addEventListener('message', (event) => {
-    if (event.data.type === 'OPEN_GLOBAL_POPUP') {
-      // Show your custom popup with event.data.payload
-      // Send result back: window.postMessage({ type: 'GLOBAL_POPUP_RESULT', payload: { action: 'save' } }, '*');
-    }
-  });
--->
-
 <!-- Import Manrope font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1718,22 +1701,6 @@
 
   var uploadFileName = '';
 
-  // Function to open global popup via postMessage
-  function openGlobalPopup(data) {
-    window.parent.postMessage({ type: 'OPEN_GLOBAL_POPUP', payload: data }, '*');
-  }
-
-  // Listen for messages from parent window
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'GLOBAL_POPUP_RESULT') {
-      if (event.data.payload && event.data.payload.action === 'save') {
-        btnSave.click();
-      } else if (event.data.payload && event.data.payload.action === 'skip') {
-        btnSkip.click();
-      }
-    }
-  });
-
 
   // Function to ensure userId is set in localStorage
   function ensureUserId() {
@@ -1755,20 +1722,14 @@
         }
       }
 
-      // If still no userId, use test userId 266 for testing
+      // If still no userId, generate a temporary one for testing
       if (!userId) {
+        userId = 'temp-user-' + Date.now();
         localStorage.setItem('userId', userId);
-        console.log('🧪 Set test userId for testing:', userId);
+        console.log('⚠️ Generated temporary userId for testing:', userId);
       }
     }
 
-    return userId;
-  }
-
-  // Function to set test userId for development
-  function setTestUserId(userId) {
-    localStorage.setItem('userId', userId);
-    console.log('🧪 Test userId set to:', userId);
     return userId;
   }
 
@@ -1792,6 +1753,13 @@
   const btnSkip = document.getElementById('popup-skip');
   const cardList = document.getElementById('one-thing-card-list');
   const filterButtons = document.querySelectorAll('.filter-buttons button');
+  const filterButtonsDropdown = document.querySelectorAll('.filter-buttons dropdown-container button');
+  const filterButtonsGroup = document.querySelectorAll('.filter-buttons .filter-group button');
+
+
+  console.log('filterButtonsDropdown', filterButtonsDropdown);
+  console.log('filterButtonsGroup', filterButtonsGroup);
+
 
   // Ensure userId is set
   ensureUserId();
@@ -1799,16 +1767,39 @@
   updateCounterUI();
 
   // Restore active state for filter buttons
-  filterButtons.forEach(btn => {
+//    filterButtons.forEach(btn => {
+//      btn.classList.remove('active');
+//      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+//        btn.classList.add('active');
+//      }
+//    });
+
+  filterButtonsDropdown.forEach(btn => {
     btn.classList.remove('active');
     if (btn.getAttribute('data-filter') === currentTypeFilter) {
       btn.classList.add('active');
     }
   });
 
-  renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
+  filterButtonsGroup.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-filter') === currentTypeFilter) {
+      btn.classList.add('active');
 
-  loadSavedUserCards();
+
+      if (currentTypeFilter === 'saved') {
+          loadSavedUserCards();
+      }
+      if (currentTypeFilter === 'completed') {
+          loadCompletedUserCards();
+      }
+      if (currentTypeFilter === 'community') {
+          loadCommunityUserCards();
+      }
+    }
+  });
+
+  renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
 
   // Initialize dropdown functionality
   initializeDropdown();
@@ -1819,12 +1810,26 @@
     updateCounterUI();
 
     // Restore active state for filter buttons
-    filterButtons.forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.getAttribute('data-filter') === currentTypeFilter) {
-        btn.classList.add('active');
-      }
-    });
+//      filterButtons.forEach(btn => {
+//        btn.classList.remove('active');
+//        if (btn.getAttribute('data-filter') === currentTypeFilter) {
+//          btn.classList.add('active');
+//        }
+//      });
+
+
+      filterButtonsDropdown.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-filter') === currentTypeFilter) {
+          btn.classList.add('active');
+        }
+      });
+      filterButtonsGroup.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-filter') === currentTypeFilter) {
+          btn.classList.add('active');
+        }
+      });
 
     renderCardList(currentTypeFilter, currentCategoryFilter);
 
@@ -1945,7 +1950,7 @@
 
         console.log('Current suggestion debug:', currentSuggestion);
 
-        openGlobalPopup(currentSuggestion);
+        showPopup(currentSuggestion);
       })
       .catch(err => {
         btn.classList.remove('loading');
@@ -1974,19 +1979,27 @@
       })
       .catch(err => console.error(err));
     }
-    // Add expiry timestamp with default image
-    savedCards.unshift({
-      ...currentSuggestion,
-      imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
-      expiresAt: Date.now() + EXPIRY_MS
-    });
 
-    loadSavedUserCards();
+    console.log('test');
+    // Add expiry timestamp with default image
+//      savedCards.unshift({
+//        ...currentSuggestion,
+//        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
+//        expiresAt: Date.now() + EXPIRY_MS
+//      });
+
+//      loadSavedUserCards();
 
     decrementAttempts();
 
     // Switch to Saved tab and update UI
-    filterButtons.forEach(b => b.classList.remove('active'));
+//      filterButtons.forEach(b => b.classList.remove('active'));
+//      const savedButton = document.querySelector('button[data-filter="saved"]');
+//      if (savedButton) {
+//        savedButton.classList.add('active');
+//      }
+
+    filterButtonsGroup.forEach(b => b.classList.remove('active'));
     const savedButton = document.querySelector('button[data-filter="saved"]');
     if (savedButton) {
       savedButton.classList.add('active');
@@ -2000,7 +2013,15 @@
     decrementAttempts();
 
     // Switch to Completed tab and update UI
-    filterButtons.forEach(b => b.classList.remove('active'));
+    console.log('BUTTON SKIP');
+
+//      filterButtons.forEach(b => b.classList.remove('active'));
+//      const completedButton = document.querySelector('button[data-filter="completed"]');
+//      if (completedButton) {
+//        completedButton.classList.add('active');
+//      }
+
+    filterButtonsGroup.forEach(b => b.classList.remove('active'));
     const completedButton = document.querySelector('button[data-filter="completed"]');
     if (completedButton) {
       completedButton.classList.add('active');
@@ -2010,12 +2031,52 @@
     hidePopup();
   });
 
-  filterButtons.forEach(btn => {
+//    filterButtons.forEach(btn => {
+//      btn.addEventListener('click', () => {
+//        console.log('BUTTON FILTER');
+//        console.log('filterButtons = ', filterButtons);
+//        filterButtons.forEach(b => b.classList.remove('active'));
+//
+//
+//        btn.classList.add('active');
+//        currentTypeFilter = btn.getAttribute('data-filter');
+//
+//        console.log('SET FILTER', currentTypeFilter);
+//
+//        localStorage.setItem('currentTypeFilter', currentTypeFilter);
+//        renderCardList(currentTypeFilter, currentCategoryFilter);
+//      });
+//    });
+
+
+  filterButtonsGroup.forEach(btn => {
     btn.addEventListener('click', () => {
-      filterButtons.forEach(b => b.classList.remove('active'));
+      console.log('BUTTON FILTER GROUP');
+      console.log('filterButtons group = ', filterButtons);
+      filterButtonsGroup.forEach(b => b.classList.remove('active'));
+
       btn.classList.add('active');
       currentTypeFilter = btn.getAttribute('data-filter');
+
+      console.log('SET FILTER', currentTypeFilter);
       localStorage.setItem('currentTypeFilter', currentTypeFilter);
+      renderCardList(currentTypeFilter, currentCategoryFilter);
+    });
+  });
+
+  filterButtonsDropdown.forEach(btn => {
+    btn.addEventListener('click', () => {
+      console.log('BUTTON FILTER dropdown');
+      console.log('filterButtons dropdown = ', filterButtonsDropdown);
+      filterButtonsDropdown.forEach(b => b.classList.remove('active'));
+
+
+      btn.classList.add('active');
+      currentTypeFilter = btn.getAttribute('data-filter');
+
+      console.log('SET FILTER', currentTypeFilter);
+
+      localStorage.setItem('currentCategoryFilter', currentTypeFilter);
       renderCardList(currentTypeFilter, currentCategoryFilter);
     });
   });
@@ -2309,9 +2370,11 @@
     const requestBody = {
       one_thing_user_card_id: cardId,
       published: true,
-      completed: true
+      completed: true,
+      published_at: Date.now()
     };
     makeApiCall(requestBody, card);
+//      loadCommunityUserCards();
   }
 
    function makeCardCompleted(one_thing_user_card_id) {
@@ -2328,7 +2391,8 @@
       const requestBody = {
           one_thing_user_card_id: one_thing_user_card_id,
           completed: true,
-          published: false
+          published: false,
+          completed_at: Date.now()
       };
       makeApiCall(requestBody, card);
 
@@ -2402,7 +2466,8 @@
       const requestBody = {
         one_thing_user_card_id: cardId,
         published: false,
-        completed: true
+        completed: true,
+        published_at: null
       };
       makeApiCall(requestBody, card);
   }
@@ -2445,9 +2510,13 @@
 
       let toShow = [];
 
+
+
+
       // Filter by type (saved/completed/community)
       if (filter === 'saved' || filter === 'all') {
 //          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved111' })));
+
         toShow = savedCards;
       }
       if (filter === 'completed' || filter === 'all') {
@@ -2461,11 +2530,28 @@
 
 
 
+
+
+      console.log('to filter', filter);
       console.log('to show', toShow);
+      console.log('to categoryFilter', categoryFilter);
+      console.log('to savedCards', savedCards);
 
       // Filter by category
-      if (categoryFilter !== 'all') {
-        toShow = toShow.filter(card => card.category === categoryFilter);
+//        if (categoryFilter !== 'all') {
+//          toShow = toShow.filter(card => card.category === categoryFilter);
+//        }
+
+      if (categoryFilter === 'daily') {
+          toShow = toShow.filter(card => card.category == "DAILY THINGS");
+      }
+
+      if (categoryFilter === 'places') {
+          toShow = toShow.filter(card => card.category == "PLACES");
+      }
+
+      if (categoryFilter === 'local') {
+          toShow = toShow.filter(card => card.category == "LOCAL CONTEXT");
       }
 
       if (toShow.length === 0) {
@@ -2617,11 +2703,11 @@
             img.className = 'uploaded-image';
           }
 
-          console.log('Setting up image upload for card:', card.id, 'elements found:', {
-            img: !!img,
-            addPhotoIcon: !!addPhotoIcon,
-            input: !!input
-          });
+//            console.log('Setting up image upload for card:', card.id, 'elements found:', {
+//              img: !!img,
+//              addPhotoIcon: !!addPhotoIcon,
+//              input: !!input
+//            });
 
           input.addEventListener('change', e => {
             const file = e.target.files[0];
@@ -2782,14 +2868,9 @@
 
         // Add toggle switch functionality for completed cards
         if (card.type === 'completed') {
-
-          console.log('ccccc');
           const toggle = cardEl.querySelector('input[type="checkbox"]');
           if (toggle) {
-
             toggle.addEventListener('change', (e) => {
-
-
               // Disable toggle during API call
               toggle.disabled = true;
 
@@ -2827,11 +2908,11 @@
   }
 
   // Update expiry count every hour (refreshes days left)
-  setInterval(() => {
-    renderCardList(currentTypeFilter, currentCategoryFilter);
-  }, 60 * 60 * 1000);
+//    setInterval(() => {
+//      renderCardList(currentTypeFilter, currentCategoryFilter);
+//    }, 60 * 60 * 1000);
   // Keep attempts counter updated every minute
-  setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
+//    setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
 
 
 
@@ -2906,16 +2987,17 @@
       })
       .then(data => {
         if (data) {
-          var usersCards = data.users_cards
-            .filter(item => item.completed === false)
-            .map(item => ({
-              ...item.card,
-              expired_at: item.expired_at,
-              one_thing_user_card_id: item.id,
-              completed: item.completed,
-              published: item.published
-            }))
-            .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+       var usersCards = data.users_cards
+             .filter(item => item.created_at !== null)
+             .map(item => ({
+               ...item.card,
+               expired_at: item.expired_at,
+               one_thing_user_card_id: item.id,
+               completed: item.completed,
+               published: item.published,
+               created_at: item.created_at
+             }))
+             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
           var formattedCards = usersCards.map(card => ({
             id: card.id,
@@ -2953,16 +3035,17 @@
           .then(data => {
             if (data) {
               var usersCards = data.users_cards
-                .filter(item => item.completed === true) // фильтр по completed
+                .filter(item => item.completed_at !== null)
                 .map(item => ({
-                    ...item.card,
-                    expired_at: item.expired_at,
-                    one_thing_user_card_id: item.id,
-                    completed: item.completed,
-                    published: item.published,
-                    imageSrc: item.image
-                  }))
-                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+                  ...item.card,
+                  expired_at: item.expired_at,
+                  one_thing_user_card_id: item.id,
+                  completed: item.completed,
+                  published: item.published,
+                  imageSrc: item.image,
+                  completed_at: item.completed_at
+                }))
+                .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
 
               var formattedCards = usersCards.map(card => ({
                 id: card.id,
@@ -2999,17 +3082,31 @@
           })
           .then(data => {
             if (data) {
+//                var usersCards = data.users_cards
+//                  .filter(item => item.published === true)
+//                  .map(item => ({
+//                    ...item.card,
+//                    expired_at: item.expired_at,
+//                    one_thing_user_card_id: item.id,
+//                    completed: item.completed,
+//                      published: item.published,
+//                      imageSrc: item.image
+//                  }))
+//                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
               var usersCards = data.users_cards
-                .filter(item => item.published === true)
+                .filter(item => item.published_at !== null)
                 .map(item => ({
                   ...item.card,
                   expired_at: item.expired_at,
                   one_thing_user_card_id: item.id,
                   completed: item.completed,
-                    published: item.published,
-                    imageSrc: item.image
+                  published: item.published,
+                  imageSrc: item.image,
+                  published_at: item.published_at
                 }))
-                .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+                .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
 
               var formattedCards = usersCards.map(card => ({
                 id: card.id,
@@ -3106,6 +3203,7 @@
         dropdownItems.forEach(i => i.classList.remove('selected'));
         item.classList.add('selected');
 
+console.log('BUTTON DROP down');
         // Close dropdown but keep trigger active
         dropdownTrigger.classList.remove('active');
         dropdownMenu.classList.remove('show');
@@ -3125,6 +3223,7 @@
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
       if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          console.log('BUTTON CLICK');
         dropdownTrigger.classList.remove('active');
         dropdownMenu.classList.remove('show');
 
@@ -3136,6 +3235,7 @@
     // Close dropdown on escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+          console.log('BUTTONEscape');
         dropdownTrigger.classList.remove('active');
         dropdownMenu.classList.remove('show');
 
@@ -3144,48 +3244,8 @@
       }
     });
   }
-
-  // Add global test functions for easy testing
-  window.setTestUserId = setTestUserId;
-  window.getCurrentUserId = function() {
-    return localStorage.getItem('userId');
-  };
-  
-  // Function to reset and reload with new userId
-  window.resetWithUserId = function(userId) {
-    console.log('🔄 Resetting with userId:', userId);
-    localStorage.clear();
-    setTestUserId(userId);
-    location.reload();
-  };
-
-  // Add function to test global popup
-  window.testGlobalPopup = function() {
-    const testData = {
-      id: 'test-card-' + Date.now(),
-      title: 'Test Card Title',
-      description: 'This is a test card description for testing the global popup functionality.',
-      category: 'places'
-    };
-    openGlobalPopup(testData);
-    console.log('🧪 Test global popup opened with data:', testData);
-  };
-
-  console.log('🧪 Test functions available:');
-  console.log('  - setTestUserId(userId) - установить тестовый userId');
-  console.log('  - getCurrentUserId() - получить текущий userId');
-  console.log('  - resetWithUserId(userId) - сбросить и перезагрузить с новым userId');
-  console.log('  - testGlobalPopup() - протестировать глобальный попап');
-  console.log('🧪 Current test userId:', getCurrentUserId());
-  console.log('💡 To change userId, use: resetWithUserId(newUserId)');
-  console.log('🌐 Global popup integration ready - use openGlobalPopup(data)');
-
 })();
 
 
 
-
 </script>
-
-
-
