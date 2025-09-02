@@ -17,8 +17,6 @@
 <!-- Include HEIC to JPEG converter -->
 <script src="https://unpkg.com/heic2any@0.2.2/dist/heic2any.min.js"></script>
 
-
-
 <style>
   /* Reset and base styles for iframe compatibility */
   html,
@@ -84,21 +82,6 @@
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 
-  /* Simple Location Display */
-  .simple-location-display {
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 16px;
-    background: #f8f8f8;
-    border-radius: 12px;
-    font-size: 14px;
-    color: #666;
-  }
-
-  .simple-location-display p {
-    margin: 0;
-  }
-
   /* Container to center the button and filters */
   #one-thing-account-component {
     display: flex;
@@ -107,7 +90,6 @@
     justify-content: flex-start;
     margin: 0;
     padding: 20px;
-    padding-top: 20px;
     width: 100%;
     min-height: 100vh;
     text-align: center;
@@ -444,33 +426,6 @@
     justify-content: space-between;
     width: 100%;
     box-sizing: border-box;
-    transition: all 0.3s ease;
-  }
-
-  /* Highlight animation for card changes */
-  .one-thing-card.highlight {
-    background: #f0f9f0;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
-    border: 2px solid #4CAF50;
-    animation: cardHighlight 2s ease-out;
-  }
-
-  @keyframes cardHighlight {
-    0% {
-      background: #f0f9f0;
-      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-      border-color: #4CAF50;
-    }
-    50% {
-      background: #e8f5e8;
-      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
-      border-color: #45a049;
-    }
-    100% {
-      background: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border-color: #E6E6E6;
-    }
   }
 
 
@@ -679,198 +634,9 @@
     font-weight: 600;
     cursor: pointer;
     margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
     text-align: center;
     box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
-    width: fit-content;
-    display: block;
-    white-space: nowrap;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  /* Community card footer with author and remix button */
-  .community-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid #f0f0f0;
-  }
-
-  .community-card-author {
-    font-size: 12px;
-    color: #666;
-    font-style: italic;
-    flex: 1;
-    text-align: left;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  .remix-section {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* Remix button for community cards */
-  .remix-btn {
-    background: #8b5cf6;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  .remix-btn:hover {
-    background: #7c3aed;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
-  }
-
-  .remix-btn:active {
-    transform: translateY(0);
-  }
-
-  /* Your Thing button for own community cards */
-  .your-thing-btn {
-    background: #e5e7eb;
-    color: #9ca3af;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    box-shadow: none;
-    transition: none;
-    white-space: nowrap;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    cursor: default;
-  }
-
-  .your-thing-btn:disabled {
-    opacity: 0.7;
-  }
-
-  /* Remix counter */
-  .remix-counter {
-    background: transparent;
-    color: #9ca3af;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    min-width: 20px;
-    text-align: center;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  .remix-counter-icon {
-    width: 18px;
-    height: 18px;
-    opacity: 0.7;
-  }
-
-  /* Remix confirmation popup */
-  .remix-confirmation-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .remix-confirmation-popup.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .remix-confirmation-popup-inner {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 32px;
-    max-width: 480px;
-    width: 95%;
-    text-align: center;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-    transform: scale(0.9) translateY(20px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .remix-confirmation-popup.show .remix-confirmation-popup-inner {
-    transform: scale(1) translateY(0);
-  }
-
-  .remix-confirmation-popup h3 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: #333;
-  }
-
-  .remix-confirmation-popup p {
-    font-size: 16px;
-    line-height: 1.5;
-    margin-bottom: 24px;
-    color: #666;
-  }
-
-  .remix-confirmation-popup-buttons {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-  }
-
-  .remix-confirmation-popup button {
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-  }
-
-  .remix-confirmation-cancel {
-    background: #f8f8f8;
-    color: #666;
-    border: 1px solid #e0e0e0;
-  }
-
-  .remix-confirmation-cancel:hover {
-    background: #f0f0f0;
-  }
-
-  .remix-confirmation-confirm {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-  }
-
-  .remix-confirmation-confirm:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    width: 100%;
   }
 
 
@@ -1590,39 +1356,6 @@
     flex-shrink: 0;
   }
 
-  /* Error tooltip styles */
-  .error-tooltip {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #f44336;
-    color: white;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
-    z-index: 999999;
-    opacity: 0;
-    transform: translateX(100%);
-    transition: all 0.3s ease;
-    max-width: calc(100vw - 40px);
-  }
-
-  .error-tooltip.show {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .error-tooltip img {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-  }
-
   /* Mobile adjustments for tooltip */
   @media (max-width: 600px) {
     .success-tooltip {
@@ -1634,18 +1367,6 @@
     }
 
     .success-tooltip.show {
-      transform: translateY(0);
-    }
-
-    .error-tooltip {
-      top: 10px;
-      right: 10px;
-      left: 10px;
-      transform: translateY(-100%);
-      max-width: none;
-    }
-
-    .error-tooltip.show {
       transform: translateY(0);
     }
   }
@@ -1800,592 +1521,9 @@
   .confirmation-confirm:hover {
     background: #45a049;
   }
-
-  /* Progress Bar Styles */
-  .progress-container {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
-    z-index: 1000;
-    padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  }
-
-  .progress-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 8px;
-  }
-
-  .progress-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #141414;
-    margin: 0;
-  }
-
-  .progress-level {
-    font-size: 12px;
-    font-weight: 500;
-    color: #666;
-    background: #f0f0f0;
-    padding: 4px 8px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .progress-level:hover {
-    background: #e0e0e0;
-    transform: translateY(-1px);
-  }
-
-  .progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background: #f0f0f0;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #AAB40F 0%, #58AD95 50%, #A670BC 100%);
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-  }
-
-  .progress-bar-fill.animate {
-    animation: progressPulse 0.6s ease-out;
-  }
-
-  @keyframes progressPulse {
-    0% { transform: scaleX(1); }
-    50% { transform: scaleX(1.05); }
-    100% { transform: scaleX(1); }
-  }
-
-  .progress-tooltip {
-    position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #141414;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    z-index: 1000;
-  }
-
-  .progress-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid transparent;
-    border-top-color: #141414;
-  }
-
-  .progress-bar-container:hover .progress-tooltip {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  /* Levels Popup Styles */
-  .levels-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .levels-popup.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .levels-popup-inner {
-    background: white;
-    border-radius: 28px;
-    padding: 40px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-    position: relative;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  }
-
-  .levels-popup.show .levels-popup-inner {
-    transform: scale(1);
-  }
-
-  .levels-popup-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: #f8f8f8;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #666;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-    font-weight: 600;
-  }
-
-  .levels-popup-close:hover {
-    background: #e0e0e0;
-    color: #141414;
-    transform: scale(1.1);
-  }
-
-  .levels-popup h3 {
-    margin: 0 0 32px 0;
-    font-size: 28px;
-    font-weight: 800;
-    color: #141414;
-    text-align: center;
-    line-height: 1.2;
-  }
-
-  .level-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 24px;
-    border-radius: 20px;
-    margin-bottom: 16px;
-    background: #ffffff;
-    border: 2px solid #f0f0f0;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-
-  .level-card:hover {
-    background: #fafafa;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    border-color: #e0e0e0;
-  }
-
-  .level-card.current {
-    background: linear-gradient(135deg, #AAB40F 0%, #58AD95 100%);
-    color: white;
-    border-color: #AAB40F;
-    box-shadow: 0 8px 32px rgba(170, 180, 15, 0.3);
-  }
-
-  .level-card.completed {
-    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-    border: 2px solid #4CAF50;
-    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.25);
-    transform: translateY(-2px);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .level-card.completed::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: shimmer 3s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
-  
-  .level-completed-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    border: 2px solid white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
-    animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
-
-  .level-card.completed .level-title {
-    color: #1B5E20;
-    font-weight: 800;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .level-card.completed .level-subtitle {
-    color: #2E7D32;
-    font-weight: 700;
-  }
-
-  .level-card.completed .level-description {
-    color: #212121;
-    font-weight: 600;
-    line-height: 1.5;
-  }
-
-  .level-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: #f8f8f8;
-    border: 2px solid #e0e0e0;
-    transition: all 0.3s ease;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .level-icon img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    transition: all 0.3s ease;
-  }
-
-  .level-card.current .level-icon {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
-  }
-
-  .level-card.completed .level-icon {
-    background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
-    border-color: #2E7D32;
-    color: white;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-  }
-
-  .level-card:hover .level-icon {
-    transform: scale(1.1);
-  }
-
-  .level-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .level-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 6px 0;
-    color: #141414;
-    line-height: 1.2;
-  }
-
-  .level-subtitle {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 12px 0;
-    color: #666;
-    line-height: 1.3;
-  }
-
-  .level-description {
-    font-size: 15px;
-    margin: 0;
-    line-height: 1.5;
-    color: #666;
-  }
-
-  .level-card.current .level-title {
-    color: white;
-  }
-
-  .level-card.current .level-subtitle {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .level-card.current .level-description {
-    color: rgba(255, 255, 255, 0.85);
-  }
-
-  .level-progress {
-    margin-top: 16px;
-  }
-
-  .level-progress-bar {
-    width: 100%;
-    height: 6px;
-    background: #f0f0f0;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 8px;
-  }
-
-  .level-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #AAB40F 0%, #58AD95 100%);
-    border-radius: 3px;
-    transition: width 0.3s ease;
-  }
-
-  .level-progress-text {
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-  }
-
-  .level-card.current .level-progress-bar {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .level-card.current .level-progress-fill {
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .level-card.current .level-progress-text {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  /* Level Up Popup with Confetti */
-  .level-up-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .level-up-popup.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .level-up-popup-inner {
-    background: white;
-    border-radius: 24px;
-    padding: 40px;
-    max-width: 500px;
-    width: 90%;
-    text-align: center;
-    position: relative;
-    transform: scale(0.8);
-    transition: transform 0.3s ease;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  }
-
-  .level-up-popup.show .level-up-popup-inner {
-    transform: scale(1);
-  }
-
-  .level-up-icon {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .level-up-icon img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-  }
-
-  .level-up-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #141414;
-    margin: 0 0 12px 0;
-  }
-
-  .level-up-subtitle {
-    font-size: 18px;
-    font-weight: 600;
-    color: #666;
-    margin: 0 0 24px 0;
-  }
-
-  .level-up-description {
-    font-size: 16px;
-    color: #666;
-    line-height: 1.5;
-    margin: 0 0 32px 0;
-  }
-
-  .level-up-button {
-    background: linear-gradient(135deg, #AAB40F 0%, #58AD95 100%);
-    color: white;
-    border: none;
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .level-up-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(170, 180, 15, 0.3);
-  }
-
-  /* Confetti Animation */
-  .confetti {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: #AAB40F;
-    animation: confetti-fall 4s linear infinite;
-    border-radius: 2px;
-  }
-
-  .confetti:nth-child(2n) {
-    background: #58AD95;
-    animation-delay: 0.5s;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  .confetti:nth-child(3n) {
-    background: #A670BC;
-    animation-delay: 1s;
-    width: 6px;
-    height: 6px;
-    border-radius: 0;
-  }
-
-  .confetti:nth-child(4n) {
-    background: #FFD700;
-    animation-delay: 1.5s;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .confetti:nth-child(5n) {
-    background: #FF6B6B;
-    animation-delay: 2s;
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-  }
-
-  .confetti:nth-child(6n) {
-    background: #4ECDC4;
-    animation-delay: 2.5s;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-  }
-
-  .confetti:nth-child(7n) {
-    background: #45B7D1;
-    animation-delay: 3s;
-    width: 6px;
-    height: 6px;
-    border-radius: 0;
-  }
-
-  @keyframes confetti-fall {
-    0% {
-      transform: translateY(-100vh) rotate(0deg) scale(0);
-      opacity: 1;
-    }
-    10% {
-      transform: translateY(-90vh) rotate(36deg) scale(1);
-      opacity: 1;
-    }
-    90% {
-      transform: translateY(10vh) rotate(648deg) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(100vh) rotate(720deg) scale(0);
-      opacity: 0;
-    }
-  }
 </style>
 
-  <div id="one-thing-account-component">
-    <!-- Simple Location Display (Temporary) -->
-    <div class="simple-location-display">
-      <p>Current Location: <span id="current-location">Detecting...</span></p>
-    </div>
-    
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div class="progress-header">
-        <h4 class="progress-title">Your Progress</h4>
-        <div class="progress-level" id="progress-level">Adaptio</div>
-      </div>
-      <div class="progress-bar-container" id="progress-bar-container">
-        <div class="progress-bar-fill" id="progress-bar-fill"></div>
-        <div class="progress-tooltip" id="progress-tooltip">0 / 100 XP</div>
-      </div>
-    </div>
-
+<div id="one-thing-account-component">
   <!-- Main button -->
   <div id="one-thing-btn" class="one-thing-account-btn">
     <div class="spinner-ring-account"></div>
@@ -2455,13 +1593,6 @@
   <span>Thing completed! 🎉</span>
 </div>
 
-<!-- Error tooltip -->
-<div id="error-tooltip" class="error-tooltip">
-  <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
-    alt="Error" width="16" height="16">
-  <span>Error message</span>
-</div>
-
 <!-- Confirmation popup -->
 <div id="confirmation-popup" class="confirmation-popup">
   <div class="confirmation-popup-inner">
@@ -2472,51 +1603,6 @@
       <button class="confirmation-cancel" id="confirmation-cancel">Cancel</button>
       <button class="confirmation-confirm" id="confirmation-confirm">Make Thing Public</button>
     </div>
-  </div>
-</div>
-
-<!-- Levels Popup -->
-<div id="levels-popup" class="levels-popup">
-  <div class="levels-popup-inner">
-    <button class="levels-popup-close" id="levels-popup-close">&times;</button>
-    <h3>Your Journey in Globio</h3>
-    <div id="levels-list">
-      <!-- Levels will be populated by JavaScript -->
-    </div>
-  </div>
-</div>
-
-<!-- Level Up Popup with Confetti -->
-<div id="level-up-popup" class="level-up-popup">
-  <div class="level-up-popup-inner">
-    <div class="level-up-icon" id="level-up-icon">
-      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg" alt="Level Up" />
-    </div>
-    <h2 class="level-up-title" id="level-up-title">Level Up!</h2>
-    <p class="level-up-subtitle" id="level-up-subtitle">Congratulations!</p>
-    <p class="level-up-description" id="level-up-description">You've reached a new level in your Globio journey!</p>
-    <button class="level-up-button" id="level-up-button">Continue</button>
-    
-    <!-- Confetti elements -->
-    <div class="confetti" style="left: 5%; animation-delay: 0s;"></div>
-    <div class="confetti" style="left: 15%; animation-delay: 0.3s;"></div>
-    <div class="confetti" style="left: 25%; animation-delay: 0.6s;"></div>
-    <div class="confetti" style="left: 35%; animation-delay: 0.9s;"></div>
-    <div class="confetti" style="left: 45%; animation-delay: 1.2s;"></div>
-    <div class="confetti" style="left: 55%; animation-delay: 1.5s;"></div>
-    <div class="confetti" style="left: 65%; animation-delay: 1.8s;"></div>
-    <div class="confetti" style="left: 75%; animation-delay: 2.1s;"></div>
-    <div class="confetti" style="left: 85%; animation-delay: 2.4s;"></div>
-    <div class="confetti" style="left: 95%; animation-delay: 2.7s;"></div>
-    <div class="confetti" style="left: 10%; animation-delay: 3s;"></div>
-    <div class="confetti" style="left: 20%; animation-delay: 3.3s;"></div>
-    <div class="confetti" style="left: 30%; animation-delay: 3.6s;"></div>
-    <div class="confetti" style="left: 40%; animation-delay: 3.9s;"></div>
-    <div class="confetti" style="left: 50%; animation-delay: 4.2s;"></div>
-    <div class="confetti" style="left: 60%; animation-delay: 4.5s;"></div>
-    <div class="confetti" style="left: 70%; animation-delay: 4.8s;"></div>
-    <div class="confetti" style="left: 80%; animation-delay: 5.1s;"></div>
-    <div class="confetti" style="left: 90%; animation-delay: 5.4s;"></div>
   </div>
 </div>
 
@@ -2551,18 +1637,6 @@
     </div>
     <div class="referral-popup-buttons">
       <button class="btn-secondary" id="community-popup-close">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- Remix Confirmation Popup -->
-<div id="remix-confirmation-popup" class="remix-confirmation-popup">
-  <div class="remix-confirmation-popup-inner">
-    <h3 id="remix-confirmation-title">Add this card to your list?</h3>
-    <p id="remix-confirmation-description">It will be added to Saved and a timer will be activated for completion.</p>
-    <div class="remix-confirmation-popup-buttons">
-      <button class="remix-confirmation-cancel" id="remix-confirmation-cancel">Cancel</button>
-      <button class="remix-confirmation-confirm" id="remix-confirmation-confirm">Remix</button>
     </div>
   </div>
 </div>
@@ -2607,2665 +1681,1464 @@
 
 <script>
   (function () {
-    console.log('🚀 JavaScript starting...');
-    
-    const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:gKTIZw3x/oneThing';
-    const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
-    const MAX_ATTEMPTS = 3;
-    const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-    
+  const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
+  const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
+  const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
+  const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
+  const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
+  const MAX_ATTEMPTS = 3;
+  const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
-    
-    // File upload restrictions
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
-    const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
-    
-    // Check if HEIC library is loaded
-    console.log('HEIC library check:', {
-      heic2anyAvailable: typeof heic2any !== 'undefined',
-      heic2anyType: typeof heic2any
+  let attemptsLeft = parseInt(localStorage.getItem('attemptsLeftAccount')) || MAX_ATTEMPTS;
+  let resetTime = parseInt(localStorage.getItem('resetTimeAccount')) || getMidnightTimestamp();
+//    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
+
+  var savedCards = [];
+
+  const savedButton = document.querySelector('button[data-filter="saved"]');
+  const completedButton = document.querySelector('button[data-filter="completed"]');
+  const communityButton = document.querySelector('button[data-filter="community"]');
+
+  var uploadFileName = '';
+
+
+  // Function to ensure userId is set in localStorage
+  function ensureUserId() {
+    let userId = localStorage.getItem('userId');
+
+    if (!userId) {
+      // Try to get from auth object
+      const auth = localStorage.getItem('auth');
+      if (auth) {
+        try {
+          const authObj = JSON.parse(auth);
+          if (authObj.id) {
+            userId = authObj.id;
+            localStorage.setItem('userId', userId);
+            console.log('✅ Set userId from auth object:', userId);
+          }
+        } catch (e) {
+          console.error('Error parsing auth object:', e);
+        }
+      }
+
+      // If still no userId, use test userId 266 for testing
+      if (!userId) {
+        localStorage.setItem('userId', userId);
+        console.log('🧪 Set test userId for testing:', userId);
+      }
+    }
+
+    return userId;
+  }
+
+  // Function to set test userId for development
+  function setTestUserId(userId) {
+    localStorage.setItem('userId', userId);
+    console.log('🧪 Test userId set to:', userId);
+    return userId;
+  }
+
+
+
+
+
+
+
+
+  let currentSuggestion = null;
+  let currentCategoryFilter = localStorage.getItem('currentCategoryFilter') || 'all';
+  let currentTypeFilter = localStorage.getItem('currentTypeFilter') || 'saved';
+
+  const btn = document.getElementById('one-thing-btn');
+  const attemptsCounter = document.getElementById('attempts-counter');
+  const popup = document.getElementById('one-thing-popup');
+  const popupTitle = document.getElementById('popup-title');
+  const popupDesc = document.getElementById('popup-desc');
+  const btnSave = document.getElementById('popup-save');
+  const btnSkip = document.getElementById('popup-skip');
+  const cardList = document.getElementById('one-thing-card-list');
+  const filterButtons = document.querySelectorAll('.filter-buttons button');
+
+  // Ensure userId is set
+  ensureUserId();
+
+  updateCounterUI();
+
+  // Restore active state for filter buttons
+  filterButtons.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-filter') === currentTypeFilter) {
+      btn.classList.add('active');
+    }
+  });
+
+  renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
+
+  loadSavedUserCards();
+
+  // Initialize dropdown functionality
+  initializeDropdown();
+
+  // Initialize event listeners when DOM is ready
+  function initializeEventListeners() {
+    // Initialize the UI
+    updateCounterUI();
+
+    // Restore active state for filter buttons
+    filterButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+        btn.classList.add('active');
+      }
     });
 
-    let attemptsLeft = parseInt(localStorage.getItem('attemptsLeftAccount')) || MAX_ATTEMPTS;
-    let resetTime = parseInt(localStorage.getItem('resetTimeAccount')) || getMidnightTimestamp();
-    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
-    let completedCards = JSON.parse(localStorage.getItem('completedCards')) || [];
-    let publicCards = JSON.parse(localStorage.getItem('publicCards')) || [];
+    renderCardList(currentTypeFilter, currentCategoryFilter);
 
-    // Progress System
-    const PROGRESS_LEVELS = [
-      {
-        id: 'adaptio',
-        name: 'Adaptio',
-        subtitle: 'Started as an Adaptio',
-        description: 'Welcome! You\'ve started your adaptation journey with Globio. Begin exploring our app to ensure a smooth relocation experience.',
-        icon: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg',
-        iconDisabled: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg',
-        xpRequired: 0,
-        color: '#9E9E9E'
-      },
-      {
-        id: 'globio',
-        name: 'Globio',
-        subtitle: 'Advanced as a Globio',
-        description: 'Congratulations on achieving the Globio role! Your adaptation progress is evident.',
-        icon: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962726d1a3874923ca9b_globio.svg',
-        iconDisabled: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627e186a04d8b43d12f_globio-no.png',
-        xpRequired: 100,
-        color: '#AAB40F'
-      },
-      {
-        id: 'globio-expert',
-        name: 'Globio Expert',
-        subtitle: 'Recognized as an Expert',
-        description: 'Monetize your knowledge by providing high-value answers while enjoying visibility in the community.',
-        icon: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627c06a7b55c4c17e8c_expert.svg',
-        iconDisabled: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627e38be7701ee75427_expert-no.svg',
-        xpRequired: 300,
-        color: '#58AD95'
-      },
-      {
-        id: 'globio-mentor',
-        name: 'Globio Mentor',
-        subtitle: 'Established as a Mentor',
-        description: 'As a Mentor, you now have higher social status and access to exclusive strategic meetings. Guide others and solidify your influence.',
-        icon: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b496275f324ac3f37cb913_mentor.svg',
-        iconDisabled: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627a40a27844a8c491f_mentor-no.svg',
-        xpRequired: 600,
-        color: '#A670BC'
-      },
-      {
-        id: 'globio-ambassador',
-        name: 'Globio Ambassador',
-        subtitle: 'Honored as an Ambassador',
-        description: 'You\'ve reached the pinnacle! Hold the highest social status, earning opportunities, and a share in Globio\'s equity.',
-        icon: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627f74d369d667bff72_ambassadoe.svg',
-        iconDisabled: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627ec0d2d0e609d3cd6_ambassadoe-no.svg',
-        xpRequired: 1000,
-        color: '#FFD700'
-      }
-    ];
+    // Confirmation popup handlers
+    const cancelBtn = document.getElementById('confirmation-cancel');
+    const confirmBtn = document.getElementById('confirmation-confirm');
 
-    const XP_REWARDS = {
-      saveCard: 5,        // Small reward for saving a card
-      completeCard: 25,   // Bigger reward for completing a card
-      makePublic: 15,     // Reward for making card public
-      getRemixed: 10,     // Reward when someone remixes your card
-      remixCard: 20       // Reward for remixing someone's card
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', hideConfirmationPopup);
+    } else {
+      console.error('Confirmation cancel button not found');
+    }
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        const popup = document.getElementById('confirmation-popup');
+        const cardId = popup.dataset.cardId;
+        const action = popup.dataset.action;
+
+        console.log('Confirmation button clicked:', action, 'for card:', cardId);
+
+        if (cardId && action) {
+
+          if (action === 'make-public') {
+            makeCardPublic(cardId);
+          } else if (action === 'make-private') {
+            makeCardPrivate(cardId);
+          }
+          hideConfirmationPopup();
+        } else {
+          console.error('Missing cardId or action:', { cardId, action });
+        }
+      });
+    }
+
+    // Close confirmation popup when clicking outside
+    const confirmationPopup = document.getElementById('confirmation-popup');
+    if (confirmationPopup) {
+      confirmationPopup.addEventListener('click', (e) => {
+        if (e.target === confirmationPopup) {
+          hideConfirmationPopup();
+        }
+      });
+    }
+
+    // Referral popup handlers
+    const copyBtn = document.getElementById('copy-referral-btn');
+    const referralCloseBtn = document.getElementById('referral-close');
+    const referralPopup = document.getElementById('referral-popup');
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', copyReferralLink);
+    }
+    if (referralCloseBtn) {
+      referralCloseBtn.addEventListener('click', hideReferralPopup);
+    }
+    if (referralPopup) {
+      referralPopup.addEventListener('click', (e) => {
+        if (e.target === referralPopup) {
+          hideReferralPopup();
+        }
+      });
+    }
+
+    // Community empty state popup handlers
+    const copyCommunityBtn = document.getElementById('copy-community-referral-btn');
+    const communityCloseBtn = document.getElementById('community-popup-close');
+    const communityPopup = document.getElementById('community-empty-popup');
+
+    if (copyCommunityBtn) {
+      copyCommunityBtn.addEventListener('click', copyCommunityReferralLink);
+    }
+    if (communityCloseBtn) {
+      communityCloseBtn.addEventListener('click', hideCommunityEmptyPopup);
+    }
+    if (communityPopup) {
+      communityPopup.addEventListener('click', (e) => {
+        if (e.target === communityPopup) {
+          hideCommunityEmptyPopup();
+        }
+      });
+    }
+  }
+
+  // Initialize event listeners when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEventListeners);
+  } else {
+    initializeEventListeners();
+  }
+
+  btn.addEventListener('click', () => {
+    if (attemptsLeft <= 0) return;
+    btn.classList.add('loading');
+    startLoadingAnimation();
+    const context = window.getUserContext ? window.getUserContext() : {};
+    let qs = '?';
+    for (const key in context) {
+      if (context.hasOwnProperty(key)) qs += encodeURIComponent(key) + '=' + encodeURIComponent(context[key]) + '&';
+    }
+    fetch(API_SUGGEST + qs, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'one-thing-session-id': generateUUID() }
+    })
+      .then(res => res.json())
+      .then(data => {
+        btn.classList.remove('loading');
+        stopLoadingAnimation();
+
+        console.log('API response debug:', data);
+
+        currentSuggestion = {
+          id: data.id || data.card_id || data.cardId || data.card?.id || data.item?.id || data.thing?.id || data.name || 'generated-' + Date.now(),
+          title: data.title || data.name || 'No Tip This Time',
+          description: data.description || 'Sometimes even the best advice needs a rest. Come back later.',
+          category: data.category || data.card?.category || data.item?.category || data.thing?.category || 'places'
+        };
+
+        console.log('Current suggestion debug:', currentSuggestion);
+
+        showPopup(currentSuggestion);
+      })
+      .catch(err => {
+        btn.classList.remove('loading');
+        stopLoadingAnimation();
+        console.error(err);
+      });
+  });
+
+  btnSave.addEventListener('click', () => {
+    if (!currentSuggestion) return;
+    const userId = ensureUserId();
+    console.log('currentSuggestion', currentSuggestion);
+
+    if (userId && currentSuggestion.id) {
+      fetch(API_SAVE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id, expired_at: Date.now() + 1000 * 60 * 60 * 24 * 30 })
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+//            console.log("RFEFRESH");
+          loadSavedUserCards();
+      })
+      .catch(err => console.error(err));
+    }
+    // Add expiry timestamp with default image
+    savedCards.unshift({
+      ...currentSuggestion,
+      imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
+      expiresAt: Date.now() + EXPIRY_MS
+    });
+
+    loadSavedUserCards();
+
+    decrementAttempts();
+
+    // Switch to Saved tab and update UI
+    filterButtons.forEach(b => b.classList.remove('active'));
+    const savedButton = document.querySelector('button[data-filter="saved"]');
+    if (savedButton) {
+      savedButton.classList.add('active');
+    }
+
+    renderCardList('saved', currentCategoryFilter);
+    hidePopup();
+  });
+
+  btnSkip.addEventListener('click', () => {
+    decrementAttempts();
+
+    // Switch to Completed tab and update UI
+    filterButtons.forEach(b => b.classList.remove('active'));
+    const completedButton = document.querySelector('button[data-filter="completed"]');
+    if (completedButton) {
+      completedButton.classList.add('active');
+    }
+
+    renderCardList('completed', currentCategoryFilter);
+    hidePopup();
+  });
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTypeFilter = btn.getAttribute('data-filter');
+      localStorage.setItem('currentTypeFilter', currentTypeFilter);
+      renderCardList(currentTypeFilter, currentCategoryFilter);
+    });
+  });
+
+  // Remove ability to close popup by clicking outside or escape key
+  // User must choose either Save or Skip to proceed
+
+  function showPopup(card) {
+    // Set category and icon based on card data
+    const category = card.category || 'places'; // Default to places if not specified
+    const categoryText = getCategoryText(category);
+    const categoryIcon = getCategoryIcon(category);
+
+    console.log('Popup category debug:', {
+      originalCategory: card.category,
+      finalCategory: category,
+      categoryText: categoryText,
+      pillClass: 'popup-category-pill ' + category
+    });
+
+    // Update popup content
+    const categoryPill = document.getElementById('popup-category');
+    const categoryTextElement = document.getElementById('popup-category-text');
+    const categoryImage = document.getElementById('popup-category-image');
+
+    categoryTextElement.textContent = categoryText;
+    categoryImage.src = categoryIcon;
+    popupTitle.textContent = card.title;
+    popupDesc.textContent = card.description;
+
+    // Update pill classes based on category
+    const categoryClass = category.toLowerCase().replace(/\s+/g, '-');
+    categoryPill.className = 'popup-category-pill ' + categoryClass;
+
+    // Ensure popup is positioned correctly
+    const popupElement = document.getElementById('one-thing-popup');
+    popupElement.style.position = 'fixed';
+    popupElement.style.top = '0';
+    popupElement.style.left = '0';
+    popupElement.style.width = '100vw';
+    popupElement.style.height = '100vh';
+    popupElement.style.zIndex = '999999';
+
+    // Show popup with animation
+    popup.classList.add('show');
+  }
+
+  function hidePopup() {
+    popup.classList.remove('show');
+    currentSuggestion = null;
+  }
+
+  function getCategoryText(category) {
+    const categories = {
+      'places': 'Places',
+      'daily': 'Daily Things',
+      'local': 'Local Context',
+      'DAILY THINGS': 'Daily Things',
+      'PLACES': 'Places',
+      'LOCAL CONTEXT': 'Local Context'
     };
+    return categories[category] || 'Places';
+  }
 
-    // Simple location functions
-    function updateLocationDisplay(location) {
-      const locationElement = document.getElementById('current-location');
-      if (locationElement) {
-        locationElement.textContent = location;
-      }
+  function getCategoryIcon(category) {
+    const icons = {
+      'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
+      'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
+      'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif',
+      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
+      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
+      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif'
+    };
+    return icons[category] || icons['places'];
+  }
+
+  function decrementAttempts() {
+    attemptsLeft--;
+    localStorage.setItem('attemptsLeftAccount', attemptsLeft);
+    localStorage.setItem('resetTimeAccount', resetTime);
+    updateCounterUI();
+  }
+  // Loading phrases for dynamic text
+  const loadingPhrases = [
+    "Gathering one thing…",
+    "Asking locals for secrets…",
+    "Digging for hidden gems…",
+    "Searching cozy nooks…",
+    "Extracting calm in chaos…",
+    "Sneaking past tourist traps…"
+  ];
+
+  let currentLoadingIndex = 0;
+  let loadingInterval = null;
+
+  function updateCounterUI() {
+    const oneThingBtn = document.getElementById('one-thing-btn');
+
+    if (attemptsLeft > 0) {
+      attemptsCounter.textContent = `${attemptsLeft} / ${MAX_ATTEMPTS} left today`;
+      attemptsCounter.classList.remove('no-attempts');
+      oneThingBtn.classList.remove('inactive');
+    } else {
+      attemptsCounter.textContent = `Next in: ${getTimeLeft()}`;
+      attemptsCounter.classList.add('no-attempts');
+      oneThingBtn.classList.add('inactive');
+    }
+  }
+
+  function startLoadingAnimation() {
+    currentLoadingIndex = 0;
+    attemptsCounter.textContent = loadingPhrases[0];
+    attemptsCounter.classList.remove('no-attempts');
+
+    loadingInterval = setInterval(() => {
+      currentLoadingIndex = (currentLoadingIndex + 1) % loadingPhrases.length;
+      attemptsCounter.textContent = loadingPhrases[currentLoadingIndex];
+    }, 2000);
+  }
+
+  function stopLoadingAnimation() {
+    if (loadingInterval) {
+      clearInterval(loadingInterval);
+      loadingInterval = null;
+    }
+    updateCounterUI();
+  }
+  function getMidnightTimestamp() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
+  }
+  function getTimeLeft() {
+    const dist = resetTime - Date.now();
+    if (dist <= 0) {
+      resetTime = getMidnightTimestamp();
+      attemptsLeft = MAX_ATTEMPTS;
+      localStorage.setItem('attemptsLeftAccount', attemptsLeft);
+      localStorage.setItem('resetTimeAccount', resetTime);
+      return '00h 00m';
+    }
+    const h = Math.floor(dist / (1000 * 60 * 60));
+    const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+    return `${h}h ${m}m`;
+  }
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  function showSuccessTooltip() {
+    const tooltip = document.getElementById('success-tooltip');
+    if (tooltip) {
+      tooltip.classList.add('show');
+      console.log('Success tooltip shown');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        console.log('Success tooltip hidden');
+      }, 3000);
+    } else {
+      console.error('Success tooltip element not found');
+    }
+  }
+
+  function showConfirmationPopup(one_thing_user_card_id, action) {
+//      console.log('showConfirmationPopup called:', cardId, action);
+
+    const card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+    if (!card) {
+      console.log('Card not found in savedCards:', one_thing_user_card_id);
+      return;
     }
 
-    // Get current location-based progress
-    function getCurrentLocation() {
-      return localStorage.getItem('currentLocation') || 'default';
+    const titleEl = document.getElementById('confirmation-title');
+    const descriptionEl = document.getElementById('confirmation-description');
+    const confirmBtn = document.getElementById('confirmation-confirm');
+
+    console.log('Found elements:', { titleEl: !!titleEl, descriptionEl: !!descriptionEl, confirmBtn: !!confirmBtn });
+
+    if (action === 'make-public') {
+      titleEl.textContent = 'Make Thing Public?';
+      descriptionEl.textContent = 'This will make your completed thing visible to the community. Other users will be able to see and get inspired by your experience.';
+      confirmBtn.textContent = 'Make Thing Public';
+    } else if (action === 'make-private') {
+      titleEl.textContent = 'Make Thing Private?';
+      descriptionEl.innerHTML = 'Are you sure you want to remove this from the community? <br><br><strong>Your experience could inspire others!</strong> 🌟<br><br>By keeping it public, you\'re helping create a vibrant community of people sharing their adventures and discoveries.';
+      confirmBtn.textContent = 'Make Private';
     }
 
-    function getProgressKey() {
-      const location = getCurrentLocation();
-      return `progress_${location}`;
+    // Store the card ID and action for confirmation
+    const popup = document.getElementById('confirmation-popup');
+    if (popup) {
+      popup.dataset.cardId = one_thing_user_card_id;
+      popup.dataset.action = action;
+      popup.classList.add('show');
+      console.log('Popup shown with data:', { one_thing_user_card_id, action });
+      console.log('Popup dataset after setting:', popup.dataset);
+    } else {
+      console.error('Confirmation popup element not found');
     }
+  }
 
-    function getCurrentProgress() {
-      const key = getProgressKey();
-      const progress = JSON.parse(localStorage.getItem(key)) || {
-        xp: 0,
-        level: 'adaptio',
-        totalCardsSaved: 0,
-        totalCardsCompleted: 0,
-        totalCardsMadePublic: 0,
-        totalRemixesReceived: 0,
-        totalRemixesMade: 0
-      };
-      return progress;
+  function hideConfirmationPopup() {
+    document.getElementById('confirmation-popup').classList.remove('show');
+    delete document.getElementById('confirmation-popup').dataset.cardId;
+    delete document.getElementById('confirmation-popup').dataset.action;
+  }
+
+  // Global functions for empty state buttons
+  function scrollToGetOneThing() {
+    const oneThingBtn = document.getElementById('one-thing-btn');
+    if (oneThingBtn) {
+      oneThingBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+  }
 
-    function saveProgress(progress) {
-      const key = getProgressKey();
-      localStorage.setItem(key, JSON.stringify(progress));
+  function showReferralPopup() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+
+    document.getElementById('referral-code').textContent = referralCode;
+    document.getElementById('referral-popup').classList.add('show');
+  }
+
+  function hideReferralPopup() {
+    document.getElementById('referral-popup').classList.remove('show');
+  }
+
+  function copyReferralLink() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+    const fullLink = `https://globio.io/ref/${referralCode}`;
+
+    navigator.clipboard.writeText(fullLink).then(() => {
+      const copyBtn = document.getElementById('copy-referral-btn');
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+      alert('Failed to copy link. Please copy manually.');
+    });
+  }
+
+  function showCommunityEmptyPopup() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+
+    document.getElementById('community-referral-code').textContent = referralCode;
+    document.getElementById('community-empty-popup').classList.add('show');
+  }
+
+  function hideCommunityEmptyPopup() {
+    document.getElementById('community-empty-popup').classList.remove('show');
+  }
+
+  function copyCommunityReferralLink() {
+    const userId = ensureUserId();
+    const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
+    const fullLink = `https://globio.io/ref/${referralCode}`;
+
+    navigator.clipboard.writeText(fullLink).then(() => {
+      const copyBtn = document.getElementById('copy-community-referral-btn');
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('copied');
+
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+      alert('Failed to copy link. Please copy manually.');
+    });
+  }
+
+  function makeCardPublic(cardId) {
+    cardId = parseInt(cardId);
+    const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+    if (!card) {
+      console.error('Error makeCardPublic');
+      return;
     }
+    const userId = ensureUserId();
+    const requestBody = {
+      one_thing_user_card_id: cardId,
+      published: true,
+      completed: true
+    };
+    makeApiCall(requestBody, card);
+  }
 
-    function getCurrentLevel() {
-      const progress = getCurrentProgress();
-      const currentLevel = PROGRESS_LEVELS.find(level => level.id === progress.level);
-      return currentLevel || PROGRESS_LEVELS[0];
-    }
-
-    function getNextLevel() {
-      const currentLevel = getCurrentLevel();
-      const currentIndex = PROGRESS_LEVELS.findIndex(level => level.id === currentLevel.id);
-      return PROGRESS_LEVELS[currentIndex + 1] || null;
-    }
-
-    function calculateProgressPercentage() {
-      const progress = getCurrentProgress();
-      const currentLevel = getCurrentLevel();
-      const nextLevel = getNextLevel();
-      
-      if (!nextLevel) {
-        return 100; // Max level reached
-      }
-      
-      const xpInCurrentLevel = progress.xp - currentLevel.xpRequired;
-      const xpNeededForNextLevel = nextLevel.xpRequired - currentLevel.xpRequired;
-      
-      return Math.min(100, Math.max(0, (xpInCurrentLevel / xpNeededForNextLevel) * 100));
-    }
-
-    function addXP(amount, reason = '') {
-      const progress = getCurrentProgress();
-      const oldXP = progress.xp;
-      const oldLevel = progress.level;
-      
-      progress.xp += amount;
-      
-      // Check for level up
-      const newLevel = PROGRESS_LEVELS.find(level => 
-        progress.xp >= level.xpRequired && 
-        PROGRESS_LEVELS.indexOf(level) > PROGRESS_LEVELS.findIndex(l => l.id === progress.level)
-      );
-      
-      if (newLevel) {
-        progress.level = newLevel.id;
-        console.log(`🎉 Level up! You are now ${newLevel.name}!`);
-        showLevelUpNotification(newLevel);
-      }
-      
-      saveProgress(progress);
-      updateProgressUI();
-      
-      console.log(`✨ +${amount} XP (${reason}) - Total: ${progress.xp} XP`);
-      
-      // Animate progress bar
-      animateProgressBar();
-    }
-
-    function updateProgressUI() {
-      const progress = getCurrentProgress();
-      const currentLevel = getCurrentLevel();
-      const percentage = calculateProgressPercentage();
-      const nextLevel = getNextLevel();
-      
-      // Update level display
-      const levelElement = document.getElementById('progress-level');
-      if (levelElement) {
-        levelElement.textContent = currentLevel.name;
-      }
-      
-      // Update progress bar
-      const progressBar = document.getElementById('progress-bar-fill');
-      if (progressBar) {
-        progressBar.style.width = `${percentage}%`;
-      }
-      
-      // Update tooltip
-      const tooltip = document.getElementById('progress-tooltip');
-      if (tooltip && nextLevel) {
-        tooltip.textContent = `${progress.xp} / ${nextLevel.xpRequired} XP`;
-      } else if (tooltip) {
-        tooltip.textContent = `${progress.xp} XP (Max Level!)`;
-      }
-    }
-
-    function animateProgressBar() {
-      const progressBar = document.getElementById('progress-bar-fill');
-      if (progressBar) {
-        progressBar.classList.add('animate');
-        setTimeout(() => {
-          progressBar.classList.remove('animate');
-        }, 600);
-      }
-    }
-
-    function showLevelUpNotification(level) {
-      // Show level up popup with confetti
-      const popup = document.getElementById('level-up-popup');
-      const icon = document.getElementById('level-up-icon');
-      const title = document.getElementById('level-up-title');
-      const subtitle = document.getElementById('level-up-subtitle');
-      const description = document.getElementById('level-up-description');
-      
-      if (popup && icon && title && subtitle && description) {
-        // Update popup content
-        icon.innerHTML = `<img src="${level.icon}" alt="${level.name}" style="width: 80px; height: 80px; object-fit: contain;" />`;
-        title.textContent = `You are now ${level.name}!`;
-        subtitle.textContent = level.subtitle;
-        description.textContent = level.description;
-        
-        // Show popup
-        popup.classList.add('show');
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-          popup.classList.remove('show');
-        }, 5000);
-      }
-    }
-
-    function populateLevelsPopup() {
-      console.log('🔧 Populating levels popup...');
-      
-      try {
-        const levelsList = document.getElementById('levels-list');
-        if (!levelsList) {
-          console.error('❌ levels-list element not found');
-          return;
-        }
-        
-        const progress = getCurrentProgress();
-        console.log('📊 Current progress:', progress);
-        
-        levelsList.innerHTML = '';
-        
-        PROGRESS_LEVELS.forEach((level, index) => {
-          try {
-            const isCompleted = progress.xp >= level.xpRequired;
-            const isCurrent = progress.level === level.id;
-            
-            const levelCard = document.createElement('div');
-            levelCard.className = `level-card ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''}`;
-            
-            const xpProgress = progress.xp - level.xpRequired;
-            const nextLevel = PROGRESS_LEVELS[index + 1];
-            const xpNeeded = nextLevel ? nextLevel.xpRequired - level.xpRequired : 0;
-            const progressPercent = nextLevel ? Math.min(100, Math.max(0, (xpProgress / xpNeeded) * 100)) : 100;
-            
-            const iconSrc = isCompleted ? level.icon : level.iconDisabled;
-            
-            levelCard.innerHTML = `
-              <div class="level-icon" style="background-color: ${isCompleted ? level.color : '#f8f8f8'}; border-color: ${isCompleted ? level.color : '#e0e0e0'};">
-                <img src="${iconSrc}" alt="${level.name}" />
-                ${isCompleted ? '<div class="level-completed-badge">✓</div>' : ''}
-              </div>
-              <div class="level-info">
-                <div class="level-title">${level.name}</div>
-                <div class="level-subtitle">${level.subtitle}</div>
-                <div class="level-description">${level.description}</div>
-                ${!isCompleted && nextLevel ? `
-                  <div class="level-progress">
-                    <div class="level-progress-bar">
-                      <div class="level-progress-fill" style="width: ${progressPercent}%"></div>
-                    </div>
-                    <div class="level-progress-text">${progress.xp} / ${nextLevel.xpRequired} XP</div>
-                  </div>
-                ` : ''}
-              </div>
-            `;
-            
-            levelsList.appendChild(levelCard);
-            console.log(`✅ Added level card: ${level.name}`);
-          } catch (error) {
-            console.error(`❌ Error creating level card for ${level.name}:`, error);
-          }
-        });
-        
-        console.log('✅ Levels popup populated successfully');
-      } catch (error) {
-        console.error('❌ Error in populateLevelsPopup:', error);
-      }
-    }
-
-    // Test function for level up (for development)
-    function testLevelUp() {
-      const testLevel = PROGRESS_LEVELS[1]; // Globio level
-      showLevelUpNotification(testLevel);
-    }
-
-    // Function to ensure userId is set in localStorage
-    function ensureUserId() {
-      let userId = localStorage.getItem('userId');
-
-      if (!userId) {
-        // Try to get from auth object
-        const auth = localStorage.getItem('auth');
-        if (auth) {
-          try {
-            const authObj = JSON.parse(auth);
-            if (authObj.id) {
-              userId = authObj.id;
-              localStorage.setItem('userId', userId);
-              console.log('✅ Set userId from auth object:', userId);
-            }
-          } catch (e) {
-            console.error('Error parsing auth object:', e);
-          }
-        }
-
-        // If still no userId, use test userId 266 for testing
-        if (!userId) {
-          localStorage.setItem('userId', userId);
-          console.log('🧪 Set test userId for testing:', userId);
-        }
-      }
-
-      return userId;
-    }
-
-    // Function to set test userId for development
-    function setTestUserId(userId) {
-      localStorage.setItem('userId', userId);
-      console.log('🧪 Test userId set to:', userId);
-      return userId;
-    }
-
-
-
-
-    // Load public cards from API on initialization
-    function loadPublicCards() {
+   function makeCardCompleted(one_thing_user_card_id) {
       const userId = ensureUserId();
-      if (!userId) {
-        console.log('No userId found for loadPublicCards');
+
+
+      console.log('one_thing_user_card_id', one_thing_user_card_id);
+      console.log('savedCards', savedCards);
+      const card = savedCards.find(c => c.one_thing_user_card_id == one_thing_user_card_id);
+      if (!card) {
+          console.log('Error makeCardCompleted');
+          return;
+      }
+      const requestBody = {
+          one_thing_user_card_id: one_thing_user_card_id,
+          completed: true,
+          published: false
+      };
+      makeApiCall(requestBody, card);
+
+      loadSavedUserCards();
+
+  }
+
+  function makeApiCall(requestBody, card) {
+    fetch(API_SET_CARD_PUBLISH, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error('❌ API response not ok:');
+          throw new Error(`Failed to make card public: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Add to public cards if not already there
+        const cardId = requestBody.one_thing_cards_id;
+
+        renderCardList(currentTypeFilter, currentCategoryFilter);
+
+        // Re-enable toggle and update its state
+        const toggle = document.querySelector(`#toggle-${cardId}`);
+        if (toggle) {
+          toggle.disabled = false;
+          toggle.checked = true; // Ensure toggle shows as checked
+          console.log('✅ Updated toggle state for card:', cardId);
+        } else {
+          console.log('⚠️ Toggle not found for card:', cardId);
+        }
+
+        // Show success tooltip
+        showSuccessTooltip();
+        console.log('🎉 Successfully made card public!');
+      })
+      .catch(error => {
+        console.error('❌ Error making card public:', error);
+        console.error('❌ Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+
+        const cardId = requestBody.one_thing_cards_id;
+
+        // Re-enable toggle on error
+        const toggle = document.querySelector(`#toggle-${cardId}`);
+        if (toggle) {
+          toggle.disabled = false;
+          toggle.checked = false; // Reset to private state
+          console.log('🔄 Reset toggle to private state due to error');
+        }
+      });
+  }
+
+  function makeCardPrivate(cardId) {
+      cardId = parseInt(cardId);
+      const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+      if (!card) {
+        console.error('Error makeCardPrivate');
         return;
       }
-
-      console.log('Loading public cards for user:', userId);
-      fetch(`https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards?one_thing_users_id=${userId}`)
-        .then(response => {
-          console.log('LoadPublicCards response status:', response.status);
-          return response.json();
-        })
-        .then(data => {
-          console.log('LoadPublicCards data:', data);
-          if (data && Array.isArray(data)) {
-            publicCards = data;
-            console.log('Updated publicCards:', publicCards);
-            try {
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            } catch (e) {
-              // localStorage quota exceeded
-            }
-            // Re-render if we're on completed tab
-            if (currentTypeFilter === 'completed') {
-              renderCardList(currentTypeFilter, currentCategoryFilter);
-            }
-          }
-        })
-        .catch(error => {
-          console.error('Error loading public cards:', error);
-          // If API fails, add test cards for demonstration
-          console.log('🔄 Adding test cards due to API failure');
-          addTestCommunityCards();
-        });
-    }
-
-    // Add test community cards for demonstration
-    function addTestCommunityCards() {
-      console.log('Adding test community cards for demonstration');
-      
-      const testCards = [
-        {
-          id: 'test-card-own',
-          title: 'Explore Kaleiçi\'s Hidden Spots',
-          description: 'Wander through the charming streets of Kaleiçi, discover local art galleries, and enjoy coffee at cafes like 7B. Perfect for connecting with the community.',
-          category: 'places',
-          imageSrc: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop&crop=center',
-          author_name: 'You',
-          user_name: 'You',
-          user_id: ensureUserId(), // This will be your actual user ID
-          remix_count: 2,
-          completed_at: Date.now() - 86400000 // 1 day ago
-        },
-        {
-          id: 'test-card-1',
-          title: 'Try the best coffee in the city',
-          description: 'Find and visit the highest-rated coffee shop in your area. Pay attention to the atmosphere, coffee quality, and service.',
-          category: 'places',
-          imageSrc: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop&crop=center',
-          author_name: 'Anna K.',
-          user_name: 'Anna K.',
-          user_id: 'test-user-1',
-          remix_count: 3,
-          completed_at: Date.now() - 86400000 // 1 day ago
-        },
-        {
-          id: 'test-card-2',
-          title: 'Explore a new walking route',
-          description: 'Find an unfamiliar path or street in your neighborhood and walk along it. Discover new places and views.',
-          category: 'local',
-          imageSrc: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=400&fit=crop&crop=center',
-          author_name: 'Michael D.',
-          user_name: 'Michael D.',
-          user_id: 'test-user-2',
-          remix_count: 7,
-          completed_at: Date.now() - 172800000 // 2 days ago
-        },
-        {
-          id: 'test-card-3',
-          title: 'Try a new dish',
-          description: 'Order at a restaurant or cook at home a dish you\'ve never tried before. Expand your culinary horizons.',
-          category: 'daily',
-          imageSrc: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=400&fit=crop&crop=center',
-          author_name: 'Elena S.',
-          user_name: 'Elena S.',
-          user_id: 'test-user-3',
-          remix_count: 0,
-          completed_at: Date.now() - 259200000 // 3 days ago
-        },
-        {
-          id: 'test-card-4',
-          title: 'Visit the local library',
-          description: 'Go to the nearest library, explore the book catalog, maybe borrow something to read. Immerse yourself in the world of literature.',
-          category: 'places',
-          imageSrc: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=400&fit=crop&crop=center',
-          author_name: 'Dmitry V.',
-          user_name: 'Dmitry V.',
-          user_id: 'test-user-4',
-          remix_count: 12,
-          completed_at: Date.now() - 345600000 // 4 days ago
-        },
-        {
-          id: 'test-card-5',
-          title: 'Take a sunset photo',
-          description: 'Find a beautiful place to watch the sunset and take several photos. Capture the beauty of nature.',
-          category: 'daily',
-          imageSrc: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop&crop=center',
-          author_name: 'Olga M.',
-          user_name: 'Olga M.',
-          user_id: 'test-user-5',
-          remix_count: 5,
-          completed_at: Date.now() - 432000000 // 5 days ago
-        }
-      ];
-
-      // Add test cards to publicCards
-      publicCards = [...testCards, ...publicCards];
-      
-      try {
-        localStorage.setItem('publicCards', JSON.stringify(publicCards));
-        console.log('✅ Test community cards added:', testCards.length);
-        console.log('📊 Total public cards now:', publicCards.length);
-        
-        // Re-render if we're on community tab
-        if (currentTypeFilter === 'community') {
-          console.log('🔄 Re-rendering community tab with test cards');
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-        }
-      } catch (e) {
-        console.error('Error saving test cards:', e);
-      }
-    }
-
-    // Function to clear test cards (for cleanup)
-    function clearTestCommunityCards() {
-      console.log('Clearing test community cards');
-      
-      // Remove test cards (cards with test-user-* user_id and test-card-own)
-      publicCards = publicCards.filter(card => 
-        !card.user_id || 
-        (!card.user_id.startsWith('test-user-') && card.id !== 'test-card-own')
-      );
-      
-      try {
-        localStorage.setItem('publicCards', JSON.stringify(publicCards));
-        console.log('Test community cards cleared');
-        
-        // Re-render if we're on community tab
-        if (currentTypeFilter === 'community') {
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-        }
-      } catch (e) {
-        console.error('Error clearing test cards:', e);
-      }
-    }
-
-
-
-
-
-
-    let currentSuggestion = null;
-    let currentCategoryFilter = localStorage.getItem('currentCategoryFilter') || 'all';
-    let currentTypeFilter = localStorage.getItem('currentTypeFilter') || 'saved';
-
-    // DOM elements - will be initialized when DOM is ready
-    let btn, attemptsCounter, popup, popupTitle, popupDesc, btnSave, btnSkip, cardList, filterButtons;
-
-    // Add test functions to global scope for easy testing
-    window.addTestCommunityCards = addTestCommunityCards;
-    window.clearTestCommunityCards = clearTestCommunityCards;
-    window.testLevelUp = testLevelUp;
-    
-    // Add simple test function
-    window.testClick = function() {
-      console.log('🎯 Test click function called');
-      alert('Test click works!');
-    };
-    
-    // Add function to test basic functionality
-    window.testBasicFunctions = function() {
-      console.log('🧪 Testing basic functions...');
-      
-      try {
-        updateCounterUI();
-        console.log('✅ updateCounterUI works');
-      } catch (error) {
-        console.error('❌ updateCounterUI failed:', error);
-      }
-      
-      try {
-        renderCardList('saved', 'all');
-        console.log('✅ renderCardList works');
-      } catch (error) {
-        console.error('❌ renderCardList failed:', error);
-      }
-      
-      try {
-        updateProgressUI();
-        console.log('✅ updateProgressUI works');
-      } catch (error) {
-        console.error('❌ updateProgressUI failed:', error);
-      }
-      
-      alert('Check console for results!');
-    };
-    
-    // Add function to close popup
-    window.closeLevelsPopup = function() {
-      const popup = document.getElementById('levels-popup');
-      if (popup) {
-        popup.classList.remove('show');
-        console.log('✅ Levels popup closed');
-      }
-    };
-
-    // Add userId management functions
-    window.setTestUserId = setTestUserId;
-    window.getCurrentUserId = function() {
-      return localStorage.getItem('userId');
-    };
-    
-    // Function to reset and reload with new userId
-    window.resetWithUserId = function(userId) {
-      console.log('🔄 Resetting with userId:', userId);
-      localStorage.clear();
-      setTestUserId(userId);
-      location.reload();
-    };
-    
-    console.log('🧪 Test functions available:');
-    console.log('  - addTestCommunityCards() - добавить тестовые карточки');
-    console.log('  - clearTestCommunityCards() - очистить тестовые карточки');
-    console.log('  - testLevelUp() - протестировать повышение уровня');
-    console.log('  - testClick() - простая тестовая функция');
-    console.log('  - testBasicFunctions() - протестировать основные функции');
-    console.log('  - closeLevelsPopup() - закрыть поп-ап с уровнями');
-    console.log('  - setTestUserId(userId) - установить тестовый userId');
-    console.log('  - getCurrentUserId() - получить текущий userId');
-    console.log('  - resetWithUserId(userId) - сбросить и перезагрузить с новым userId');
-    console.log('  - Переключитесь на вкладку "Community" для просмотра');
-    
-    console.log('✅ JavaScript loaded successfully');
-    console.log('🧪 Current test userId:', getCurrentUserId());
-    console.log('💡 To change userId, use: resetWithUserId(newUserId)');
-
-
-
-    // Initialize event listeners when DOM is ready
-    function initializeEventListeners() {
-      console.log('🔧 Initializing event listeners...');
-      
-      try {
-        // Initialize DOM element variables
-        btn = document.getElementById('one-thing-btn');
-        attemptsCounter = document.getElementById('attempts-counter');
-        popup = document.getElementById('one-thing-popup');
-        popupTitle = document.getElementById('popup-title');
-        popupDesc = document.getElementById('popup-desc');
-        btnSave = document.getElementById('popup-save');
-        btnSkip = document.getElementById('popup-skip');
-        cardList = document.getElementById('one-thing-card-list');
-        filterButtons = document.querySelectorAll('.filter-buttons button');
-        
-        // Check if all required elements exist
-        const requiredElements = [
-          'one-thing-btn',
-          'attempts-counter',
-          'one-thing-popup',
-          'popup-title',
-          'popup-desc',
-          'popup-save',
-          'popup-skip',
-          'one-thing-card-list',
-          'progress-level',
-          'progress-bar-container',
-          'levels-popup',
-          'level-up-popup'
-        ];
-
-        console.log('🔍 Checking elements...');
-        const foundElements = [];
-        const missingElements = [];
-        
-        requiredElements.forEach(id => {
-          const element = document.getElementById(id);
-          if (element) {
-            foundElements.push(id);
-            console.log(`✅ ${id}:`, element);
-          } else {
-            missingElements.push(id);
-            console.log(`❌ ${id}: NOT FOUND`);
-          }
-        });
-
-        console.log('✅ Found elements:', foundElements);
-        if (missingElements.length > 0) {
-          console.error('❌ Missing elements:', missingElements);
-          console.log('🔍 Available elements:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
-          
-          // Continue with what we have
-          console.log('⚠️ Continuing with available elements...');
-        }
-
-        // Check if main variables are defined
-        console.log('🔍 Checking variables...');
-        console.log('btn:', btn);
-        console.log('attemptsCounter:', attemptsCounter);
-        console.log('popup:', popup);
-        console.log('popupTitle:', popupTitle);
-        console.log('popupDesc:', popupDesc);
-        console.log('btnSave:', btnSave);
-        console.log('btnSkip:', btnSkip);
-        console.log('cardList:', cardList);
-        console.log('filterButtons:', filterButtons);
-
-      // Ensure userId is set
-      ensureUserId();
-
-      // Initialize the UI
-      updateCounterUI();
-
-      // Initialize progress system
-      try {
-        updateProgressUI();
-        console.log('✅ Progress UI updated');
-      } catch (error) {
-        console.error('❌ Error updating progress UI:', error);
-      }
-      
-      try {
-        populateLevelsPopup();
-        console.log('✅ Levels popup populated');
-      } catch (error) {
-        console.error('❌ Error populating levels popup:', error);
-      }
-
-      // Restore active state for filter buttons
-      filterButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-filter') === currentTypeFilter) {
-          btn.classList.add('active');
-        }
-      });
-
-      console.log('🚀 Initial render with:', {
-        currentTypeFilter,
-        currentCategoryFilter,
-        savedCardsCount: savedCards.length,
-        completedCardsCount: completedCards.length,
-        publicCardsCount: publicCards.length
-      });
-
-      renderCardList(currentTypeFilter, currentCategoryFilter);
-
-      // Load public cards from API
-      loadPublicCards();
-      
-      // Add test cards for demonstration (will be overridden by API data if available)
-      setTimeout(() => {
-        if (publicCards.length === 0) {
-          console.log('No public cards loaded from API, adding test cards');
-          addTestCommunityCards();
-        }
-      }, 2000);
-
-      // Initialize dropdown functionality
-      try {
-        initializeDropdown();
-        console.log('✅ Dropdown initialized');
-      } catch (error) {
-        console.error('❌ Error initializing dropdown:', error);
-      }
-
-      console.log('✅ Event listeners initialized successfully');
-      } catch (error) {
-        console.error('❌ Error in initializeEventListeners:', error);
-      }
-
-      // Progress bar click handler
-      const progressLevel = document.getElementById('progress-level');
-      const progressBarContainer = document.getElementById('progress-bar-container');
-      
-      if (progressLevel) {
-        progressLevel.addEventListener('click', () => {
-          const levelsPopup = document.getElementById('levels-popup');
-          if (levelsPopup) {
-            levelsPopup.classList.add('show');
-          }
-        });
-      }
-
-      if (progressBarContainer) {
-        progressBarContainer.addEventListener('click', () => {
-          const levelsPopup = document.getElementById('levels-popup');
-          if (levelsPopup) {
-            levelsPopup.classList.add('show');
-          }
-        });
-      }
-
-      // Levels popup close handler
-      const levelsPopupClose = document.getElementById('levels-popup-close');
-      if (levelsPopupClose) {
-        levelsPopupClose.addEventListener('click', () => {
-          const levelsPopup = document.getElementById('levels-popup');
-          if (levelsPopup) {
-            levelsPopup.classList.remove('show');
-          }
-        });
-      }
-
-      // Close levels popup when clicking outside
-      const levelsPopup = document.getElementById('levels-popup');
-      if (levelsPopup) {
-        levelsPopup.addEventListener('click', (e) => {
-          if (e.target === levelsPopup) {
-            levelsPopup.classList.remove('show');
-          }
-        });
-      }
-
-      // Level up popup close handler
-      const levelUpButton = document.getElementById('level-up-button');
-      const levelUpPopup = document.getElementById('level-up-popup');
-      
-      if (levelUpButton) {
-        levelUpButton.addEventListener('click', () => {
-          if (levelUpPopup) {
-            levelUpPopup.classList.remove('show');
-          }
-        });
-      }
-
-      if (levelUpPopup) {
-        levelUpPopup.addEventListener('click', (e) => {
-          if (e.target === levelUpPopup) {
-            levelUpPopup.classList.remove('show');
-          }
-        });
-      }
-
-      // Restore active state for filter buttons
-      filterButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-filter') === currentTypeFilter) {
-          btn.classList.add('active');
-        }
-      });
-
-      renderCardList(currentTypeFilter, currentCategoryFilter);
-      loadPublicCards();
-
-      // Confirmation popup handlers
-      const cancelBtn = document.getElementById('confirmation-cancel');
-      const confirmBtn = document.getElementById('confirmation-confirm');
-
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', hideConfirmationPopup);
-      } else {
-        console.error('Confirmation cancel button not found');
-      }
-
-      if (confirmBtn) {
-        confirmBtn.addEventListener('click', () => {
-          const popup = document.getElementById('confirmation-popup');
-          const cardId = popup.dataset.cardId;
-          const action = popup.dataset.action;
-
-          console.log('Confirmation button clicked:', action, 'for card:', cardId);
-
-          if (cardId && action) {
-            console.log('Processing confirmation:', { cardId, action });
-            if (action === 'make-public') {
-              console.log('Calling makeCardPublic for card:', cardId);
-              makeCardPublic(cardId);
-            } else if (action === 'make-private') {
-              console.log('Calling makeCardPrivate for card:', cardId);
-              makeCardPrivate(cardId);
-            }
-            hideConfirmationPopup();
-          } else {
-            console.error('Missing cardId or action:', { cardId, action });
-          }
-        });
-      }
-
-      // Remix confirmation popup handlers
-      const remixCancelBtn = document.getElementById('remix-confirmation-cancel');
-      const remixConfirmBtn = document.getElementById('remix-confirmation-confirm');
-
-      if (remixCancelBtn) {
-        remixCancelBtn.addEventListener('click', hideRemixConfirmationPopup);
-      } else {
-        console.error('Remix confirmation cancel button not found');
-      }
-
-      if (remixConfirmBtn) {
-        remixConfirmBtn.addEventListener('click', () => {
-          const popup = document.getElementById('remix-confirmation-popup');
-          const cardId = popup.dataset.cardId;
-          const cardData = popup.dataset.cardData;
-
-          console.log('Remix confirmation button clicked for card:', cardId);
-
-          if (cardId && cardData) {
-            try {
-              const card = JSON.parse(cardData);
-              console.log('Processing remix confirmation:', { cardId, card });
-              remixCard(cardId, card);
-              hideRemixConfirmationPopup();
-            } catch (e) {
-              console.error('Error parsing card data:', e);
-            }
-          } else {
-            console.error('Missing cardId or cardData:', { cardId, cardData });
-          }
-        });
-      }
-
-      // Close remix confirmation popup when clicking outside
-      const remixConfirmationPopup = document.getElementById('remix-confirmation-popup');
-      if (remixConfirmationPopup) {
-        remixConfirmationPopup.addEventListener('click', (e) => {
-          if (e.target === remixConfirmationPopup) {
-            hideRemixConfirmationPopup();
-          }
-        });
-      }
-
-      // Close confirmation popup when clicking outside
-      const confirmationPopup = document.getElementById('confirmation-popup');
-      if (confirmationPopup) {
-        confirmationPopup.addEventListener('click', (e) => {
-          if (e.target === confirmationPopup) {
-            hideConfirmationPopup();
-          }
-        });
-      }
-
-      // Referral popup handlers
-      const copyBtn = document.getElementById('copy-referral-btn');
-      const referralCloseBtn = document.getElementById('referral-close');
-      const referralPopup = document.getElementById('referral-popup');
-
-      if (copyBtn) {
-        copyBtn.addEventListener('click', copyReferralLink);
-      }
-      if (referralCloseBtn) {
-        referralCloseBtn.addEventListener('click', hideReferralPopup);
-      }
-      if (referralPopup) {
-        referralPopup.addEventListener('click', (e) => {
-          if (e.target === referralPopup) {
-            hideReferralPopup();
-          }
-        });
-      }
-
-      // Community empty state popup handlers
-      const copyCommunityBtn = document.getElementById('copy-community-referral-btn');
-      const communityCloseBtn = document.getElementById('community-popup-close');
-      const communityPopup = document.getElementById('community-empty-popup');
-
-      if (copyCommunityBtn) {
-        copyCommunityBtn.addEventListener('click', copyCommunityReferralLink);
-      }
-      if (communityCloseBtn) {
-        communityCloseBtn.addEventListener('click', hideCommunityEmptyPopup);
-      }
-      if (communityPopup) {
-        communityPopup.addEventListener('click', (e) => {
-          if (e.target === communityPopup) {
-            hideCommunityEmptyPopup();
-          }
-        });
-      }
-    }
-
-    // Initialize event listeners when DOM is ready
-    function startApp() {
-      console.log('🚀 Starting app...');
-      
-      // Simple initialization first
-      try {
-        // Check if basic elements exist
-        const btn = document.getElementById('one-thing-btn');
-        const cardList = document.getElementById('one-thing-card-list');
-        
-        if (!btn) {
-          console.error('❌ Main button not found!');
-          return;
-        }
-        
-        if (!cardList) {
-          console.error('❌ Card list not found!');
-          return;
-        }
-        
-        console.log('✅ Basic elements found, initializing...');
-        
-        // Simple location detection
-        try {
-          const savedLocation = localStorage.getItem("userLocation");
-          if (savedLocation) {
-            document.getElementById('current-location').textContent = savedLocation;
-          } else {
-            // Auto-detect location
-            fetch('https://ipapi.co/json/')
-              .then(res => res.json())
-              .then(data => {
-                const auto = data.city && data.country_name
-                  ? `${data.city}, ${data.country_name}`
-                  : data.city || data.country_name || "your place";
-                localStorage.setItem("userLocation", auto);
-                document.getElementById('current-location').textContent = auto;
-              })
-              .catch(() => {
-                document.getElementById('current-location').textContent = "your place";
-              });
-          }
-        } catch (error) {
-          console.error('❌ Error detecting location:', error);
-        }
-        
-        // Initialize basic functionality
-        updateCounterUI();
-        renderCardList('saved', 'all');
-        
-        // Then try full initialization
-        setTimeout(() => {
-          try {
-            initializeEventListeners();
-          } catch (error) {
-            console.error('❌ Error in initializeEventListeners:', error);
-          }
-        }, 500);
-        
-      } catch (error) {
-        console.error('❌ Error in startApp:', error);
-      }
-    }
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', startApp);
-    } else {
-      setTimeout(startApp, 100);
-    }
-
-    btn.addEventListener('click', () => {
-      if (attemptsLeft <= 0) return;
-      btn.classList.add('loading');
-      startLoadingAnimation();
-      const context = window.getUserContext ? window.getUserContext() : {};
-      let qs = '?';
-      for (const key in context) {
-        if (context.hasOwnProperty(key)) qs += encodeURIComponent(key) + '=' + encodeURIComponent(context[key]) + '&';
-      }
-      fetch(API_SUGGEST + qs, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'one-thing-session-id': generateUUID() }
-      })
-        .then(res => res.json())
-        .then(data => {
-          btn.classList.remove('loading');
-          stopLoadingAnimation();
-
-          console.log('API response debug:', data);
-
-          currentSuggestion = {
-            id: data.id || data.card_id || data.cardId || data.card?.id || data.item?.id || data.thing?.id || data.name || 'generated-' + Date.now(),
-            title: data.title || data.name || 'No Tip This Time',
-            description: data.description || 'Sometimes even the best advice needs a rest. Come back later.',
-            category: data.category || data.card?.category || data.item?.category || data.thing?.category || 'places'
-          };
-
-          console.log('Current suggestion debug:', currentSuggestion);
-
-          showPopup(currentSuggestion);
-        })
-        .catch(err => {
-          btn.classList.remove('loading');
-          stopLoadingAnimation();
-          console.error(err);
-        });
-    });
-
-    btnSave.addEventListener('click', () => {
-      if (!currentSuggestion) return;
       const userId = ensureUserId();
-      if (userId && currentSuggestion.id) {
-        fetch(API_SAVE, {
+      const requestBody = {
+        one_thing_user_card_id: cardId,
+        published: false,
+        completed: true
+      };
+      makeApiCall(requestBody, card);
+  }
+
+  function uploadFile(file) {
+      const formData = new FormData();
+      formData.append("workspace_id", "1-0"); // ← сюда свой ID воркспейса
+      formData.append("type", "image"); // можно "attachment", "video", "audio"
+      formData.append("content", file);
+
+      return fetch(API_SET_CARD_UPLOAD_IMAGE, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id })
-        }).catch(err => console.error(err));
-      }
-      // Add expiry timestamp with default image
-      savedCards.unshift({
-        ...currentSuggestion,
-        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
-        expiresAt: Date.now() + EXPIRY_MS
+          headers: {
+          },
+          body: formData
+      })
+     .then(response => {
+       return response.json();
+     })
+     .then(data => {
+       const imagePath = data.path;
+       return imagePath;
+     })
+      .catch(error => {
+        console.error('❌ Error making card public:', error);
       });
-      localStorage.setItem('savedCards', JSON.stringify(savedCards));
-      
-      // Add XP for saving a card
-      addXP(XP_REWARDS.saveCard, 'Saved a new card');
-      
-      decrementAttempts();
+};
 
-      // Switch to Saved tab and update UI
-      filterButtons.forEach(b => b.classList.remove('active'));
-      const savedButton = document.querySelector('button[data-filter="saved"]');
-      if (savedButton) {
-        savedButton.classList.add('active');
+  function renderCardList(filter = 'all', categoryFilter = 'all') {
+    // Add fade out effect
+    cardList.style.opacity = '0.7';
+    cardList.style.transform = 'scale(0.98)';
+    cardList.style.transition = 'all 0.2s ease';
+
+    setTimeout(() => {
+      cardList.innerHTML = '';
+      // Remove expired saved cards
+      const now = Date.now();
+      savedCards = savedCards.filter(card => card.expiresAt > now);
+
+      let toShow = [];
+
+      // Filter by type (saved/completed/community)
+      if (filter === 'saved' || filter === 'all') {
+//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved111' })));
+        toShow = savedCards;
+      }
+      if (filter === 'completed' || filter === 'all') {
+//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'completed2222' })));
+        toShow = savedCards;
+      }
+      if (filter === 'community' || filter === 'all') {
+//          toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
+        toShow = savedCards;
       }
 
-      renderCardList('saved', currentCategoryFilter);
-      hidePopup();
+
+
+      console.log('to show', toShow);
+
+      // Filter by category
+      if (categoryFilter !== 'all') {
+        toShow = toShow.filter(card => card.category === categoryFilter);
+      }
+
+      if (toShow.length === 0) {
+        let emptyStateHtml = '';
+
+        if (filter === 'saved') {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+          <h3>No saved things yet</h3>
+          <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+          <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+        </div>`;
+        } else if (filter === 'completed') {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+          <h3>No completed things yet</h3>
+          <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+          <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+        </div>`;
+        } else if (filter === 'community') {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6894a725c6e8a617ce6d1fe2_no-things-community.svg" alt="">
+          <h3>No community contributions yet</h3>
+          <p>Here you'll see all the things completed by the Globio community in your area—helpful tips and experiences, tailored to your current location.</p>
+          <button class="empty-state-btn" onclick="showCommunityEmptyPopup()">Invite a Friend</button>
+        </div>`;
+        } else {
+          emptyStateHtml = `
+        <div class="empty-state">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
+          <h3>No saved things yet</h3>
+          <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
+          <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
+        </div>`;
+        }
+
+        cardList.innerHTML = emptyStateHtml;
+        return;
+      }
+      toShow.forEach((card, idx) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'one-thing-card';
+        let expiryHtml = '';
+        if (card.type === 'saved') {
+          const daysLeft = Math.ceil((card.expiresAt - now) / (1000 * 60 * 60 * 24));
+          expiryHtml = `<div class="card-expiry">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
+        }
+        let toggleHtml = '';
+
+        if (card.type === 'completed') {
+          toggleHtml = `
+        <div class="toggle-container">
+          <span class="toggle-label">${card.published ? 'Public' : 'Make Public'}</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="toggle-${card.id}" ${card.published ? 'checked' : ''}>
+            <label class="toggle-slider" for="toggle-${card.id}"></label>
+          </div>
+        </div>
+      `;
+        }
+
+        // Get category text
+        const categoryText = getCategoryText(card.category);
+
+        // Check if the image is the default add-photo icon
+        const isDefaultImage = card.imageSrc.includes('add-photo');
+
+        // Create expiry HTML or complete button based on image state
+        let actionHtml = '';
+
+        if (card.type === 'saved') {
+          if (isDefaultImage) {
+            // Show expiry counter for cards without photos
+            const daysLeft = Math.ceil((card.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+            actionHtml = `<div class="card-expiry">${daysLeft} days left</div>`;
+          } else {
+            // Show complete button for cards with photos
+            actionHtml = `<button class="complete-thing-btn" data-card-id="${card.one_thing_user_card_id}">Complete Thing</button>`;
+          }
+        } else if (card.type === 'completed') {
+          // For completed cards, no action button needed - just show the image
+          actionHtml = '';
+        } else {
+          actionHtml = expiryHtml;
+        }
+
+        // Add author name for community cards
+        let authorHtml = '';
+        if (card.type === 'community') {
+          const authorName = card.author_name || card.user_name || 'Anonymous';
+          authorHtml = `<div class="card-author">by ${authorName}</div>`;
+        }
+
+        // Create different HTML for saved vs completed cards
+        let imageHtml = '';
+        if (card.type === 'saved') {
+          // For saved cards, show interactive image upload
+          imageHtml = `
+      <div class="card-image-placeholder">
+        <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif"
+             alt="Add photo"
+             class="add-photo-icon"
+             style="display: ${isDefaultImage ? 'block' : 'none'}"
+             data-card-id="${card.id}">
+        <input type="file" accept="image/*,.heic,.heif" data-card-id="${card.id}">
+        <div class="image-upload-loader" data-card-id="${card.id}">
+          <div class="spinner"></div>
+          <div class="loading-text">Uploading image...</div>
+        </div>
+      </div>`;
+        } else if (card.type === 'completed') {
+          // For completed cards, show static image only
+          imageHtml = `
+      <div class="card-image-placeholder">
+        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
+      </div>`;
+        } else {
+          // For community cards, show static image
+          imageHtml = `
+      <div class="card-image-placeholder">
+        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
+      </div>`;
+        }
+
+        cardEl.innerHTML = `
+      <div class="card-category-tag ${card.category}">${categoryText}</div>
+      ${imageHtml}
+      <h4>${card.title}</h4>
+      <p>${card.description}</p>
+      ${actionHtml}
+      ${toggleHtml}
+      ${authorHtml}
+    `;
+        // Add image upload functionality only for saved cards
+        if (card.type === 'saved') {
+          const placeholder = cardEl.querySelector('.card-image-placeholder');
+          const img = cardEl.querySelector(`img[data-card-id="${card.id}"][alt="Card image"]`);
+          const addPhotoIcon = cardEl.querySelector(`img[data-card-id="${card.id}"].add-photo-icon`);
+          const input = cardEl.querySelector(`input[data-card-id="${card.id}"]`);
+
+          // Set initial classes based on image state
+          if (isDefaultImage) {
+            img.className = 'add-photo-icon';
+          } else {
+            img.className = 'uploaded-image';
+          }
+
+          console.log('Setting up image upload for card:', card.id, 'elements found:', {
+            img: !!img,
+            addPhotoIcon: !!addPhotoIcon,
+            input: !!input
+          });
+
+          input.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+              var userCardId = card.one_thing_user_card_id;
+
+               uploadFile(file)
+                 .then(function(imagePath) {
+                  uploadFileName = imagePath;
+                   const requestBody = {
+                     one_thing_user_card_id: userCardId,
+                     image: imagePath
+                   };
+
+                   return makeApiCall(requestBody, card);
+                 })
+                 .then(function(response) {
+                   console.log("✅ Всё прошло успешно", response);
+                 })
+                 .catch(function(error) {
+                   console.error("❌ Ошибка:", error);
+                 });
+
+
+
+
+
+
+
+              // Show loader
+              const loader = cardEl.querySelector(`.image-upload-loader[data-card-id="${card.id}"]`);
+              const startTime = Date.now();
+              const minLoadTime = 1000; // Minimum 1 second
+
+              if (loader) {
+                loader.classList.add('show');
+              }
+
+              // Function to process image (either HEIC or regular image)
+              const processImage = (imageBlob) => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                  console.log('File processed for card:', card.id);
+
+                  // Calculate how long the loader should be shown
+                  const elapsedTime = Date.now() - startTime;
+                  const remainingTime = Math.max(0, minLoadTime - elapsedTime);
+
+                  setTimeout(() => {
+                    // Hide loader
+                    if (loader) {
+                      loader.classList.remove('show');
+                    }
+
+                    // Update image
+                    img.src = ev.target.result;
+                    img.className = 'uploaded-image';
+                    img.style.display = 'block';
+                    addPhotoIcon.style.display = 'none';
+
+                    if (card.type === 'saved') {
+                      // Update the card's image in saved cards
+                      const savedIndex = savedCards.findIndex(c => c.id === card.id);
+                      if (savedIndex !== -1) {
+                        console.log('Updating saved card image:', card.id);
+                        savedCards[savedIndex].imageSrc = ev.target.result;
+//                          try {
+//                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                          } catch (e) {
+//                            // Clear old data and try again
+//                            localStorage.clear();
+//                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
+//                          }
+
+                        // Re-render the list to show the complete button
+                        renderCardList(currentTypeFilter, currentCategoryFilter);
+                      } else {
+                        console.error('Saved card not found:', card.id);
+                      }
+                    }
+                  }, remainingTime);
+                };
+
+                reader.onerror = () => {
+                  console.error('Error reading file for card:', card.id);
+                  if (loader) {
+                    loader.classList.remove('show');
+                  }
+                };
+
+                reader.readAsDataURL(imageBlob);
+              };
+
+              // Check if file is HEIC/HEIF format
+              const isHeic = file.name.toLowerCase().endsWith('.heic') ||
+                file.name.toLowerCase().endsWith('.heif') ||
+                file.type === 'image/heic' ||
+                file.type === 'image/heif';
+
+              if (isHeic && typeof heic2any !== 'undefined') {
+                console.log('Converting HEIC file to JPEG for card:', card.id);
+
+                // Convert HEIC to JPEG
+                heic2any({
+                  blob: file,
+                  toType: 'image/jpeg',
+                  quality: 0.8
+                }).then(convertedBlob => {
+                  console.log('HEIC converted successfully for card:', card.id);
+                  processImage(convertedBlob);
+                }).catch(error => {
+                  console.error('Error converting HEIC file for card:', card.id, error);
+                  if (loader) {
+                    loader.classList.remove('show');
+                  }
+                  alert('Error converting HEIC image. Please try a different image format.');
+                });
+              } else {
+                // Process regular image file
+                console.log('Processing regular image file for card:', card.id);
+                processImage(file);
+              }
+            }
+          });
+        }
+
+        // Add complete button functionality
+        const completeBtnPopup = cardEl.querySelector('.complete-thing-btn');
+        if (completeBtnPopup) {
+          completeBtnPopup.addEventListener('click', () => {
+            if (card.type === 'saved') {
+              // Move card from saved to completed
+//                const savedIndex = savedCards.findIndex(c => c.id === card.id);
+//                if (savedIndex !== -1) {
+//                  // Remove from saved cards
+//                  savedCards.splice(savedIndex, 1);
+
+
+
+                console.log('complete-thing-btn');
+
+                makeCardCompleted(card.one_thing_user_card_id);
+
+
+
+
+
+
+                // Show success tooltip
+                showSuccessTooltip();
+
+                // Re-render both lists
+                renderCardList(currentTypeFilter, currentCategoryFilter);
+//                }
+            }
+          });
+        }
+
+        // Add toggle switch functionality for completed cards
+        if (card.type === 'completed') {
+
+          console.log('ccccc');
+          const toggle = cardEl.querySelector('input[type="checkbox"]');
+          if (toggle) {
+
+            toggle.addEventListener('change', (e) => {
+
+
+              // Disable toggle during API call
+              toggle.disabled = true;
+
+              if (e.target.checked && !card.published) {
+                // Making public
+                console.log('Showing make-public confirmation for card:', card.id);
+                showConfirmationPopup(card.one_thing_user_card_id, 'make-public');
+              } else if (!e.target.checked && card.published) {
+                // Making private
+                console.log('Showing make-private confirmation for card:', card.id);
+                showConfirmationPopup(card.one_thing_user_card_id, 'make-private');
+              } else {
+                console.log('No action needed - toggle state matches public state');
+              }
+
+              // Reset the toggle to current state until confirmed with smooth animation
+              setTimeout(() => {
+                e.target.checked = card.published;
+                toggle.disabled = false;
+                console.log('Reset toggle for card:', card.id, 'to:', card.published);
+              }, 150);
+            });
+          }
+        }
+
+        cardList.appendChild(cardEl);
+      });
+
+      // Add fade in effect
+      setTimeout(() => {
+        cardList.style.opacity = '1';
+        cardList.style.transform = 'scale(1)';
+      }, 50);
+    });
+  }
+
+  // Update expiry count every hour (refreshes days left)
+  setInterval(() => {
+    renderCardList(currentTypeFilter, currentCategoryFilter);
+  }, 60 * 60 * 1000);
+  // Keep attempts counter updated every minute
+  setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
+
+
+
+//    function loadCards() {
+//      if (!currentSuggestion) return;
+//      const userId = ensureUserId();
+//      if (userId && currentSuggestion.id) {
+//        let user = fetch(API_USERS + '/' + userId, {
+//          method: 'GET',
+//          headers: { 'Content-Type': 'application/json' },
+//        }).catch(err => console.error(err));
+//      }
+//    }
+
+
+
+//    // Load public cards from API on initialization
+//    function loadUserCards() {
+//
+//      const userId = ensureUserId();
+//      if (!userId) {
+//        console.log('No userId found for loadUserCards');
+//        return;
+//      }
+//
+//      fetch(API_USERS + '/' + userId)
+//        .then(response => {
+//          console.log('loadUserCards response status:', response.status);
+//          return response.json();
+//        })
+//        .then(data => {
+//          if (data) {
+//            const usersCards = data.users_cards.map(item => item.card);
+//
+//
+//
+//            console.log('usersCards', usersCards);
+//
+//            const formattedCards = usersCards.map(card => ({
+//              id: card.name, // или card.id, если нужен числовой
+//              title: card.name,
+//              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+//              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+//              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+//              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
+//            }));
+//
+//            savedCards = formattedCards;
+//
+////            localStorage.setItem('savedCards', JSON.stringify(formattedCards));
+//            renderCardList('saved', currentCategoryFilter);
+//          }
+//        })
+//        .catch(error => {
+//          console.error('Error loading public cards:', error);
+//        });
+//    }
+
+
+
+  function loadSavedUserCards() {
+    const userId = ensureUserId();
+    if (!userId) {
+      console.log('No userId');
+      return;
+    }
+
+    fetch(API_USERS + '/' + userId)
+      .then(response => {
+        console.log('loadUserCards response status:', response.status);
+        return response.json();
+      })
+      .then(data => {
+        if (data) {
+          var usersCards = data.users_cards
+            .filter(item => item.completed === false)
+            .map(item => ({
+              ...item.card,
+              expired_at: item.expired_at,
+              one_thing_user_card_id: item.id,
+              completed: item.completed,
+              published: item.published
+            }))
+            .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
+          var formattedCards = usersCards.map(card => ({
+            id: card.id,
+            title: card.name,
+            description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+            category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+            imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif",
+            expiresAt: card.expired_at,
+            one_thing_user_card_id: card.one_thing_user_card_id,
+            completed: card.completed,
+            published: card.published,
+            type: "saved"
+          }));
+          savedCards = formattedCards;
+          renderCardList('saved', currentCategoryFilter);
+        }
+      })
+      .catch(error => {
+        console.error('Error loading public cards:', error);
+      });
+  }
+
+
+   function loadCompletedUserCards() {
+        const userId = ensureUserId();
+        if (!userId) {
+          console.log('No userId');
+          return;
+        }
+
+        fetch(API_USERS + '/' + userId)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            if (data) {
+              var usersCards = data.users_cards
+                .filter(item => item.completed === true) // фильтр по completed
+                .map(item => ({
+                    ...item.card,
+                    expired_at: item.expired_at,
+                    one_thing_user_card_id: item.id,
+                    completed: item.completed,
+                    published: item.published,
+                    imageSrc: item.image
+                  }))
+                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
+              var formattedCards = usersCards.map(card => ({
+                id: card.id,
+                title: card.name,
+                description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                expiresAt: card.expired_at,
+                one_thing_user_card_id: card.one_thing_user_card_id,
+                completed: card.completed,
+                published: card.published,
+                type: "completed"
+              }));
+              savedCards = formattedCards;
+              renderCardList('completed', currentCategoryFilter);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading public cards:', error);
+          });
+  }
+
+   function loadCommunityUserCards() {
+
+        const userId = ensureUserId();
+        if (!userId) {
+          console.log('No userId');
+          return;
+        }
+
+        fetch(API_USERS + '/' + userId)
+          .then(response => {
+            return response.json();
+          })
+          .then(data => {
+            if (data) {
+              var usersCards = data.users_cards
+                .filter(item => item.published === true)
+                .map(item => ({
+                  ...item.card,
+                  expired_at: item.expired_at,
+                  one_thing_user_card_id: item.id,
+                  completed: item.completed,
+                    published: item.published,
+                    imageSrc: item.image
+                }))
+                .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
+
+              var formattedCards = usersCards.map(card => ({
+                id: card.id,
+                  title: card.name,
+                  description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                  category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                  expiresAt: card.expired_at,
+                  one_thing_user_card_id: card.one_thing_user_card_id,
+                  completed: card.completed,
+                  published: card.published,
+                type: "community"
+              }));
+              savedCards = formattedCards;
+              renderCardList('community', currentCategoryFilter);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading public cards:', error);
+          });
+      }
+
+
+
+
+  completedButton.addEventListener('click', () => {
+      loadCompletedUserCards();
+  });
+
+
+  savedButton.addEventListener('click', () => {
+      loadSavedUserCards();
+  });
+
+  communityButton.addEventListener('click', () => {
+      loadCommunityUserCards();
+  });
+
+
+
+
+
+
+  // All Categories Dropdown Functionality
+  function initializeDropdown() {
+    const dropdownTrigger = document.getElementById('all-categories-dropdown');
+    const dropdownMenu = document.getElementById('categories-dropdown-menu');
+    const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+
+    if (!dropdownTrigger || !dropdownMenu) return;
+
+    // Set initial active state based on saved category filter
+    dropdownItems.forEach(item => {
+      if (item.getAttribute('data-category') === currentCategoryFilter) {
+        item.classList.add('selected');
+        dropdownTrigger.querySelector('span').textContent = item.querySelector('span').textContent;
+      } else {
+        item.classList.remove('selected');
+      }
     });
 
-    btnSkip.addEventListener('click', () => {
-      if (currentSuggestion) {
-        completedCards.unshift({
-          ...currentSuggestion,
-          imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'
-        });
-        localStorage.setItem('completedCards', JSON.stringify(completedCards));
-      }
-      decrementAttempts();
+    // Toggle dropdown
+    dropdownTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      console.log('Dropdown clicked, current state:', {
+        isActive: dropdownTrigger.classList.contains('active'),
+        isShow: dropdownMenu.classList.contains('show')
+      });
 
-      // Switch to Completed tab and update UI
-      filterButtons.forEach(b => b.classList.remove('active'));
-      const completedButton = document.querySelector('button[data-filter="completed"]');
-      if (completedButton) {
-        completedButton.classList.add('active');
+      dropdownTrigger.classList.toggle('active');
+      dropdownMenu.classList.toggle('show');
+
+      // Ensure dropdown trigger stays active
+      if (!dropdownMenu.classList.contains('show')) {
+        dropdownTrigger.classList.add('active');
       }
 
-      renderCardList('completed', currentCategoryFilter);
-      hidePopup();
+      console.log('Dropdown state after toggle:', {
+        isActive: dropdownTrigger.classList.contains('active'),
+        isShow: dropdownMenu.classList.contains('show')
+      });
     });
 
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTypeFilter = btn.getAttribute('data-filter');
-        localStorage.setItem('currentTypeFilter', currentTypeFilter);
+    // Handle dropdown item selection
+    dropdownItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const category = item.getAttribute('data-category');
+
+        // Update dropdown trigger text
+        dropdownTrigger.querySelector('span').textContent = item.querySelector('span').textContent;
+
+        // Update active states
+        dropdownItems.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+
+        // Close dropdown but keep trigger active
+        dropdownTrigger.classList.remove('active');
+        dropdownMenu.classList.remove('show');
+
+        // Keep dropdown trigger button always active
+        dropdownTrigger.classList.add('active');
+
+        // Update category filter
+        currentCategoryFilter = category;
+        localStorage.setItem('currentCategoryFilter', category);
+
+        // Trigger filter change using saved type filter
         renderCardList(currentTypeFilter, currentCategoryFilter);
       });
     });
 
-    // Add event listeners for main buttons
-    if (btn) {
-      btn.addEventListener('click', () => {
-        if (attemptsLeft <= 0) return;
-        btn.classList.add('loading');
-        startLoadingAnimation();
-        const context = window.getUserContext ? window.getUserContext() : {};
-        let qs = '?';
-        for (const key in context) {
-          if (context.hasOwnProperty(key)) qs += encodeURIComponent(key) + '=' + encodeURIComponent(context[key]) + '&';
-        }
-        fetch(API_SUGGEST + qs, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json', 'one-thing-session-id': generateUUID() }
-        })
-          .then(res => res.json())
-          .then(data => {
-            btn.classList.remove('loading');
-            stopLoadingAnimation();
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownTrigger.classList.remove('active');
+        dropdownMenu.classList.remove('show');
 
-            console.log('API response debug:', data);
-
-            currentSuggestion = {
-              id: data.id || data.card_id || data.cardId || data.card?.id || data.item?.id || data.thing?.id || data.name || 'generated-' + Date.now(),
-              title: data.title || data.name || 'No Tip This Time',
-              description: data.description || 'Sometimes even the best advice needs a rest. Come back later.',
-              category: data.category || data.card?.category || data.item?.category || data.thing?.category || 'places'
-            };
-
-            console.log('Current suggestion debug:', currentSuggestion);
-
-            showPopup(currentSuggestion);
-          })
-          .catch(err => {
-            btn.classList.remove('loading');
-            stopLoadingAnimation();
-            console.error(err);
-          });
-      });
-    }
-
-    if (btnSave) {
-      btnSave.addEventListener('click', () => {
-        if (!currentSuggestion) return;
-        const userId = ensureUserId();
-        if (userId && currentSuggestion.id) {
-          fetch(API_SAVE, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id })
-          }).catch(err => console.error(err));
-        }
-        // Add expiry timestamp with default image and full card structure
-        const newCard = {
-          ...currentSuggestion,
-          id: currentSuggestion.id || 'card-' + Date.now(),
-          type: 'saved', // Explicitly set type for proper UI rendering
-          imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
-          expiresAt: Date.now() + EXPIRY_MS,
-          remixCount: 0,
-          remix_count: 0, // Also add the snake_case version for compatibility
-          isPublic: false,
-          authorId: ensureUserId(),
-          author_id: ensureUserId(), // Also add the snake_case version for compatibility
-          createdAt: Date.now()
-        };
-        
-        savedCards.unshift(newCard);
-        localStorage.setItem('savedCards', JSON.stringify(savedCards));
-        
-        // Add XP for saving a card
-        addXP(XP_REWARDS.saveCard, 'Saved a new card');
-        
-        decrementAttempts();
-
-        // Switch to Saved tab and update UI
-        filterButtons.forEach(b => b.classList.remove('active'));
-        const savedButton = document.querySelector('button[data-filter="saved"]');
-        if (savedButton) {
-          savedButton.classList.add('active');
-        }
-
-        // Force re-render to ensure new card has all UI elements
-        setTimeout(() => {
-          renderCardList('saved', currentCategoryFilter);
-        }, 100);
-        
-        hidePopup();
-      });
-    }
-
-    if (btnSkip) {
-      btnSkip.addEventListener('click', () => {
-        if (currentSuggestion) {
-          const newCompletedCard = {
-            ...currentSuggestion,
-            id: currentSuggestion.id || 'card-' + Date.now(),
-            type: 'completed', // Explicitly set type for proper UI rendering
-            imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
-            completedAt: Date.now(),
-            remixCount: 0,
-            remix_count: 0, // Also add the snake_case version for compatibility
-            isPublic: false,
-            authorId: ensureUserId(),
-            author_id: ensureUserId(), // Also add the snake_case version for compatibility
-            createdAt: Date.now()
-          };
-          
-          completedCards.unshift(newCompletedCard);
-          localStorage.setItem('completedCards', JSON.stringify(completedCards));
-        }
-        decrementAttempts();
-
-        // Switch to Completed tab and update UI
-        filterButtons.forEach(b => b.classList.remove('active'));
-        const completedButton = document.querySelector('button[data-filter="completed"]');
-        if (completedButton) {
-          completedButton.classList.add('active');
-        }
-
-        // Force re-render to ensure new card has all UI elements
-        setTimeout(() => {
-          renderCardList('completed', currentCategoryFilter);
-        }, 100);
-        
-        hidePopup();
-      });
-    }
-
-    // Remove ability to close popup by clicking outside or escape key
-    // User must choose either Save or Skip to proceed
-
-    function showPopup(card) {
-      // Set category and icon based on card data
-      const category = card.category || 'places'; // Default to places if not specified
-      const categoryText = getCategoryText(category);
-      const categoryIcon = getCategoryIcon(category);
-
-      console.log('Popup category debug:', {
-        originalCategory: card.category,
-        finalCategory: category,
-        categoryText: categoryText,
-        pillClass: 'popup-category-pill ' + category
-      });
-
-      // Update popup content
-      const categoryPill = document.getElementById('popup-category');
-      const categoryTextElement = document.getElementById('popup-category-text');
-      const categoryImage = document.getElementById('popup-category-image');
-
-      categoryTextElement.textContent = categoryText;
-      categoryImage.src = categoryIcon;
-      popupTitle.textContent = card.title;
-      popupDesc.textContent = card.description;
-
-      // Update pill classes based on category
-      const categoryClass = category.toLowerCase().replace(/\s+/g, '-');
-      categoryPill.className = 'popup-category-pill ' + categoryClass;
-
-      // Ensure popup is positioned correctly
-      const popupElement = document.getElementById('one-thing-popup');
-      popupElement.style.position = 'fixed';
-      popupElement.style.top = '0';
-      popupElement.style.left = '0';
-      popupElement.style.width = '100vw';
-      popupElement.style.height = '100vh';
-      popupElement.style.zIndex = '999999';
-
-      // Show popup with animation
-      popup.classList.add('show');
-    }
-
-    function hidePopup() {
-      popup.classList.remove('show');
-      currentSuggestion = null;
-    }
-
-    function getCategoryText(category) {
-      const categories = {
-        'places': 'Places',
-        'daily': 'Daily Things',
-        'local': 'Local Context',
-        'DAILY THINGS': 'Daily Things',
-        'PLACES': 'Places',
-        'LOCAL CONTEXT': 'Local Context'
-      };
-      return categories[category] || 'Places';
-    }
-
-    function getCategoryIcon(category) {
-      const icons = {
-        'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
-        'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
-        'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif',
-        'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
-        'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
-        'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif'
-      };
-      return icons[category] || icons['places'];
-    }
-
-    function decrementAttempts() {
-      attemptsLeft--;
-      localStorage.setItem('attemptsLeftAccount', attemptsLeft);
-      localStorage.setItem('resetTimeAccount', resetTime);
-      updateCounterUI();
-    }
-    // Loading phrases for dynamic text
-    const loadingPhrases = [
-      "Gathering one thing…",
-      "Asking locals for secrets…",
-      "Digging for hidden gems…",
-      "Searching cozy nooks…",
-      "Extracting calm in chaos…",
-      "Sneaking past tourist traps…"
-    ];
-
-    let currentLoadingIndex = 0;
-    let loadingInterval = null;
-
-    function updateCounterUI() {
-      const oneThingBtn = document.getElementById('one-thing-btn');
-
-      if (attemptsLeft > 0) {
-        attemptsCounter.textContent = `${attemptsLeft} / ${MAX_ATTEMPTS} left today`;
-        attemptsCounter.classList.remove('no-attempts');
-        oneThingBtn.classList.remove('inactive');
-      } else {
-        attemptsCounter.textContent = `Next in: ${getTimeLeft()}`;
-        attemptsCounter.classList.add('no-attempts');
-        oneThingBtn.classList.add('inactive');
+        // Keep dropdown trigger button always active
+        dropdownTrigger.classList.add('active');
       }
-    }
+    });
 
-    function startLoadingAnimation() {
-      currentLoadingIndex = 0;
-      attemptsCounter.textContent = loadingPhrases[0];
-      attemptsCounter.classList.remove('no-attempts');
+    // Close dropdown on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        dropdownTrigger.classList.remove('active');
+        dropdownMenu.classList.remove('show');
 
-      loadingInterval = setInterval(() => {
-        currentLoadingIndex = (currentLoadingIndex + 1) % loadingPhrases.length;
-        attemptsCounter.textContent = loadingPhrases[currentLoadingIndex];
-      }, 2000);
-    }
-
-    function stopLoadingAnimation() {
-      if (loadingInterval) {
-        clearInterval(loadingInterval);
-        loadingInterval = null;
+        // Keep dropdown trigger button always active
+        dropdownTrigger.classList.add('active');
       }
-      updateCounterUI();
-    }
-    function getMidnightTimestamp() {
-      const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime();
-    }
-    function getTimeLeft() {
-      const dist = resetTime - Date.now();
-      if (dist <= 0) {
-        resetTime = getMidnightTimestamp();
-        attemptsLeft = MAX_ATTEMPTS;
-        localStorage.setItem('attemptsLeftAccount', attemptsLeft);
-        localStorage.setItem('resetTimeAccount', resetTime);
-        return '00h 00m';
-      }
-      const h = Math.floor(dist / (1000 * 60 * 60));
-      const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-      return `${h}h ${m}m`;
-    }
-    function generateUUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-    }
+    });
+  }
+
+  // Add global test functions for easy testing
+  window.setTestUserId = setTestUserId;
+  window.getCurrentUserId = function() {
+    return localStorage.getItem('userId');
+  };
+  
+  // Function to reset and reload with new userId
+  window.resetWithUserId = function(userId) {
+    console.log('🔄 Resetting with userId:', userId);
+    localStorage.clear();
+    setTestUserId(userId);
+    location.reload();
+  };
+
+  console.log('🧪 Test functions available:');
+  console.log('  - setTestUserId(userId) - установить тестовый userId');
+  console.log('  - getCurrentUserId() - получить текущий userId');
+  console.log('  - resetWithUserId(userId) - сбросить и перезагрузить с новым userId');
+  console.log('🧪 Current test userId:', getCurrentUserId());
+  console.log('💡 To change userId, use: resetWithUserId(newUserId)');
+
+})();
 
-    function showSuccessTooltip(message = 'Thing completed! 🎉') {
-      const tooltip = document.getElementById('success-tooltip');
-      if (tooltip) {
-        const messageSpan = tooltip.querySelector('span');
-        if (messageSpan) {
-          messageSpan.textContent = message;
-        }
-        tooltip.classList.add('show');
-        console.log('Success tooltip shown:', message);
 
-        setTimeout(() => {
-          tooltip.classList.remove('show');
-          console.log('Success tooltip hidden');
-        }, 3000);
-      } else {
-        console.error('Success tooltip element not found');
-      }
-    }
 
-    function highlightCard(cardId) {
-      const cardElement = document.querySelector(`[data-card-id="${cardId}"]`);
-      if (cardElement) {
-        cardElement.classList.add('highlight');
-        console.log('🎨 Highlighting card:', cardId);
-        
-        setTimeout(() => {
-          cardElement.classList.remove('highlight');
-          console.log('🎨 Removed highlight from card:', cardId);
-        }, 2000);
-      } else {
-        console.log('⚠️ Card element not found for highlighting:', cardId);
-      }
-    }
 
-    function showErrorTooltip(message = 'An error occurred') {
-      const tooltip = document.getElementById('error-tooltip');
-      if (tooltip) {
-        const messageSpan = tooltip.querySelector('span');
-        if (messageSpan) {
-          messageSpan.textContent = message;
-        }
-        tooltip.classList.add('show');
-        console.log('Error tooltip shown:', message);
-
-        setTimeout(() => {
-          tooltip.classList.remove('show');
-          console.log('Error tooltip hidden');
-        }, 4000); // Show error for 4 seconds
-      } else {
-        console.error('Error tooltip element not found');
-      }
-    }
-
-    function validateImageFile(file) {
-      // Check file size
-      if (file.size > MAX_FILE_SIZE) {
-        const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-        const maxMB = (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0);
-        return {
-          isValid: false,
-          error: `File too large (${sizeMB}MB). Maximum size is ${maxMB}MB.`
-        };
-      }
-
-      // Check file type
-      const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-      const isAllowedType = ALLOWED_IMAGE_TYPES.includes(file.type) || 
-                           ALLOWED_IMAGE_EXTENSIONS.includes(fileExtension);
-
-      if (!isAllowedType) {
-        return {
-          isValid: false,
-          error: `Unsupported file format. Please use: ${ALLOWED_IMAGE_EXTENSIONS.join(', ')}`
-        };
-      }
-
-      return { isValid: true };
-    }
-
-    function showConfirmationPopup(cardId, action) {
-      console.log('showConfirmationPopup called:', cardId, action);
-
-      const card = completedCards.find(c => c.id === cardId);
-      if (!card) {
-        console.log('Card not found in completedCards:', cardId);
-        return;
-      }
-
-      const titleEl = document.getElementById('confirmation-title');
-      const descriptionEl = document.getElementById('confirmation-description');
-      const confirmBtn = document.getElementById('confirmation-confirm');
-
-      console.log('Found elements:', { titleEl: !!titleEl, descriptionEl: !!descriptionEl, confirmBtn: !!confirmBtn });
-
-      if (action === 'make-public') {
-        titleEl.textContent = 'Make Thing Public?';
-        descriptionEl.textContent = 'This will make your completed thing visible to the community. Other users will be able to see and get inspired by your experience.';
-        confirmBtn.textContent = 'Make Thing Public';
-      } else if (action === 'make-private') {
-        titleEl.textContent = 'Make Thing Private?';
-        descriptionEl.innerHTML = 'Are you sure you want to remove this from the community? <br><br><strong>Your experience could inspire others!</strong> 🌟<br><br>By keeping it public, you\'re helping create a vibrant community of people sharing their adventures and discoveries.';
-        confirmBtn.textContent = 'Make Private';
-      }
-
-      // Store the card ID and action for confirmation
-      const popup = document.getElementById('confirmation-popup');
-      if (popup) {
-        popup.dataset.cardId = cardId;
-        popup.dataset.action = action;
-        popup.classList.add('show');
-        console.log('Popup shown with data:', { cardId, action });
-        console.log('Popup dataset after setting:', popup.dataset);
-      } else {
-        console.error('Confirmation popup element not found');
-      }
-    }
-
-    function hideConfirmationPopup() {
-      document.getElementById('confirmation-popup').classList.remove('show');
-      delete document.getElementById('confirmation-popup').dataset.cardId;
-      delete document.getElementById('confirmation-popup').dataset.action;
-    }
-
-    // Global functions for empty state buttons
-    function scrollToGetOneThing() {
-      const oneThingBtn = document.getElementById('one-thing-btn');
-      if (oneThingBtn) {
-        oneThingBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-
-    function showReferralPopup() {
-      const userId = ensureUserId();
-      const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
-
-      document.getElementById('referral-code').textContent = referralCode;
-      document.getElementById('referral-popup').classList.add('show');
-    }
-
-    function hideReferralPopup() {
-      document.getElementById('referral-popup').classList.remove('show');
-    }
-
-    function copyReferralLink() {
-      const userId = ensureUserId();
-      const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
-      const fullLink = `https://globio.io/ref/${referralCode}`;
-
-      navigator.clipboard.writeText(fullLink).then(() => {
-        const copyBtn = document.getElementById('copy-referral-btn');
-        copyBtn.textContent = 'Copied!';
-        copyBtn.classList.add('copied');
-
-        setTimeout(() => {
-          copyBtn.textContent = 'Copy';
-          copyBtn.classList.remove('copied');
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        alert('Failed to copy link. Please copy manually.');
-      });
-    }
-
-    // Remix functionality
-    function showRemixConfirmationPopup(cardId, card) {
-      console.log('showRemixConfirmationPopup called:', cardId, card);
-
-      const titleEl = document.getElementById('remix-confirmation-title');
-      const descriptionEl = document.getElementById('remix-confirmation-description');
-
-      if (titleEl && descriptionEl) {
-        titleEl.textContent = 'Remix this card?';
-        descriptionEl.textContent = 'It will be added to Saved and a timer will be activated for completion.';
-
-        // Store the card data for confirmation
-        const popup = document.getElementById('remix-confirmation-popup');
-        if (popup) {
-          popup.dataset.cardId = cardId;
-          popup.dataset.cardData = JSON.stringify(card);
-          popup.classList.add('show');
-          console.log('Remix popup shown with data:', { cardId, card });
-        }
-      }
-    }
-
-    function hideRemixConfirmationPopup() {
-      const popup = document.getElementById('remix-confirmation-popup');
-      if (popup) {
-        popup.classList.remove('show');
-        delete popup.dataset.cardId;
-        delete popup.dataset.cardData;
-      }
-    }
-
-    function remixCard(cardId, card) {
-      console.log('remixCard called:', cardId, card);
-
-      // Create a new card for the current user
-      const newCard = {
-        ...card,
-        id: cardId + '_remix_' + Date.now(), // Create unique ID for the remix
-        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
-        expiresAt: Date.now() + EXPIRY_MS,
-        remixed_from: cardId, // Track the original card
-        remixed_at: Date.now(),
-        remix_count: 0 // Reset remix count for the new card
-      };
-
-      // Add to saved cards
-      savedCards.unshift(newCard);
-      try {
-        localStorage.setItem('savedCards', JSON.stringify(savedCards));
-      } catch (e) {
-        console.warn('localStorage quota exceeded, clearing old data');
-        localStorage.clear();
-        localStorage.setItem('savedCards', JSON.stringify(savedCards));
-      }
-
-      // Update remix count on the original card
-      updateRemixCount(cardId);
-
-      // Add XP for remixing a card
-      addXP(XP_REWARDS.remixCard, 'Remixed a card');
-
-      // Show success tooltip
-      showSuccessTooltip('Thing Remixed! ✨');
-
-      // Highlight the original card that was remixed
-      highlightCard(cardId);
-
-      // Re-render the list (no automatic tab switch for remix)
-      renderCardList(currentTypeFilter, currentCategoryFilter);
-
-      console.log('Card remixed successfully:', newCard);
-    }
-
-    function updateRemixCount(cardId) {
-      // Find the card in publicCards and update its remix count
-      const cardIndex = publicCards.findIndex(c => c.id === cardId);
-      if (cardIndex !== -1) {
-        publicCards[cardIndex].remix_count = (publicCards[cardIndex].remix_count || 0) + 1;
-        try {
-          localStorage.setItem('publicCards', JSON.stringify(publicCards));
-        } catch (e) {
-          console.warn('localStorage quota exceeded, clearing old data');
-          localStorage.clear();
-          localStorage.setItem('publicCards', JSON.stringify(publicCards));
-        }
-        console.log('Updated remix count for card:', cardId, 'new count:', publicCards[cardIndex].remix_count);
-        
-        // Check if this is the current user's card and give XP
-        const currentUserId = ensureUserId();
-        if (publicCards[cardIndex].user_id === currentUserId || 
-            publicCards[cardIndex].one_thing_users_id === currentUserId) {
-          addXP(XP_REWARDS.getRemixed, 'Your card was remixed!');
-        }
-      }
-
-      // Also update the count in completedCards if the card exists there
-      const completedCardIndex = completedCards.findIndex(c => c.id === cardId);
-      if (completedCardIndex !== -1) {
-        completedCards[completedCardIndex].remix_count = (completedCards[completedCardIndex].remix_count || 0) + 1;
-        try {
-          localStorage.setItem('completedCards', JSON.stringify(completedCards));
-        } catch (e) {
-          console.warn('localStorage quota exceeded, clearing old data');
-          localStorage.clear();
-          localStorage.setItem('completedCards', JSON.stringify(completedCards));
-        }
-        console.log('Updated remix count in completedCards for card:', cardId, 'new count:', completedCards[completedCardIndex].remix_count);
-      }
-    }
-
-    function showCommunityEmptyPopup() {
-      const userId = ensureUserId();
-      const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
-
-      document.getElementById('community-referral-code').textContent = referralCode;
-      document.getElementById('community-empty-popup').classList.add('show');
-    }
-
-    function hideCommunityEmptyPopup() {
-      document.getElementById('community-empty-popup').classList.remove('show');
-    }
-
-    function copyCommunityReferralLink() {
-      const userId = ensureUserId();
-      const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
-      const fullLink = `https://globio.io/ref/${referralCode}`;
-
-      navigator.clipboard.writeText(fullLink).then(() => {
-        const copyBtn = document.getElementById('copy-community-referral-btn');
-        copyBtn.textContent = 'Copied!';
-        copyBtn.classList.add('copied');
-
-        setTimeout(() => {
-          copyBtn.textContent = 'Copy';
-          copyBtn.classList.remove('copied');
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        alert('Failed to copy link. Please copy manually.');
-      });
-    }
-
-    function makeCardPublic(cardId) {
-      console.log('=== makeCardPublic called ===');
-      console.log('cardId:', cardId);
-      console.log('completedCards length:', completedCards.length);
-      console.log('completedCards:', completedCards);
-
-      const card = completedCards.find(c => c.id === cardId);
-      if (!card) {
-        console.error('❌ Card not found in completedCards:', cardId);
-        console.log('Available card IDs:', completedCards.map(c => c.id));
-        return;
-      }
-
-      console.log('✅ Found card:', card);
-
-      // Get user ID from localStorage (ensure it exists)
-      const userId = ensureUserId();
-      console.log('✅ userId for API call:', userId);
-
-      console.log('✅ Making card public:', cardId, 'for user:', userId);
-
-      // Send API request to make card public
-      const requestBody = {
-        one_thing_users_id: userId,
-        one_thing_cards_id: cardId
-      };
-
-      console.log('Request body:', requestBody);
-      makeApiCall(requestBody, card);
-    }
-
-    function makeApiCall(requestBody, card) {
-      console.log('=== Making API call ===');
-      console.log('API URL:', 'https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards');
-      console.log('Request body:', requestBody);
-
-      fetch('https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      })
-        .then(response => {
-          console.log('✅ API response status:', response.status);
-          console.log('✅ API response headers:', response.headers);
-
-          if (!response.ok) {
-            console.error('❌ API response not ok:', response.status, response.statusText);
-            throw new Error(`Failed to make card public: ${response.status} ${response.statusText}`);
-          }
-
-          return response.json();
-        })
-        .then(data => {
-          console.log('✅ API response data:', data);
-
-          // Add to public cards if not already there
-          const cardId = requestBody.one_thing_cards_id;
-          if (!publicCards.some(pc => pc.id === cardId)) {
-            // Add author information to the card
-            const userInfo = JSON.parse(localStorage.getItem('auth') || '{}');
-            const authorName = userInfo.name || userInfo.username || 'Anonymous';
-
-            const publicCard = {
-              ...card,
-              author_name: authorName,
-              user_name: authorName
-            };
-
-            publicCards.unshift(publicCard);
-            console.log('✅ Added card to publicCards:', cardId, 'with author:', authorName);
-            try {
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            } catch (e) {
-              console.warn('localStorage quota exceeded, clearing old data');
-              localStorage.clear();
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            }
-          } else {
-            console.log('ℹ️ Card already in publicCards:', cardId);
-          }
-
-          // Re-render the list with smooth transition
-          console.log('🔄 Re-rendering with filter:', currentTypeFilter);
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-
-          // Re-enable toggle and update its state
-          const toggle = document.querySelector(`#toggle-${cardId}`);
-          if (toggle) {
-            toggle.disabled = false;
-            toggle.checked = true; // Ensure toggle shows as checked
-            console.log('✅ Updated toggle state for card:', cardId);
-          } else {
-            console.log('⚠️ Toggle not found for card:', cardId);
-          }
-
-          // Add XP for making card public
-          addXP(XP_REWARDS.makePublic, 'Made card public');
-
-          // Show success tooltip
-          showSuccessTooltip('Thing is Public! 🌟');
-          
-          // Highlight the card that was made public
-          highlightCard(cardId);
-          
-          console.log('🎉 Successfully made card public!');
-        })
-        .catch(error => {
-          console.error('❌ Error making card public:', error);
-          console.error('❌ Error details:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-          });
-
-          const cardId = requestBody.one_thing_cards_id;
-
-          // For local testing, simulate success if API is unavailable
-          if (error.message.includes('Failed to fetch') ||
-            error.message.includes('ERR_NAME_NOT_RESOLVED') ||
-            error.message.includes('NetworkError') ||
-            error.message.includes('CORS')) {
-            console.log('🌐 API unavailable, simulating success for local testing');
-
-            // Add to public cards if not already there
-            if (!publicCards.some(pc => pc.id === cardId)) {
-              // Add author information to the card
-              const userInfo = JSON.parse(localStorage.getItem('auth') || '{}');
-              const authorName = userInfo.name || userInfo.username || 'Anonymous';
-
-              const publicCard = {
-                ...card,
-                author_name: authorName,
-                user_name: authorName
-              };
-
-              publicCards.unshift(publicCard);
-              console.log('✅ Added card to publicCards (local):', cardId, 'with author:', authorName);
-              try {
-                localStorage.setItem('publicCards', JSON.stringify(publicCards));
-              } catch (e) {
-                console.warn('localStorage quota exceeded, clearing old data');
-                localStorage.clear();
-                localStorage.setItem('publicCards', JSON.stringify(publicCards));
-              }
-            }
-
-            // Re-render the list
-            renderCardList(currentTypeFilter, currentCategoryFilter);
-
-            // Re-enable toggle and update its state
-            const toggle = document.querySelector(`#toggle-${cardId}`);
-            if (toggle) {
-              toggle.disabled = false;
-              toggle.checked = true;
-              console.log('✅ Updated toggle state for card (local):', cardId);
-            }
-
-            // Show success tooltip
-            showSuccessTooltip('Thing is Public! 🌟');
-            
-            // Highlight the card that was made public
-            highlightCard(cardId);
-            
-            console.log('🎉 Successfully made card public (local)!');
-
-            return;
-          }
-
-          // Show error message to user for other errors
-          console.error('❌ API error, showing alert to user');
-          alert(`Failed to make card public: ${error.message}. Please try again.`);
-
-          // Re-enable toggle on error
-          const toggle = document.querySelector(`#toggle-${cardId}`);
-          if (toggle) {
-            toggle.disabled = false;
-            toggle.checked = false; // Reset to private state
-            console.log('🔄 Reset toggle to private state due to error');
-          }
-        });
-    }
-
-    function makeCardPrivate(cardId) {
-      const card = completedCards.find(c => c.id === cardId);
-      if (!card) return;
-
-      // Get user ID from localStorage (ensure it exists)
-      const userId = ensureUserId();
-      if (!userId) {
-        console.error('❌ No userId available for makeCardPrivate');
-        return;
-      }
-
-      // Send API request to make card private (delete from public cards)
-      fetch(`https://x8ki-letl-twmt.n7.xano.app/api:WwQO8F8F/one_thing_public_cards?one_thing_users_id=${userId}&one_thing_cards_id=${cardId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to make card private');
-          }
-          return response.json();
-        })
-        .then(data => {
-
-          // Remove from public cards
-          publicCards = publicCards.filter(pc => pc.id !== cardId);
-          try {
-            localStorage.setItem('publicCards', JSON.stringify(publicCards));
-          } catch (e) {
-            console.warn('localStorage quota exceeded, clearing old data');
-            localStorage.clear();
-            localStorage.setItem('publicCards', JSON.stringify(publicCards));
-          }
-
-          // Re-render the list with smooth transition
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-
-          // Re-enable toggle and update its state
-          const toggle = document.querySelector(`#toggle-${cardId}`);
-          if (toggle) {
-            toggle.disabled = false;
-            toggle.checked = false; // Ensure toggle shows as unchecked
-            console.log('✅ Updated toggle state for card:', cardId);
-          } else {
-            console.log('⚠️ Toggle not found for card:', cardId);
-          }
-
-          // Show success tooltip
-          showSuccessTooltip('Thing is Private! 🔒');
-          
-          // Highlight the card that was made private
-          highlightCard(cardId);
-          
-          console.log('🎉 Successfully made card private!');
-        })
-        .catch(error => {
-          console.error('❌ Error making card private:', error);
-          console.error('❌ Error details:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-          });
-
-          // For local testing, simulate success if API is unavailable
-          if (error.message.includes('Failed to fetch') ||
-            error.message.includes('ERR_NAME_NOT_RESOLVED') ||
-            error.message.includes('NetworkError') ||
-            error.message.includes('CORS')) {
-            console.log('🌐 API unavailable, simulating success for local testing');
-
-            // Remove from public cards
-            publicCards = publicCards.filter(pc => pc.id !== cardId);
-            try {
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            } catch (e) {
-              console.warn('localStorage quota exceeded, clearing old data');
-              localStorage.clear();
-              localStorage.setItem('publicCards', JSON.stringify(publicCards));
-            }
-
-            // Re-render the list
-            renderCardList(currentTypeFilter, currentCategoryFilter);
-
-            // Re-enable toggle and update its state
-            const toggle = document.querySelector(`#toggle-${cardId}`);
-            if (toggle) {
-              toggle.disabled = false;
-              toggle.checked = false;
-              console.log('✅ Updated toggle state for card (local):', cardId);
-            }
-
-            // Show success tooltip
-            showSuccessTooltip('Thing is Private! 🔒');
-            
-            // Highlight the card that was made private
-            highlightCard(cardId);
-            
-            console.log('🎉 Successfully made card private (local)!');
-
-            return;
-          }
-
-          // Show error message to user for other errors
-          console.error('❌ API error, showing alert to user');
-          alert(`Failed to make card private: ${error.message}. Please try again.`);
-
-          // Re-enable toggle on error
-          const toggle = document.querySelector(`#toggle-${cardId}`);
-          if (toggle) {
-            toggle.disabled = false;
-            toggle.checked = true; // Reset to public state
-            console.log('🔄 Reset toggle to public state due to error');
-          }
-        });
-    }
-
-    function renderCardList(filter = 'all', categoryFilter = 'all') {
-      console.log('🔄 renderCardList called with:', { filter, categoryFilter });
-      
-      // Add fade out effect
-      cardList.style.opacity = '0.7';
-      cardList.style.transform = 'scale(0.98)';
-      cardList.style.transition = 'all 0.2s ease';
-
-      setTimeout(() => {
-        cardList.innerHTML = '';
-        // Remove expired saved cards
-        const now = Date.now();
-        savedCards = savedCards.filter(card => card.expiresAt > now);
-        localStorage.setItem('savedCards', JSON.stringify(savedCards));
-        let toShow = [];
-
-        // Filter by type (saved/completed/community)
-        if (filter === 'saved' || filter === 'all') {
-          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved' })));
-        }
-        if (filter === 'completed' || filter === 'all') {
-          toShow = toShow.concat(completedCards.map(c => ({ ...c, type: 'completed' })));
-        }
-        if (filter === 'community' || filter === 'all') {
-          toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
-        }
-
-        console.log('📊 Cards before category filter:', {
-          saved: savedCards.length,
-          completed: completedCards.length,
-          community: publicCards.length,
-          total: toShow.length
-        });
-
-        // Filter by category
-        if (categoryFilter !== 'all') {
-          toShow = toShow.filter(card => card.category === categoryFilter);
-        }
-
-        console.log('📊 Cards after category filter:', {
-          categoryFilter,
-          total: toShow.length,
-          categories: [...new Set(toShow.map(card => card.category))]
-        });
-
-        // Debug: Check if we have any cards at all
-        console.log('🔍 Debug card counts:', {
-          savedCards: savedCards.length,
-          completedCards: completedCards.length,
-          publicCards: publicCards.length,
-          filter: filter,
-          categoryFilter: categoryFilter
-        });
-
-        // Debug: Show first few cards if any
-        if (toShow.length > 0) {
-          console.log('🔍 First 3 cards:', toShow.slice(0, 3).map(card => ({
-            id: card.id,
-            title: card.title,
-            category: card.category,
-            type: card.type
-          })));
-        }
-
-        if (toShow.length === 0) {
-          let emptyStateHtml = '';
-
-          if (filter === 'saved') {
-            emptyStateHtml = `
-          <div class="empty-state">
-            <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
-            <h3>No saved things yet</h3>
-            <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
-            <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
-          </div>`;
-          } else if (filter === 'completed') {
-            emptyStateHtml = `
-          <div class="empty-state">
-            <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
-            <h3>No completed things yet</h3>
-            <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
-            <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
-          </div>`;
-          } else if (filter === 'community') {
-            emptyStateHtml = `
-          <div class="empty-state">
-            <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6894a725c6e8a617ce6d1fe2_no-things-community.svg" alt="">
-            <h3>No community contributions yet</h3>
-            <p>Here you'll see all the things completed by the Globio community in your area—helpful tips and experiences, tailored to your current location.</p>
-            <button class="empty-state-btn" onclick="showCommunityEmptyPopup()">Invite a Friend</button>
-          </div>`;
-          } else {
-            emptyStateHtml = `
-          <div class="empty-state">
-            <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68949b2379142ee1bc95f3f2_6cd31bde078d550f5278843c00331b47_no-things-yet.svg" alt="">
-            <h3>No saved things yet</h3>
-            <p>This space will become a reflection of your progress, unique discoveries, and the helpful advice you've gathered along the way.</p>
-            <button class="empty-state-btn" onclick="scrollToGetOneThing()">Get One Thing</button>
-          </div>`;
-          }
-
-          cardList.innerHTML = emptyStateHtml;
-          return;
-        }
-        toShow.forEach((card, idx) => {
-          const cardEl = document.createElement('div');
-          cardEl.className = 'one-thing-card';
-          cardEl.setAttribute('data-card-id', card.id);
-          let expiryHtml = '';
-          if (card.type === 'saved') {
-            const daysLeft = Math.ceil((card.expiresAt - now) / (1000 * 60 * 60 * 24));
-            expiryHtml = `<div class="card-expiry">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
-          }
-          let toggleHtml = '';
-
-          if (card.type === 'completed') {
-            const isPublic = publicCards.some(pc => pc.id === card.id);
-            const remixCount = card.remix_count || 0;
-            console.log('Rendering completed card:', card.id, 'isPublic:', isPublic, 'remixCount:', remixCount);
-            toggleHtml = `
-          <div class="toggle-container">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="toggle-label">${isPublic ? 'Public' : 'Make Public'}</span>
-              ${remixCount > 0 ? `
-              <div class="remix-counter">
-                <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b32756162a977fcb5770aa_remix-icon.svg" alt="Remix" class="remix-counter-icon">
-                <span>${remixCount}</span>
-              </div>
-              ` : ''}
-            </div>
-            <div class="toggle-switch">
-              <input type="checkbox" id="toggle-${card.id}" ${isPublic ? 'checked' : ''}>
-              <label class="toggle-slider" for="toggle-${card.id}"></label>
-            </div>
-          </div>
-        `;
-          }
-
-          // Get category text
-          const categoryText = getCategoryText(card.category);
-
-          // Check if the image is the default add-photo icon
-          const isDefaultImage = card.imageSrc.includes('add-photo');
-
-          // Create expiry HTML or complete button based on image state
-          let actionHtml = '';
-          if (card.type === 'saved') {
-            if (isDefaultImage) {
-              // Show expiry counter for cards without photos
-              const daysLeft = Math.ceil((card.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
-              actionHtml = `<div class="card-expiry">${daysLeft} days left</div>`;
-            } else {
-              // Show complete button for cards with photos
-              actionHtml = `<button class="complete-thing-btn" data-card-id="${card.id}">Complete Thing</button>`;
-            }
-          } else if (card.type === 'completed') {
-            // For completed cards, no action button needed - just show the image
-            actionHtml = '';
-          } else if (card.type === 'community') {
-            // For community cards, no action button needed - it's in the footer
-            actionHtml = '';
-          } else {
-            actionHtml = expiryHtml;
-          }
-
-          // Add author name for community cards and remix count for completed cards
-          let authorHtml = '';
-          if (card.type === 'community') {
-            const authorName = card.author_name || card.user_name || 'Anonymous';
-            const remixCount = card.remix_count || 0;
-            const currentUserId = ensureUserId();
-            const isOwnCard = card.user_id === currentUserId;
-            
-            // Debug logging
-            console.log('🔍 Community card check:', {
-              cardId: card.id,
-              cardUserId: card.user_id,
-              currentUserId: currentUserId,
-              isOwnCard: isOwnCard,
-              authorName: authorName
-            });
-            
-            if (!isOwnCard) {
-              authorHtml = `
-                <div class="community-card-footer">
-                  <div class="community-card-author">by ${authorName}</div>
-                  <div class="remix-section">
-                    ${remixCount > 0 ? `
-                    <div class="remix-counter">
-                      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b32756162a977fcb5770aa_remix-icon.svg" alt="Remix" class="remix-counter-icon">
-                      <span>${remixCount}</span>
-                    </div>
-                    ` : ''}
-                    <button class="remix-btn" data-card-id="${card.id}">Remix</button>
-                  </div>
-                </div>`;
-            } else {
-              authorHtml = `
-                <div class="community-card-footer">
-                  <div class="community-card-author">by You</div>
-                  <div class="remix-section">
-                    ${remixCount > 0 ? `
-                    <div class="remix-counter">
-                      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b32756162a977fcb5770aa_remix-icon.svg" alt="Remix" class="remix-counter-icon">
-                      <span>${remixCount}</span>
-                    </div>
-                    ` : ''}
-                    <button class="your-thing-btn" disabled>Your Thing</button>
-                  </div>
-                </div>`;
-            }
-          } else if (card.type === 'completed') {
-            // Check if this card has been remixed
-            const remixCount = card.remix_count || 0;
-            // Removed the separate remix count display for completed cards since it's now shown in the toggle section
-          }
-
-          // Create different HTML for saved vs completed cards
-          let imageHtml = '';
-          if (card.type === 'saved') {
-            // For saved cards, show interactive image upload
-            imageHtml = `
-        <div class="card-image-placeholder">
-          <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}">
-          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif" 
-               alt="Add photo" 
-               class="add-photo-icon"
-               style="display: ${isDefaultImage ? 'block' : 'none'}"
-               data-card-id="${card.id}">
-          <input type="file" accept="image/*,.heic,.heif" data-card-id="${card.id}">
-          <div class="image-upload-loader" data-card-id="${card.id}">
-            <div class="spinner"></div>
-            <div class="loading-text">Uploading image...</div>
-          </div>
-        </div>`;
-          } else if (card.type === 'completed') {
-            // For completed cards, show static image only
-            imageHtml = `
-        <div class="card-image-placeholder">
-          <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
-        </div>`;
-          } else {
-            // For community cards, show static image
-            imageHtml = `
-        <div class="card-image-placeholder">
-          <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
-        </div>`;
-          }
-
-          cardEl.innerHTML = `
-        <div class="card-category-tag ${card.category}">${categoryText}</div>
-        ${imageHtml}
-        <h4>${card.title}</h4>
-        <p>${card.description}</p>
-        ${actionHtml}
-        ${toggleHtml}
-        ${authorHtml}
-      `;
-          // Add image upload functionality only for saved cards
-          if (card.type === 'saved') {
-            const placeholder = cardEl.querySelector('.card-image-placeholder');
-            const img = cardEl.querySelector(`img[data-card-id="${card.id}"][alt="Card image"]`);
-            const addPhotoIcon = cardEl.querySelector(`img[data-card-id="${card.id}"].add-photo-icon`);
-            const input = cardEl.querySelector(`input[data-card-id="${card.id}"]`);
-
-            // Set initial classes based on image state
-            if (isDefaultImage) {
-              img.className = 'add-photo-icon';
-            } else {
-              img.className = 'uploaded-image';
-            }
-
-            console.log('Setting up image upload for card:', card.id, 'elements found:', {
-              img: !!img,
-              addPhotoIcon: !!addPhotoIcon,
-              input: !!input
-            });
-
-            input.addEventListener('change', e => {
-              const file = e.target.files[0];
-              if (file) {
-                console.log('File selected for card:', card.id, 'file:', file.name, 'type:', file.type, 'size:', file.size);
-
-                // Validate file
-                const validation = validateImageFile(file);
-                if (!validation.isValid) {
-                  console.error('File validation failed:', validation.error);
-                  showErrorTooltip(validation.error);
-                  e.target.value = ''; // Clear the input
-                  return;
-                }
-
-                // Show loader
-                const loader = cardEl.querySelector(`.image-upload-loader[data-card-id="${card.id}"]`);
-                const startTime = Date.now();
-                const minLoadTime = 1000; // Minimum 1 second
-
-                if (loader) {
-                  loader.classList.add('show');
-                }
-
-                // Function to process image (either HEIC or regular image)
-                const processImage = (imageBlob) => {
-                  console.log('Processing image blob:', imageBlob.type, imageBlob.size);
-                  
-                  const reader = new FileReader();
-                  reader.onload = ev => {
-                    console.log('File processed for card:', card.id, 'result length:', ev.target.result.length);
-
-                    // Calculate how long the loader should be shown
-                    const elapsedTime = Date.now() - startTime;
-                    const remainingTime = Math.max(0, minLoadTime - elapsedTime);
-
-                    setTimeout(() => {
-                      // Hide loader
-                      if (loader) {
-                        loader.classList.remove('show');
-                      }
-
-                      // Update image
-                      img.src = ev.target.result;
-                      img.className = 'uploaded-image';
-                      img.style.display = 'block';
-                      addPhotoIcon.style.display = 'none';
-
-                      // Verify image loaded successfully
-                      img.onload = () => {
-                        console.log('Image loaded successfully for card:', card.id);
-                      };
-                      
-                      img.onerror = () => {
-                        console.error('Failed to load image for card:', card.id);
-                        showErrorTooltip('Failed to load image. Please try again.');
-                        // Reset to default state
-                        img.src = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif';
-                        img.className = 'add-photo-icon';
-                        addPhotoIcon.style.display = 'block';
-                      };
-
-                      if (card.type === 'saved') {
-                        // Update the card's image in saved cards
-                        const savedIndex = savedCards.findIndex(c => c.id === card.id);
-                        if (savedIndex !== -1) {
-                          console.log('Updating saved card image:', card.id);
-                          savedCards[savedIndex].imageSrc = ev.target.result;
-                          try {
-                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                          } catch (e) {
-                            // Clear old data and try again
-                            localStorage.clear();
-                            localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                          }
-
-                          // Re-render the list to show the complete button
-                          renderCardList(currentTypeFilter, currentCategoryFilter);
-                        } else {
-                          console.error('Saved card not found:', card.id);
-                        }
-                      }
-                    }, remainingTime);
-                  };
-
-                  reader.onerror = () => {
-                    console.error('Error reading file for card:', card.id);
-                    if (loader) {
-                      loader.classList.remove('show');
-                    }
-                    showErrorTooltip('Error reading image file. Please try again.');
-                  };
-
-                  reader.readAsDataURL(imageBlob);
-                };
-
-                // Check if file is HEIC/HEIF format
-                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-                const isHeic = fileExtension === '.heic' || 
-                              fileExtension === '.heif' ||
-                              file.type === 'image/heic' ||
-                              file.type === 'image/heif';
-
-                console.log('File analysis:', {
-                  name: file.name,
-                  type: file.type,
-                  extension: fileExtension,
-                  isHeic: isHeic,
-                  heic2anyAvailable: typeof heic2any !== 'undefined'
-                });
-
-                if (isHeic) {
-                  if (typeof heic2any !== 'undefined') {
-                    console.log('Converting HEIC file to JPEG for card:', card.id);
-
-                    // Convert HEIC to JPEG
-                    heic2any({
-                      blob: file,
-                      toType: 'image/jpeg',
-                      quality: 0.8
-                    }).then(convertedBlob => {
-                      console.log('HEIC converted successfully for card:', card.id);
-                      processImage(convertedBlob);
-                    }).catch(error => {
-                      console.error('Error converting HEIC file for card:', card.id, error);
-                      if (loader) {
-                        loader.classList.remove('show');
-                      }
-                      showErrorTooltip('Error converting HEIC image. Please try a different image format.');
-                    });
-                  } else {
-                    console.error('HEIC file detected but heic2any library not available');
-                    if (loader) {
-                      loader.classList.remove('show');
-                    }
-                    showErrorTooltip('HEIC format not supported. Please convert to JPEG or PNG first.');
-                  }
-                } else {
-                  // Process regular image file
-                  console.log('Processing regular image file for card:', card.id);
-                  
-                  // Additional check: if file type is empty or generic, try to process as regular image
-                  if (!file.type || file.type === 'application/octet-stream') {
-                    console.log('File type is generic, attempting to process as regular image');
-                  }
-                  
-                  processImage(file);
-                }
-              }
-            });
-          }
-
-          // Add complete button functionality
-          const completeBtn = cardEl.querySelector('.complete-thing-btn');
-          if (completeBtn) {
-            console.log('Setting up complete button for card:', card.id);
-            completeBtn.addEventListener('click', () => {
-              if (card.type === 'saved') {
-                // Move card from saved to completed
-                const savedIndex = savedCards.findIndex(c => c.id === card.id);
-                if (savedIndex !== -1) {
-                  // Remove from saved cards
-                  savedCards.splice(savedIndex, 1);
-                  try {
-                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                  } catch (e) {
-                    console.warn('localStorage quota exceeded, clearing old data');
-                    localStorage.clear();
-                    localStorage.setItem('savedCards', JSON.stringify(savedCards));
-                  }
-
-                  // Add to completed cards
-                  completedCards.unshift({
-                    ...card,
-                    type: 'completed',
-                    completedAt: Date.now()
-                  });
-                  try {
-                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
-                  } catch (e) {
-                    console.warn('localStorage quota exceeded, clearing old data');
-                    localStorage.clear();
-                    localStorage.setItem('completedCards', JSON.stringify(completedCards));
-                  }
-
-                  // Add XP for completing a card
-                  addXP(XP_REWARDS.completeCard, 'Completed a card');
-
-                  // Show success tooltip
-                  showSuccessTooltip('Thing Completed! 🎉');
-
-                  // Switch to Completed tab automatically
-                  filterButtons.forEach(b => b.classList.remove('active'));
-                  const completedButton = document.querySelector('button[data-filter="completed"]');
-                  if (completedButton) {
-                    completedButton.classList.add('active');
-                  }
-                  currentTypeFilter = 'completed';
-                  localStorage.setItem('currentTypeFilter', 'completed');
-
-                  // Re-render both lists
-                  renderCardList('completed', currentCategoryFilter);
-
-                  // Highlight the card that was completed (after re-render)
-                  setTimeout(() => {
-                    highlightCard(card.id);
-                  }, 100);
-                }
-              }
-            });
-          }
-
-          // Add toggle switch functionality for completed cards
-          if (card.type === 'completed') {
-            const toggle = cardEl.querySelector('input[type="checkbox"]');
-            if (toggle) {
-              console.log('Setting up toggle for card:', card.id, 'isPublic:', publicCards.some(pc => pc.id === card.id));
-              toggle.addEventListener('change', (e) => {
-                const isPublic = publicCards.some(pc => pc.id === card.id);
-                console.log('Toggle changed for card:', card.id, 'checked:', e.target.checked, 'wasPublic:', isPublic);
-
-                // Disable toggle during API call
-                toggle.disabled = true;
-
-                if (e.target.checked && !isPublic) {
-                  // Making public
-                  console.log('Showing make-public confirmation for card:', card.id);
-                  showConfirmationPopup(card.id, 'make-public');
-                } else if (!e.target.checked && isPublic) {
-                  // Making private
-                  console.log('Showing make-private confirmation for card:', card.id);
-                  showConfirmationPopup(card.id, 'make-private');
-                } else {
-                  console.log('No action needed - toggle state matches public state');
-                }
-
-                // Reset the toggle to current state until confirmed with smooth animation
-                setTimeout(() => {
-                  e.target.checked = isPublic;
-                  toggle.disabled = false;
-                  console.log('Reset toggle for card:', card.id, 'to:', isPublic);
-                }, 150);
-              });
-            }
-          }
-
-          // Add remix button functionality for community cards
-          if (card.type === 'community') {
-            const remixBtn = cardEl.querySelector('.remix-btn');
-            if (remixBtn) {
-              console.log('Setting up remix button for card:', card.id);
-              remixBtn.addEventListener('click', () => {
-                console.log('Remix button clicked for card:', card.id);
-                showRemixConfirmationPopup(card.id, card);
-              });
-            }
-            // Note: Your Thing button doesn't need event listener as it's disabled
-          }
-
-          cardList.appendChild(cardEl);
-        });
-
-        // Add fade in effect
-        setTimeout(() => {
-          cardList.style.opacity = '1';
-          cardList.style.transform = 'scale(1)';
-        }, 50);
-      });
-    }
-
-    // Update expiry count every hour (refreshes days left)
-    setInterval(() => {
-      renderCardList(currentTypeFilter, currentCategoryFilter);
-    }, 60 * 60 * 1000);
-    // Keep attempts counter updated every minute
-    setInterval(() => { if (attemptsLeft <= 0) updateCounterUI(); }, 60000);
-
-    // All Categories Dropdown Functionality
-    function initializeDropdown() {
-      const dropdownTrigger = document.getElementById('all-categories-dropdown');
-      const dropdownMenu = document.getElementById('categories-dropdown-menu');
-      const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
-
-      if (!dropdownTrigger || !dropdownMenu) return;
-
-      console.log('🎯 Initializing dropdown with currentCategoryFilter:', currentCategoryFilter);
-
-      // Set initial active state based on saved category filter
-      dropdownItems.forEach(item => {
-        const itemCategory = item.getAttribute('data-category');
-        console.log('🎯 Checking dropdown item:', { itemCategory, currentCategoryFilter, matches: itemCategory === currentCategoryFilter });
-        
-        if (itemCategory === currentCategoryFilter) {
-          item.classList.add('selected');
-          dropdownTrigger.querySelector('span').textContent = item.querySelector('span').textContent;
-          console.log('🎯 Selected dropdown item:', itemCategory);
-        } else {
-          item.classList.remove('selected');
-        }
-      });
-
-      // Toggle dropdown
-      dropdownTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        console.log('🎯 Dropdown clicked, current state:', {
-          isActive: dropdownTrigger.classList.contains('active'),
-          isShow: dropdownMenu.classList.contains('show'),
-          currentCategoryFilter: currentCategoryFilter,
-          currentTypeFilter: currentTypeFilter
-        });
-
-        dropdownTrigger.classList.toggle('active');
-        dropdownMenu.classList.toggle('show');
-
-        // Ensure dropdown trigger stays active
-        if (!dropdownMenu.classList.contains('show')) {
-          dropdownTrigger.classList.add('active');
-        }
-
-        console.log('🎯 Dropdown state after toggle:', {
-          isActive: dropdownTrigger.classList.contains('active'),
-          isShow: dropdownMenu.classList.contains('show')
-        });
-      });
-
-      // Handle dropdown item selection
-      dropdownItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const category = item.getAttribute('data-category');
-          const itemText = item.querySelector('span').textContent;
-
-          console.log('🎯 Dropdown item clicked:', {
-            category,
-            itemText,
-            currentCategoryFilter: currentCategoryFilter,
-            currentTypeFilter: currentTypeFilter
-          });
-
-          // Update dropdown trigger text
-          dropdownTrigger.querySelector('span').textContent = itemText;
-
-          // Update active states
-          dropdownItems.forEach(i => i.classList.remove('selected'));
-          item.classList.add('selected');
-
-          // Close dropdown but keep trigger active
-          dropdownTrigger.classList.remove('active');
-          dropdownMenu.classList.remove('show');
-
-          // Keep dropdown trigger button always active
-          dropdownTrigger.classList.add('active');
-
-          // Update category filter
-          const oldCategoryFilter = currentCategoryFilter;
-          currentCategoryFilter = category;
-          localStorage.setItem('currentCategoryFilter', category);
-
-          console.log('🎯 Category filter updated:', {
-            oldCategoryFilter,
-            newCategoryFilter: category,
-            currentTypeFilter,
-            currentCategoryFilter
-          });
-
-          // Trigger filter change using saved type filter
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-        });
-      });
-
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!dropdownTrigger.contains(e.target) && !dropdownMenu.contains(e.target)) {
-          dropdownTrigger.classList.remove('active');
-          dropdownMenu.classList.remove('show');
-
-          // Keep dropdown trigger button always active
-          dropdownTrigger.classList.add('active');
-        }
-      });
-
-      // Close dropdown on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          dropdownTrigger.classList.remove('active');
-          dropdownMenu.classList.remove('show');
-
-          // Keep dropdown trigger button always active
-          dropdownTrigger.classList.add('active');
-        }
-      });
-    }
-
-  })();
 </script>
 
-</script>
+
+
