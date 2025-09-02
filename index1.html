@@ -1785,12 +1785,21 @@
     btn.classList.remove('active');
     if (btn.getAttribute('data-filter') === currentTypeFilter) {
       btn.classList.add('active');
+
+
+      if (currentTypeFilter === 'saved') {
+          loadSavedUserCards();
+      }
+      if (currentTypeFilter === 'completed') {
+          loadCompletedUserCards();
+      }
+      if (currentTypeFilter === 'community') {
+          loadCommunityUserCards();
+      }
     }
   });
 
   renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
-
-  loadSavedUserCards();
 
   // Initialize dropdown functionality
   initializeDropdown();
@@ -2457,7 +2466,8 @@
       const requestBody = {
         one_thing_user_card_id: cardId,
         published: false,
-        completed: true
+        completed: true,
+        published_at: null
       };
       makeApiCall(requestBody, card);
   }
