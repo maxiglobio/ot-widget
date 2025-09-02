@@ -1721,13 +1721,6 @@
           console.error('Error parsing auth object:', e);
         }
       }
-
-<!--      // If still no userId, generate a temporary one for testing-->
-<!--      if (!userId) {-->
-<!--        userId = 'temp-user-' + Date.now();-->
-<!--        localStorage.setItem('userId', userId);-->
-<!--        console.log('⚠️ Generated temporary userId for testing:', userId);-->
-<!--      }-->
     }
 
     return userId;
@@ -1761,8 +1754,12 @@
   console.log('filterButtonsGroup', filterButtonsGroup);
 
 
-  // Ensure userId is set
-  ensureUserId();
+
+  // Ensure userId is set через 5 сек
+  setTimeout(() => {
+    ensureUserId();
+  }, 5000);
+
 
   updateCounterUI();
 
