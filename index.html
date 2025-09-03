@@ -1740,6 +1740,10 @@ getFromGlobio("userLocation").then((loc) => {
 
   var savedCards = [];
 
+  console.log('TETS 1 ', getFromGlobio("auth").then(console.log));
+  console.log('TETS 2 ', getFromGlobio("mapbox.eventData.uuid").then(console.log));
+
+
   const savedButton = document.querySelector('button[data-filter="saved"]');
   const completedButton = document.querySelector('button[data-filter="completed"]');
   const communityButton = document.querySelector('button[data-filter="community"]');
