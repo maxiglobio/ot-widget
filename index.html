@@ -1679,6 +1679,51 @@
   </div>
 </div>
 
+
+<iframe id="globioFrame" src="https://www.globio.io" style="display:none;"></iframe>
+
+<script>
+function createStorageClient(iframeId, origin) {
+  const iframe = document.getElementById(iframeId);
+
+  return function getKey(key) {
+    return new Promise((resolve, reject) => {
+      const listener = (event) => {
+        if (event.origin !== origin) return;
+        if (event.data.key === key) {
+          window.removeEventListener("message", listener);
+          resolve(event.data.value);
+        }
+      };
+
+      window.addEventListener("message", listener);
+
+      // Запрос в iframe
+      iframe.contentWindow.postMessage(
+        { action: "getLocalStorage", key },
+        origin
+      );
+
+      // fail-safe timeout
+      setTimeout(() => reject("Timeout"), 5000);
+    });
+  };
+}
+
+// Используем
+const getFromGlobio = createStorageClient("globioFrame", "https://www.globio.io");
+
+// Пример
+getFromGlobio("auth").then((auth) => {
+  console.log("Auth:", auth);
+});
+getFromGlobio("userLocation").then((loc) => {
+  console.log("Location:", loc);
+});
+</script>
+
+
+
 <script>
   (function () {
   const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
