@@ -4,6 +4,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
   rel="stylesheet">
 
+<!-- MAPBOX CSS & JS -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
 <!-- Include Lottie player for the button animation -->
 <script>
   // Prevent duplicate lottie-player registration
@@ -80,6 +84,559 @@
   .empty-state-btn,
   .success-tooltip {
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  /* User Profile Section Styles */
+  .user-profile-section {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  /* Map Background */
+  .map-hero-wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .map-background {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+  }
+
+  .map-overlay-gradient {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(247, 247, 247, 0) 0%, #F7F7F7 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* User Avatar */
+  .user-avatar-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+  }
+
+  .user-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+    background: #f0f0f0;
+  }
+
+  .user-avatar-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-avatar-placeholder img {
+    width: 60px;
+    height: 60px;
+    opacity: 0.6;
+  }
+
+  /* Location Section - Top Left */
+  .location-section {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    z-index: 10;
+  }
+
+  .globio-nav-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    z-index: 0;
+  }
+
+  .globio-nav-inner {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 32px 24px 64px;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  #location-text {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 600;
+    margin: 0;
+    color: #707070;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #location-clickable {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  #location-detect {
+    color: #000000;
+    font-weight: 600;
+  }
+
+  #location-clickable img,
+  #mobile-pin {
+    width: 34px;
+    height: 34px;
+    pointer-events: none;
+  }
+
+  #mobile-pin {
+    display: none;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  /* User Menu Section - Top Right */
+  .user-menu-section {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    z-index: 10;
+  }
+
+  .user-menu-button {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 16px 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .user-menu-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .user-menu-button img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-menu-button .user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #141414;
+  }
+
+  .user-menu-button .dropdown-arrow {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  .user-menu-button:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* User Dropdown Menu */
+  .user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 280px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .user-dropdown-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+  }
+
+  .user-dropdown-header .user-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #141414;
+    margin-bottom: 4px;
+  }
+
+  .user-dropdown-header .user-email {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    color: #141414;
+  }
+
+  .user-dropdown-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .user-dropdown-item svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+    color: #666;
+  }
+
+  /* My Context Modal */
+  .my-context-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .my-context-modal.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .my-context-content {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s ease;
+  }
+
+  .my-context-modal.show .my-context-content {
+    transform: scale(1) translateY(0);
+  }
+
+  .my-context-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #141414;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .my-context-description {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666;
+    margin-bottom: 32px;
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .close-modal:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+  }
+
+  /* Switch Options */
+  .switch-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .switch-card {
+    background: rgba(0,0,0,0.05);
+    border-radius: 30px;
+    padding: 32px 32px;
+    text-align: center;
+    transition: background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .switch-card:hover {
+    background: rgba(0,0,0,0.1);
+  }
+
+  .switch-card svg {
+    color: #666;
+    opacity: 0.8;
+  }
+
+  .switch-label {
+    color: #000000;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  /* iOS-style Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    border-radius: 34px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #B1E530;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+
+  .save-changes-btn {
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .save-changes-btn:hover {
+    background: #444;
+    transform: translateY(-2px);
+  }
+
+  /* Mobile Responsiveness */
+  @media screen and (max-width: 600px) {
+    .user-profile-section {
+      height: 300px;
+      margin-bottom: 20px;
+    }
+
+    .location-section {
+      top: 20px;
+      left: 20px;
+    }
+
+    .user-menu-section {
+      top: 20px;
+      right: 20px;
+    }
+
+    .globio-nav-inner {
+      padding: 16px 8px;
+    }
+
+    #location-text,
+    #location-clickable img:not(#mobile-pin),
+    #location-detect {
+      display: none !important;
+    }
+
+    #mobile-pin {
+      display: inline-block;
+    }
+
+    .user-menu-button {
+      padding: 12px 16px;
+    }
+
+    .user-menu-button .user-name {
+      display: none;
+    }
+
+    .user-menu-button .dropdown-arrow {
+      width: 14px;
+      height: 14px;
+    }
+
+    .user-menu-button img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .user-avatar {
+      width: 100px;
+      height: 100px;
+    }
+
+    .user-avatar-placeholder {
+      width: 100px;
+      height: 100px;
+    }
+
+    .user-avatar-placeholder img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .location-section {
+      top: 20px;
+      left: 20px;
+    }
+
+    .user-menu-section {
+      top: 20px;
+      right: 20px;
+    }
+
+    .user-dropdown {
+      min-width: 240px;
+      right: -20px;
+    }
+
+    .user-dropdown-item svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .my-context-content {
+      padding: 24px;
+      margin: 20px;
+    }
+
+    .my-context-title svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .switch-card {
+      padding: 20px 28px;
+    }
+
+    .switch-card svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .switch-label {
+      font-size: 18px;
+    }
+
+    .switch {
+      width: 42px;
+      height: 24px;
+    }
+
+    .slider:before {
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      bottom: 3px;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
   }
 
   /* Container to center the button and filters */
@@ -1524,6 +2081,127 @@
 </style>
 
 <div id="one-thing-account-component">
+  <!-- User Profile Section -->
+  <div class="user-profile-section">
+    <!-- Map Background -->
+    <div class="map-hero-wrapper">
+      <div id="dynamic-map" class="map-background"></div>
+      <div class="map-overlay-gradient"></div>
+    </div>
+    
+    <!-- User Avatar -->
+    <div class="user-avatar-container">
+      <div class="user-avatar-placeholder" id="user-avatar-placeholder">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User avatar placeholder">
+      </div>
+      <img src="" alt="User avatar" class="user-avatar" id="user-avatar" style="display: none;">
+    </div>
+    
+    <!-- Location Section - Top Left -->
+    <div class="location-section">
+      <div class="globio-nav-wrapper">
+        <div class="globio-nav-inner">
+          <p id="location-text">
+            Feel at Home in
+            <span id="location-clickable">
+              <span id="location-detect">your place</span>
+              <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826567e4c85159257ae5e4e_811a212cf32b6b680a0b472b1a82f601_edit%202-dark.svg"
+                   alt="Edit icon" />
+            </span>
+          </p>
+          <img id="mobile-pin" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Change location" />
+        </div>
+      </div>
+    </div>
+    
+    <!-- User Menu Section - Top Right -->
+    <div class="user-menu-section">
+      <div class="user-menu-button" id="user-menu-button">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User avatar" id="user-menu-avatar">
+        <span class="user-name" id="user-menu-name">User</span>
+        <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      
+      <!-- User Dropdown Menu -->
+      <div class="user-dropdown" id="user-dropdown">
+        <div class="user-dropdown-header">
+          <div class="user-name" id="dropdown-user-name">User Name</div>
+          <div class="user-email" id="dropdown-user-email">user@example.com</div>
+        </div>
+        <div class="user-dropdown-item" id="my-context-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 4V2M8 14V12M12 8H14M2 8H4M11.6569 4.34314L13.0711 2.92893M2.92893 13.0711L4.34314 11.6569M11.6569 11.6569L13.0711 13.0711M2.92893 2.92893L4.34314 4.34314" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          My Context
+        </div>
+        <div class="user-dropdown-item" id="logout-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 12L2 8L6 4M2 8H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Logout
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Context Modal -->
+  <div class="my-context-modal" id="my-context-modal">
+    <div class="my-context-content">
+      <button class="close-modal" id="close-my-context-modal">&times;</button>
+      <h2 class="my-context-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
+          <path d="M12 6V4M12 20V18M18 12H20M4 12H6M17.6569 6.34314L19.0711 4.92893M4.92893 19.0711L6.34314 17.6569M17.6569 17.6569L19.0711 19.0711M4.92893 4.92893L6.34314 6.34314" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        My Context
+      </h2>
+      <p class="my-context-description">Here you can set your personal context—like whether you have kids, pets, or a car. This helps Globio suggest more relevant One Things for your life in a new city.</p>
+      
+      <!-- Switch Options -->
+      <div class="switch-row">
+        <div class="switch-card">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="margin-bottom: 8px;">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="switch-label">Kids</p>
+          <label class="switch">
+            <input type="checkbox" id="has-kids">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="switch-card">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="margin-bottom: 8px;">
+            <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="switch-label">Pets</p>
+          <label class="switch">
+            <input type="checkbox" id="has-pets">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="switch-card">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="margin-bottom: 8px;">
+            <path d="M19 17H5C3.89543 17 3 16.1046 3 15V9C3 7.89543 3.89543 7 5 7H19C20.1046 7 21 7.89543 21 9V15C21 16.1046 20.1046 17 19 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 11H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 13H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="switch-label">Car</p>
+          <label class="switch">
+            <input type="checkbox" id="has-car">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      
+      <button class="save-changes-btn" id="save-context-btn">Save Changes</button>
+    </div>
+  </div>
+
   <!-- Main button -->
   <div id="one-thing-btn" class="one-thing-account-btn">
     <div class="spinner-ring-account"></div>
@@ -1679,53 +2357,296 @@
   </div>
 </div>
 
-
-<iframe id="globioFrame" src="https://www.globio.io" style="display:none;"></iframe>
-
-<script>
-function createStorageClient(iframeId, origin) {
-  const iframe = document.getElementById(iframeId);
-
-  return function getKey(key) {
-    return new Promise((resolve, reject) => {
-      const listener = (event) => {
-        if (event.origin !== origin) return;
-        if (event.data.key === key) {
-          window.removeEventListener("message", listener);
-          resolve(event.data.value);
-        }
-      };
-
-      window.addEventListener("message", listener);
-
-      // Запрос в iframe
-      iframe.contentWindow.postMessage(
-        { action: "getLocalStorage", key },
-        origin
-      );
-
-      // fail-safe timeout
-      setTimeout(() => reject("Timeout"), 5000);
-    });
-  };
-}
-
-// Используем
-const getFromGlobio = createStorageClient("globioFrame", "https://www.globio.io");
-
-// Пример
-getFromGlobio("auth").then((auth) => {
-  console.log("Auth:", auth);
-});
-getFromGlobio("userLocation").then((loc) => {
-  console.log("Location:", loc);
-});
-</script>
-
-
-
 <script>
   (function () {
+  // Mapbox configuration
+  const mapboxToken = "pk.eyJ1IjoibWF4aW1nbG9iaW8iLCJhIjoiY205ZTV1Z3Q0MTJuZjJrczduaWpmczFxOSJ9.uxg6_dvAoTHfmhAicl9pjA";
+
+  // Initialize map
+  function initializeMap(lat, lon) {
+    if (typeof mapboxgl === 'undefined') {
+      console.log('Mapbox not loaded yet, retrying...');
+      setTimeout(() => initializeMap(lat, lon), 1000);
+      return;
+    }
+
+    mapboxgl.accessToken = mapboxToken;
+    const map = new mapboxgl.Map({
+      container: 'dynamic-map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [lon, lat],
+      zoom: 5.5,
+      projection: 'globe',
+      interactive: false
+    });
+
+    map.on('style.load', () => {
+      map.setFog({
+        color: 'white',
+        'high-color': '#add8e6',
+        'horizon-blend': 0.2,
+        'space-color': '#dfefff',
+        'star-intensity': 0.0
+      });
+    });
+  }
+
+  // Geocode location
+  function geocodeLocation(query, callback) {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          callback(lat, lon);
+        } else {
+          fallbackLocation(callback);
+        }
+      })
+      .catch(() => fallbackLocation(callback));
+  }
+
+  // Fallback location
+  function fallbackLocation(callback) {
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        const lat = data.latitude;
+        const lon = data.longitude;
+        window.userLocation = `${data.city}, ${data.country_name}`;
+        callback(lat, lon);
+      })
+      .catch(() => {
+        window.userLocation = 'Alanya, Turkey';
+        callback(36.5438, 32.0060);
+      });
+  }
+
+  // Load map
+  function loadMap() {
+    const manualLocation = localStorage.getItem("userLocation");
+    if (manualLocation) {
+      geocodeLocation(manualLocation, initializeMap);
+    } else {
+      fallbackLocation(initializeMap);
+    }
+  }
+
+  // User profile functionality
+  function initializeUserProfile() {
+    // Load user data from Xano
+    const authRaw = localStorage.getItem('auth');
+    if (authRaw) {
+      try {
+        const auth = JSON.parse(authRaw);
+        const userId = auth.id;
+        
+        if (userId) {
+          fetch(`https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+              // Update user avatar
+              if (data.picture) {
+                document.getElementById('user-avatar').src = data.picture;
+                document.getElementById('user-avatar').style.display = 'block';
+                document.getElementById('user-avatar-placeholder').style.display = 'none';
+                document.getElementById('user-menu-avatar').src = data.picture;
+              }
+              
+              // Update user name
+              if (data.name) {
+                document.getElementById('user-menu-name').textContent = data.name;
+                document.getElementById('dropdown-user-name').textContent = data.name;
+              }
+              
+              // Update user email
+              if (data.email) {
+                document.getElementById('dropdown-user-email').textContent = data.email;
+              }
+            })
+            .catch(error => {
+              console.error('Error loading user data:', error);
+            });
+        }
+      } catch (e) {
+        console.error('Error parsing auth from localStorage:', e);
+      }
+    }
+  }
+
+  // Location functionality
+  function initializeLocation() {
+    const locationDetectEl = document.getElementById('location-detect');
+    
+    function updateLocationUI(value) {
+      const locationText = value || "your place";
+      locationDetectEl.textContent = locationText;
+      window.userLocation = locationText;
+    }
+    
+    function showLocationPrompt() {
+      if (window.__locationEditingInProgress) return;
+      window.__locationEditingInProgress = true;
+      const current = localStorage.getItem("userLocation") || "";
+      const manual = prompt("Enter your city and country:", current);
+      if (manual && manual.trim()) {
+        const clean = manual.trim();
+        localStorage.setItem("userLocation", clean);
+        updateLocationUI(clean);
+        localStorage.setItem("locationJustChanged", "1");
+        setTimeout(() => location.reload(), 50);
+      } else {
+        window.__locationEditingInProgress = false;
+      }
+    }
+    
+    // Event listeners
+    document.getElementById('location-clickable').addEventListener('click', showLocationPrompt);
+    document.getElementById('mobile-pin').addEventListener('click', showLocationPrompt);
+    
+    // After reload
+    if (localStorage.getItem("locationJustChanged") === "1") {
+      localStorage.removeItem("locationJustChanged");
+      window.__locationEditingInProgress = false;
+    }
+    
+    // Load saved location or detect automatically
+    const savedLocation = localStorage.getItem("userLocation");
+    if (savedLocation) {
+      updateLocationUI(savedLocation);
+    } else {
+      fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(data => {
+          const auto = data.city && data.country_name
+            ? `${data.city}, ${data.country_name}`
+            : data.city || data.country_name || "your place";
+          localStorage.setItem("userLocation", auto);
+          updateLocationUI(auto);
+        })
+        .catch(() => {
+          updateLocationUI("your place");
+        });
+    }
+  }
+
+  // User dropdown functionality
+  function initializeUserDropdown() {
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+    
+    // Toggle dropdown
+    userMenuButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.remove('show');
+      }
+    });
+    
+    // Close dropdown on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        userDropdown.classList.remove('show');
+      }
+    });
+  }
+
+  // My Context modal functionality
+  function initializeMyContextModal() {
+    const myContextBtn = document.getElementById('my-context-btn');
+    const myContextModal = document.getElementById('my-context-modal');
+    const closeModalBtn = document.getElementById('close-my-context-modal');
+    const saveBtn = document.getElementById('save-context-btn');
+    
+    // Load saved context
+    const hasKids = localStorage.getItem('hasKids') === 'true';
+    const hasPets = localStorage.getItem('hasPets') === 'true';
+    const hasCar = localStorage.getItem('hasCar') === 'true';
+    
+    document.getElementById('has-kids').checked = hasKids;
+    document.getElementById('has-pets').checked = hasPets;
+    document.getElementById('has-car').checked = hasCar;
+    
+    // Open modal
+    myContextBtn.addEventListener('click', () => {
+      userDropdown.classList.remove('show');
+      myContextModal.classList.add('show');
+    });
+    
+    // Close modal
+    closeModalBtn.addEventListener('click', () => {
+      myContextModal.classList.remove('show');
+    });
+    
+    // Close modal when clicking outside
+    myContextModal.addEventListener('click', (e) => {
+      if (e.target === myContextModal) {
+        myContextModal.classList.remove('show');
+      }
+    });
+    
+    // Save context
+    saveBtn.addEventListener('click', () => {
+      const hasKids = document.getElementById('has-kids').checked;
+      const hasPets = document.getElementById('has-pets').checked;
+      const hasCar = document.getElementById('has-car').checked;
+      
+      localStorage.setItem('hasKids', hasKids);
+      localStorage.setItem('hasPets', hasPets);
+      localStorage.setItem('hasCar', hasCar);
+      
+      myContextModal.classList.remove('show');
+      
+      // Show success message
+      alert('Context saved successfully!');
+    });
+  }
+
+  // Logout functionality
+  function initializeLogout() {
+    const logoutBtn = document.getElementById('logout-btn');
+    
+    logoutBtn.addEventListener('click', () => {
+      userDropdown.classList.remove('show');
+      localStorage.removeItem('auth');
+      localStorage.removeItem('userId');
+      location.reload();
+    });
+  }
+
+  // Initialize everything when DOM is ready
+  function initializeEverything() {
+    loadMap();
+    initializeUserProfile();
+    initializeLocation();
+    initializeUserDropdown();
+    initializeMyContextModal();
+    initializeLogout();
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEverything);
+  } else {
+    initializeEverything();
+  }
+
+  // Global context getter for One Thing generation
+  window.getUserContext = () => {
+    return {
+      location: window.userLocation || 'your place',
+      hasKids: localStorage.getItem('hasKids') === 'true',
+      hasPets: localStorage.getItem('hasPets') === 'true',
+      hasCar: localStorage.getItem('hasCar') === 'true'
+    };
+  }
+
   const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
   const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
   const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
@@ -1739,10 +2660,6 @@ getFromGlobio("userLocation").then((loc) => {
 //    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
 
   var savedCards = [];
-
-  console.log('TETS 1 ', getFromGlobio("auth").then(console.log));
-  console.log('TETS 2 ', getFromGlobio("mapbox.eventData.uuid").then(console.log));
-
 
   const savedButton = document.querySelector('button[data-filter="saved"]');
   const completedButton = document.querySelector('button[data-filter="completed"]');
@@ -3295,3 +4212,4 @@ console.log('BUTTON DROP down');
 
 
 </script>
+
