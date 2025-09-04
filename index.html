@@ -1138,6 +1138,15 @@
     margin-top: 8px;
     text-align: center;
     font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .author-avatar {
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   /* Image upload loader */
@@ -1167,7 +1176,7 @@
     width: 40px;
     height: 40px;
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #4CAF50;
+    border-top: 3px solid #B1E530;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -1183,7 +1192,7 @@
   }
 
   .complete-thing-btn {
-    background: #4CAF50;
+    background: #B1E530;
     color: white;
     border: none;
     border-radius: 20px;
@@ -1279,7 +1288,7 @@
   }
 
   .copy-btn {
-    background: #4CAF50;
+    background: #B1E530;
     color: white;
     border: none;
     border-radius: 8px;
@@ -1292,7 +1301,7 @@
   }
 
   .copy-btn:hover {
-    background: #45a049;
+    background: #B1E530;
     transform: translateY(-1px);
   }
 
@@ -1917,7 +1926,7 @@
   }
 
   .success-tooltip {
-    background: #4CAF50;
+    background: #B1E530;
     color: white;
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   }
@@ -1932,7 +1941,7 @@
   }
 
   .location-success-tooltip {
-    background: #4CAF50;
+    background: #B1E530;
     color: white;
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   }
@@ -2208,7 +2217,7 @@
   }
 
   .location-result-item:hover {
-    border-color: #4CAF50;
+    border-color: #B1E530;
     background: #F0F9F0;
   }
 
@@ -2267,7 +2276,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid #e9ecef;
-    border-top: 2px solid #4CAF50;
+    border-top: 2px solid #B1E530;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     flex-shrink: 0;
@@ -2437,7 +2446,7 @@
   }
 
   .toggle-switch input:checked+.toggle-slider {
-    background-color: #4CAF50;
+    background-color: #B1E530;
   }
 
   .toggle-switch input:checked+.toggle-slider:before {
@@ -2523,12 +2532,12 @@
   }
 
   .confirmation-confirm {
-    background: #4CAF50;
+    background: #B1E530;
     color: white;
   }
 
   .confirmation-confirm:hover {
-    background: #45a049;
+    background: #B1E530;
   }
 </style>
 
@@ -2603,7 +2612,11 @@
   <!-- My Context Modal -->
   <div class="my-context-modal" id="my-context-modal">
     <div class="my-context-content">
-      <button class="close-modal" id="close-my-context-modal">&times;</button>
+      <button class="close-modal" id="close-my-context-modal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+        </svg>
+      </button>
       <h2 class="my-context-title">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
           <path d="M12 6V4M12 20V18M18 12H20M4 12H6M17.6569 6.34314L19.0711 4.92893M4.92893 19.0711L6.34314 17.6569M17.6569 17.6569L19.0711 19.0711M4.92893 4.92893L6.34314 6.34314" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2725,7 +2738,7 @@
       </div>
     </div>
     <div class="filter-group">
-      <button data-filter="saved" class="active">
+      <button data-filter="saved">
         <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/689626252407e18c78a483d3_saved-icon.svg"
           alt="Saved" width="16" height="16">
         <span>Saved</span>
@@ -2753,6 +2766,13 @@
   <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
     alt="Success" width="16" height="16">
   <span>Thing completed! 🎉</span>
+</div>
+
+<!-- Public success tooltip -->
+<div id="public-success-tooltip" class="success-tooltip">
+  <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
+    alt="Success" width="16" height="16">
+  <span>Thing is Public! 🌟</span>
 </div>
 
 <!-- Copy Error tooltip -->
@@ -2947,43 +2967,187 @@
     }
   }
 
+  // Function to load user data from Xano
+  function loadUserDataFromXano(userId) {
+    console.log('🔍 Loading user data for userId:', userId);
+    console.log('🔍 API URL:', `https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`);
+    fetch(`https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`)
+      .then(response => {
+        console.log('🔍 User data response status:', response.status);
+        console.log('🔍 Response headers:', response.headers);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('🔍 User data loaded:', data);
+        console.log('🔍 User picture field:', data.picture);
+        console.log('🔍 User name field:', data.name);
+        
+        // Update user avatar
+        if (data.picture) {
+          console.log('🔍 Updating user avatar to:', data.picture);
+          const userAvatar = document.getElementById('user-avatar');
+          const userMenuAvatar = document.getElementById('user-menu-avatar');
+          
+          console.log('🔍 user-avatar element found:', !!userAvatar);
+          console.log('🔍 user-menu-avatar element found:', !!userMenuAvatar);
+          
+          // Construct full URL for avatar
+          const avatarUrl = data.picture.startsWith('http') ? data.picture : `https://xu8w-at8q-hywg.n7d.xano.io${data.picture}`;
+          console.log('🔍 Full avatar URL:', avatarUrl);
+          
+          if (userAvatar) {
+            console.log('🔍 Setting user-avatar src to:', avatarUrl);
+            userAvatar.src = avatarUrl;
+            userAvatar.onerror = function() {
+              console.log('⚠️ Failed to load user avatar, using placeholder');
+              this.src = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg';
+            };
+            userAvatar.onload = function() {
+              console.log('✅ User avatar loaded successfully');
+            };
+          } else {
+            console.log('❌ user-avatar element not found in DOM');
+          }
+          
+          if (userMenuAvatar) {
+            console.log('🔍 Setting user-menu-avatar src to:', avatarUrl);
+            userMenuAvatar.src = avatarUrl;
+            userMenuAvatar.onerror = function() {
+              console.log('⚠️ Failed to load user menu avatar, using placeholder');
+              this.src = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg';
+            };
+            userMenuAvatar.onload = function() {
+              console.log('✅ User menu avatar loaded successfully');
+            };
+          } else {
+            console.log('❌ user-menu-avatar element not found in DOM');
+          }
+        } else {
+          console.log('⚠️ No user picture found in data');
+        }
+        
+        // Update user name
+        if (data.name) {
+          console.log('🔍 Updating user name to:', data.name);
+          const userMenuName = document.getElementById('user-menu-name');
+          const dropdownUserName = document.getElementById('dropdown-user-name');
+          
+          console.log('🔍 user-menu-name element found:', !!userMenuName);
+          console.log('🔍 dropdown-user-name element found:', !!dropdownUserName);
+          
+          if (userMenuName) {
+            userMenuName.textContent = data.name;
+            console.log('✅ User menu name updated successfully');
+          } else {
+            console.log('❌ user-menu-name element not found');
+          }
+          
+          if (dropdownUserName) {
+            dropdownUserName.textContent = data.name;
+            console.log('✅ Dropdown user name updated successfully');
+          } else {
+            console.log('❌ dropdown-user-name element not found');
+          }
+        } else {
+          console.log('⚠️ No user name found in data');
+        }
+        
+        // Update user email
+        console.log('🔍 Checking email field in data:', data.email);
+        if (data.email) {
+          console.log('🔍 Updating user email to:', data.email);
+          
+          // Try multiple selectors
+          const emailElement1 = document.querySelector('#dropdown-user-email span');
+          const emailElement2 = document.querySelector('.user-email span');
+          const emailElement3 = document.getElementById('dropdown-user-email');
+          
+          console.log('🔍 Selector 1 (#dropdown-user-email span):', emailElement1);
+          console.log('🔍 Selector 2 (.user-email span):', emailElement2);
+          console.log('🔍 Selector 3 (#dropdown-user-email):', emailElement3);
+          
+          let targetElement = emailElement1 || emailElement2;
+          
+          if (targetElement) {
+            console.log('🔍 Found email element, updating text content');
+            targetElement.textContent = data.email;
+            console.log('✅ User email updated successfully to:', data.email);
+          } else           if (emailElement3) {
+            console.log('🔍 Found parent element, updating innerHTML');
+            emailElement3.innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 4L8 9L14 4M2 4C2 3.44772 2.44772 3 3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>${data.email}</span>
+            `;
+            console.log('✅ User email updated via innerHTML to:', data.email);
+            
+            // Force update with delay to ensure DOM is ready
+            setTimeout(() => {
+              const finalCheck = document.getElementById('dropdown-user-email');
+              if (finalCheck) {
+                console.log('🔍 Final check - email element text:', finalCheck.textContent);
+                console.log('🔍 Final check - email element innerHTML:', finalCheck.innerHTML);
+              }
+            }, 100);
+          } else {
+            console.log('❌ No email element found with any selector');
+            console.log('🔍 All elements with user-email class:', document.querySelectorAll('.user-email'));
+            console.log('🔍 All elements with dropdown-user-email id:', document.querySelectorAll('#dropdown-user-email'));
+          }
+        } else {
+          console.log('⚠️ No user email found in data');
+          console.log('🔍 Available fields in data:', Object.keys(data));
+        }
+      })
+      .catch(error => {
+        console.error('❌ Error loading user data:', error);
+        console.error('❌ This might be why avatars are not loading');
+      });
+  }
+
   // User profile functionality
   function initializeUserProfile() {
-    // Load user data from Xano
-    const authRaw = localStorage.getItem('auth');
-    if (authRaw) {
-      try {
-        const auth = JSON.parse(authRaw);
-        const userId = auth.id;
-        
-        if (userId) {
-          fetch(`https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`)
-            .then(response => response.json())
-            .then(data => {
-              // Update user avatar
-              if (data.picture) {
-                document.getElementById('user-avatar').src = data.picture;
-                document.getElementById('user-menu-avatar').src = data.picture;
-              }
-              
-              // Update user name
-              if (data.name) {
-                document.getElementById('user-menu-name').textContent = data.name;
-                document.getElementById('dropdown-user-name').textContent = data.name;
-              }
-              
-              // Update user email
-              if (data.email) {
-                document.getElementById('dropdown-user-email').textContent = data.email;
-              }
-            })
-            .catch(error => {
-              console.error('Error loading user data:', error);
-            });
+    try {
+      console.log('🔍 initializeUserProfile called');
+      // Load user data from Xano
+      console.log('🔍 All localStorage keys:', Object.keys(localStorage));
+      console.log('🔍 All localStorage data:', localStorage);
+      const authRaw = localStorage.getItem('auth');
+      console.log('🔍 Auth data from localStorage:', authRaw);
+      
+      // Try other possible keys
+      const authRaw2 = localStorage.getItem('user');
+      console.log('🔍 User data from localStorage:', authRaw2);
+      const authRaw3 = localStorage.getItem('userData');
+      console.log('🔍 UserData from localStorage:', authRaw3);
+      const authRaw4 = localStorage.getItem('xano_auth');
+      console.log('🔍 Xano auth from localStorage:', authRaw4);
+      const userId = localStorage.getItem('userId');
+      console.log('🔍 UserId from localStorage:', userId);
+      
+      // Use userId directly if available
+      if (userId) {
+        console.log('🔍 Using userId directly:', userId);
+        loadUserDataFromXano(userId);
+      } else if (authRaw) {
+        try {
+          const auth = JSON.parse(authRaw);
+          const userId = auth.id;
+          console.log('🔍 Parsed auth data:', auth);
+          console.log('🔍 User ID from auth:', userId);
+          if (userId) {
+            loadUserDataFromXano(userId);
+          }
+        } catch (e) {
+          console.error('Error parsing auth from localStorage:', e);
         }
-      } catch (e) {
-        console.error('Error parsing auth from localStorage:', e);
       }
+    } catch (error) {
+      console.error('❌ Error in initializeUserProfile:', error);
     }
   }
 
@@ -3090,19 +3254,27 @@
     const hasPets = localStorage.getItem('hasPets') === 'true';
     const hasCar = localStorage.getItem('hasCar') === 'true';
     
+    console.log('Loading saved context:', { hasKids, hasPets, hasCar }); // Debug log
+    
     document.getElementById('has-kids').checked = hasKids;
     document.getElementById('has-pets').checked = hasPets;
     document.getElementById('has-car').checked = hasCar;
     
+    console.log('Context loaded and checkboxes updated'); // Debug log
+    
     // Open modal
     myContextBtn.addEventListener('click', () => {
+      console.log('My Context button clicked'); // Debug log
       userDropdown.classList.remove('show');
       myContextModal.classList.add('show');
+      console.log('My Context modal opened'); // Debug log
     });
     
     // Close modal
     closeModalBtn.addEventListener('click', () => {
+      console.log('My Context modal close button clicked'); // Debug log
       myContextModal.classList.remove('show');
+      console.log('My Context modal closed'); // Debug log
     });
     
     // Close modal when clicking outside
@@ -3114,13 +3286,18 @@
     
     // Save context
     saveBtn.addEventListener('click', () => {
+      console.log('Save context button clicked'); // Debug log
       const hasKids = document.getElementById('has-kids').checked;
       const hasPets = document.getElementById('has-pets').checked;
       const hasCar = document.getElementById('has-car').checked;
       
+      console.log('Context values:', { hasKids, hasPets, hasCar }); // Debug log
+      
       localStorage.setItem('hasKids', hasKids);
       localStorage.setItem('hasPets', hasPets);
       localStorage.setItem('hasCar', hasCar);
+      
+      console.log('Context saved to localStorage'); // Debug log
       
       myContextModal.classList.remove('show');
       
@@ -3393,8 +3570,11 @@
 
   // Initialize everything when DOM is ready
   function initializeEverything() {
+    console.log('🔍 initializeEverything called');
     loadMap();
+    console.log('🔍 About to call initializeUserProfile');
     initializeUserProfile();
+    console.log('🔍 initializeUserProfile completed');
     initializeLocation();
     initializeUserDropdown();
     initializeMyContextModal();
@@ -3403,9 +3583,12 @@
   }
 
   // Initialize when DOM is ready
+  console.log('🔍 Document ready state:', document.readyState);
   if (document.readyState === 'loading') {
+    console.log('🔍 DOM is still loading, adding event listener');
     document.addEventListener('DOMContentLoaded', initializeEverything);
   } else {
+    console.log('🔍 DOM is ready, calling initializeEverything immediately');
     initializeEverything();
   }
 
@@ -3432,6 +3615,8 @@
 //    let savedCards = JSON.parse(localStorage.getItem('savedCards')) || [];
 
   var savedCards = [];
+  var completedCards = [];
+  var publicCards = [];
 
   const savedButton = document.querySelector('button[data-filter="saved"]');
   const completedButton = document.querySelector('button[data-filter="completed"]');
@@ -3509,30 +3694,28 @@
 //      }
 //    });
 
-  filterButtonsDropdown.forEach(btn => {
+  // Remove active class from all filter buttons first
+  filterButtons.forEach(btn => {
     btn.classList.remove('active');
+  });
+
+  // Set active class based on currentTypeFilter
+  filterButtons.forEach(btn => {
     if (btn.getAttribute('data-filter') === currentTypeFilter) {
       btn.classList.add('active');
     }
   });
 
-  filterButtonsGroup.forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.getAttribute('data-filter') === currentTypeFilter) {
-      btn.classList.add('active');
-
-
-      if (currentTypeFilter === 'saved') {
-          loadSavedUserCards();
-      }
-      if (currentTypeFilter === 'completed') {
-          loadCompletedUserCards();
-      }
-      if (currentTypeFilter === 'community') {
-          loadCommunityUserCards();
-      }
-    }
-  });
+  // Load appropriate cards based on current filter
+  if (currentTypeFilter === 'saved') {
+      loadSavedUserCards();
+  }
+  if (currentTypeFilter === 'completed') {
+      loadCompletedUserCards();
+  }
+  if (currentTypeFilter === 'community') {
+      loadCommunityUserCards();
+  }
 
   renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
 
@@ -3566,6 +3749,11 @@
         }
       });
 
+    // Load all card types
+    loadSavedUserCards();
+    loadCompletedUserCards();
+    loadCommunityUserCards();
+    
     renderCardList(currentTypeFilter, currentCategoryFilter);
 
     // Confirmation popup handlers
@@ -3584,13 +3772,15 @@
         const cardId = popup.dataset.cardId;
         const action = popup.dataset.action;
 
-        console.log('Confirmation button clicked:', action, 'for card:', cardId);
+        console.log('🔍 Confirmation button clicked:', action, 'for card:', cardId);
 
         if (cardId && action) {
 
           if (action === 'make-public') {
+            console.log('🔍 Calling makeCardPublic for card:', cardId);
             makeCardPublic(cardId);
           } else if (action === 'make-private') {
+            console.log('🔍 Calling makeCardPrivate for card:', cardId);
             makeCardPrivate(cardId);
           }
           hideConfirmationPopup();
@@ -3734,7 +3924,7 @@
 //        savedButton.classList.add('active');
 //      }
 
-    filterButtonsGroup.forEach(b => b.classList.remove('active'));
+    filterButtons.forEach(b => b.classList.remove('active'));
     const savedButton = document.querySelector('button[data-filter="saved"]');
     if (savedButton) {
       savedButton.classList.add('active');
@@ -3756,7 +3946,7 @@
 //        completedButton.classList.add('active');
 //      }
 
-    filterButtonsGroup.forEach(b => b.classList.remove('active'));
+    filterButtons.forEach(b => b.classList.remove('active'));
     const completedButton = document.querySelector('button[data-filter="completed"]');
     if (completedButton) {
       completedButton.classList.add('active');
@@ -3788,7 +3978,9 @@
     btn.addEventListener('click', () => {
       console.log('BUTTON FILTER GROUP');
       console.log('filterButtons group = ', filterButtons);
-      filterButtonsGroup.forEach(b => b.classList.remove('active'));
+      
+      // Remove active class from all filter buttons
+      filterButtons.forEach(b => b.classList.remove('active'));
 
       btn.classList.add('active');
       currentTypeFilter = btn.getAttribute('data-filter');
@@ -3803,15 +3995,16 @@
     btn.addEventListener('click', () => {
       console.log('BUTTON FILTER dropdown');
       console.log('filterButtons dropdown = ', filterButtonsDropdown);
-      filterButtonsDropdown.forEach(b => b.classList.remove('active'));
-
+      
+      // Remove active class from all filter buttons
+      filterButtons.forEach(b => b.classList.remove('active'));
 
       btn.classList.add('active');
       currentTypeFilter = btn.getAttribute('data-filter');
 
       console.log('SET FILTER', currentTypeFilter);
 
-      localStorage.setItem('currentCategoryFilter', currentTypeFilter);
+      localStorage.setItem('currentTypeFilter', currentTypeFilter);
       renderCardList(currentTypeFilter, currentCategoryFilter);
     });
   });
@@ -3978,6 +4171,23 @@
     }
   }
 
+  function showPublicSuccessTooltip() {
+    console.log('🔍 showPublicSuccessTooltip called');
+    const tooltip = document.getElementById('public-success-tooltip');
+    console.log('🔍 Tooltip element found:', !!tooltip);
+    if (tooltip) {
+      tooltip.classList.add('show');
+      console.log('✅ Public success tooltip shown');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        console.log('✅ Public success tooltip hidden');
+      }, 3000);
+    } else {
+      console.error('❌ Public success tooltip element not found');
+    }
+  }
+
   function showCopyErrorTooltip() {
     const tooltip = document.getElementById('copy-error-tooltip');
     if (tooltip) {
@@ -4045,9 +4255,15 @@
   function showConfirmationPopup(one_thing_user_card_id, action) {
 //      console.log('showConfirmationPopup called:', cardId, action);
 
-    const card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+    // Look for card in both savedCards and completedCards
+    let card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
     if (!card) {
-      console.log('Card not found in savedCards:', one_thing_user_card_id);
+      card = completedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+    }
+    if (!card) {
+      console.log('Card not found in savedCards or completedCards:', one_thing_user_card_id);
+      console.log('savedCards:', savedCards.map(c => ({ id: c.one_thing_user_card_id, type: c.type })));
+      console.log('completedCards:', completedCards.map(c => ({ id: c.one_thing_user_card_id, type: c.type })));
       return;
     }
 
@@ -4159,10 +4375,17 @@
   }
 
   function makeCardPublic(cardId) {
+    console.log('🔍 makeCardPublic called with cardId:', cardId);
     cardId = parseInt(cardId);
-    const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+    // Look for card in both savedCards and completedCards
+    let card = savedCards.find(c => c.one_thing_user_card_id == cardId);
     if (!card) {
-      console.error('Error makeCardPublic');
+      card = completedCards.find(c => c.one_thing_user_card_id == cardId);
+    }
+    if (!card) {
+      console.error('❌ Error makeCardPublic: card not found in savedCards or completedCards');
+      console.log('savedCards:', savedCards.map(c => ({ id: c.one_thing_user_card_id, type: c.type })));
+      console.log('completedCards:', completedCards.map(c => ({ id: c.one_thing_user_card_id, type: c.type })));
       return;
     }
     const userId = ensureUserId();
@@ -4172,6 +4395,7 @@
       completed: true,
       published_at: Date.now()
     };
+    console.log('🔍 Making card public:', { cardId, card: card.one_thing_user_card_id, type: card.type });
     makeApiCall(requestBody, card);
 //      loadCommunityUserCards();
   }
@@ -4198,6 +4422,13 @@
       
       // Remove from savedCards array
       savedCards.splice(cardIndex, 1);
+      
+      // Add to completedCards array
+      completedCards.push(card);
+      
+      console.log('Card moved to completedCards:', card);
+      console.log('savedCards length after removal:', savedCards.length);
+      console.log('completedCards length after addition:', completedCards.length);
       
       const requestBody = {
           one_thing_user_card_id: one_thing_user_card_id,
@@ -4239,21 +4470,82 @@
           console.log('🎉 Card completed successfully!');
         } else if (requestBody.published !== undefined) {
           // This was a publish/unpublish request
-          renderCardList(currentTypeFilter, currentCategoryFilter);
-
-          // Re-enable toggle and update its state
-          const toggle = document.querySelector(`#toggle-${requestBody.one_thing_user_card_id}`);
+          
+          // Update the card status in the appropriate array
+          let cardToUpdate = savedCards.find(c => c.one_thing_user_card_id == requestBody.one_thing_user_card_id);
+          if (!cardToUpdate) {
+            cardToUpdate = completedCards.find(c => c.one_thing_user_card_id == requestBody.one_thing_user_card_id);
+          }
+          
+          if (cardToUpdate) {
+            cardToUpdate.published = requestBody.published;
+            console.log('✅ Updated card status in array:', { 
+              cardId: requestBody.one_thing_user_card_id, 
+              published: requestBody.published,
+              cardType: cardToUpdate.type 
+            });
+          }
+          
+          // Update the toggle label and state without re-rendering the entire list
+          console.log('🔍 Looking for toggle with ID:', `#toggle-${cardToUpdate.id}`);
+          const toggle = document.querySelector(`#toggle-${cardToUpdate.id}`);
+          console.log('🔍 Toggle found:', !!toggle);
           if (toggle) {
             toggle.disabled = false;
-            toggle.checked = requestBody.published; // Set toggle to match published state
-            console.log('✅ Updated toggle state for card:', requestBody.one_thing_user_card_id);
+            toggle.checked = requestBody.published;
+            console.log('🔍 Toggle state updated to:', requestBody.published);
+            
+            // Update the toggle label
+            const toggleContainer = toggle.closest('.toggle-container');
+            if (toggleContainer) {
+              const toggleLabel = toggleContainer.querySelector('.toggle-label');
+              if (toggleLabel) {
+                toggleLabel.textContent = requestBody.published ? 'Public' : 'Make Public';
+                console.log('✅ Updated toggle label to:', toggleLabel.textContent);
+              }
+            }
+            
+            console.log('✅ Updated toggle state and label for card:', requestBody.one_thing_user_card_id);
           } else {
             console.log('⚠️ Toggle not found for card:', requestBody.one_thing_user_card_id);
+            console.log('⚠️ Available toggles:', document.querySelectorAll('input[type="checkbox"]').length);
           }
 
-          // Show success tooltip
-          showSuccessTooltip();
+          // Update publicCards if card was published/unpublished
+          if (requestBody.published) {
+            // Add card to publicCards if it's not already there
+            const existingPublicCard = publicCards.find(pc => pc.one_thing_user_card_id == requestBody.one_thing_user_card_id);
+            if (!existingPublicCard && cardToUpdate) {
+              const publicCard = {
+                ...cardToUpdate,
+                type: 'community',
+                published_at: Date.now()
+              };
+              publicCards.unshift(publicCard); // Add to beginning of array
+              console.log('✅ Added card to publicCards:', publicCard.one_thing_user_card_id);
+            }
+          } else {
+            // Remove card from publicCards if it was unpublished
+            const publicCardIndex = publicCards.findIndex(pc => pc.one_thing_user_card_id == requestBody.one_thing_user_card_id);
+            if (publicCardIndex !== -1) {
+              publicCards.splice(publicCardIndex, 1);
+              console.log('✅ Removed card from publicCards:', requestBody.one_thing_user_card_id);
+            }
+          }
+          
+          // Show appropriate success tooltip
+          console.log('🔍 About to show tooltip, requestBody.published:', requestBody.published);
+          if (requestBody.published) {
+            console.log('🔍 Calling showPublicSuccessTooltip');
+            showPublicSuccessTooltip();
+          } else {
+            console.log('🔍 Calling showSuccessTooltip');
+            showSuccessTooltip();
+          }
           console.log('🎉 Successfully updated card publish state!');
+          
+          // Update the current view to reflect changes without reloading
+          renderCardList(currentTypeFilter, currentCategoryFilter);
         }
       })
       .catch(error => {
@@ -4266,11 +4558,30 @@
 
         // If this was a publish request, re-enable toggle on error
         if (requestBody.published !== undefined) {
-          const toggle = document.querySelector(`#toggle-${requestBody.one_thing_user_card_id}`);
+          // Find the card again for error handling
+          let cardToUpdate = savedCards.find(c => c.one_thing_user_card_id == requestBody.one_thing_user_card_id);
+          if (!cardToUpdate) {
+            cardToUpdate = completedCards.find(c => c.one_thing_user_card_id == requestBody.one_thing_user_card_id);
+          }
+          
+          if (cardToUpdate) {
+            const toggle = document.querySelector(`#toggle-${cardToUpdate.id}`);
           if (toggle) {
             toggle.disabled = false;
             toggle.checked = !requestBody.published; // Reset to previous state
+            
+            // Reset the toggle label to previous state
+            const toggleContainer = toggle.closest('.toggle-container');
+            if (toggleContainer) {
+              const toggleLabel = toggleContainer.querySelector('.toggle-label');
+              if (toggleLabel) {
+                toggleLabel.textContent = !requestBody.published ? 'Public' : 'Make Public';
+                console.log('🔄 Reset toggle label to:', toggleLabel.textContent);
+              }
+            }
+            
             console.log('🔄 Reset toggle to previous state due to error');
+          }
           }
         }
       });
@@ -4278,9 +4589,15 @@
 
   function makeCardPrivate(cardId) {
       cardId = parseInt(cardId);
-      const card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+      // Look for card in both savedCards and completedCards
+      let card = savedCards.find(c => c.one_thing_user_card_id == cardId);
       if (!card) {
-        console.error('Error makeCardPrivate');
+        card = completedCards.find(c => c.one_thing_user_card_id == cardId);
+      }
+      if (!card) {
+        console.error('Error makeCardPrivate: card not found in savedCards or completedCards');
+        console.log('savedCards:', savedCards.map(c => ({ id: c.one_thing_user_card_id, type: c.type })));
+        console.log('completedCards:', completedCards.map(c => ({ id: c.one_thing_user_card_id, type: c.type })));
         return;
       }
       const userId = ensureUserId();
@@ -4290,6 +4607,7 @@
         completed: true,
         published_at: null
       };
+      console.log('Making card private:', { cardId, card: card.one_thing_user_card_id, type: card.type });
       makeApiCall(requestBody, card);
   }
 
@@ -4325,9 +4643,10 @@
 
     setTimeout(() => {
       cardList.innerHTML = '';
-      // Remove expired saved cards
+      // Remove expired cards
       const now = Date.now();
       savedCards = savedCards.filter(card => card.expiresAt > now);
+      completedCards = completedCards.filter(card => card.expiresAt > now);
 
       let toShow = [];
 
@@ -4335,18 +4654,17 @@
 
 
       // Filter by type (saved/completed/community)
-      if (filter === 'saved' || filter === 'all') {
-//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'saved111' })));
-
-        toShow = savedCards;
-      }
-      if (filter === 'completed' || filter === 'all') {
-//          toShow = toShow.concat(savedCards.map(c => ({ ...c, type: 'completed2222' })));
-        toShow = savedCards;
-      }
-      if (filter === 'community' || filter === 'all') {
-//          toShow = toShow.concat(publicCards.map(c => ({ ...c, type: 'community' })));
-        toShow = savedCards;
+      if (filter === 'saved') {
+        toShow = toShow.concat(savedCards);
+      } else if (filter === 'completed') {
+        toShow = toShow.concat(completedCards);
+      } else if (filter === 'community') {
+        toShow = toShow.concat(publicCards || []);
+      } else if (filter === 'all') {
+        // For 'all' filter, combine all card types
+        toShow = toShow.concat(savedCards);
+        toShow = toShow.concat(completedCards);
+        toShow = toShow.concat(publicCards || []);
       }
 
 
@@ -4356,7 +4674,9 @@
       console.log('to filter', filter);
       console.log('to show', toShow);
       console.log('to categoryFilter', categoryFilter);
-      console.log('to savedCards', savedCards);
+      console.log('savedCards length:', savedCards.length);
+      console.log('completedCards length:', completedCards.length);
+      console.log('publicCards length:', (publicCards || []).length);
 
       // Filter by category
 //        if (categoryFilter !== 'all') {
@@ -4462,11 +4782,22 @@
           actionHtml = expiryHtml;
         }
 
-        // Add author name for community cards
+        // Add author name and avatar for community cards
         let authorHtml = '';
         if (card.type === 'community') {
-          const authorName = card.author_name || card.user_name || 'Anonymous';
-          authorHtml = `<div class="card-author">by ${authorName}</div>`;
+          const authorName = card.author_name || card.user_name || 'User';
+          const authorAvatar = card.author_avatar;
+          
+          if (authorAvatar) {
+            authorHtml = `
+              <div class="card-author">
+                <img src="${authorAvatar}" alt="${authorName}" class="author-avatar" width="20" height="20" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.marginLeft='0';">
+                <span>by ${authorName}</span>
+              </div>`;
+          } else {
+            authorHtml = `<div class="card-author">by ${authorName}</div>`;
+          }
         }
 
         // Create different HTML for saved vs completed cards
@@ -4475,7 +4806,8 @@
           // For saved cards, show interactive image upload
           imageHtml = `
       <div class="card-image-placeholder">
-        <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}">
+        <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}" 
+             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'; this.className='add-photo-icon'; this.style.display='block'; this.nextElementSibling.style.display='none';">
         <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif"
              alt="Add photo"
              class="add-photo-icon"
@@ -4491,13 +4823,15 @@
           // For completed cards, show static image only
           imageHtml = `
       <div class="card-image-placeholder">
-        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
+        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}" 
+             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'">
       </div>`;
         } else {
           // For community cards, show static image
           imageHtml = `
       <div class="card-image-placeholder">
-        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}">
+        <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}" 
+             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'">
       </div>`;
         }
 
@@ -4668,7 +5002,7 @@
               showSuccessTooltip();
 
               // Switch to Completed tab
-              filterButtonsGroup.forEach(b => b.classList.remove('active'));
+              filterButtons.forEach(b => b.classList.remove('active'));
               const completedButton = document.querySelector('button[data-filter="completed"]');
               if (completedButton) {
                 completedButton.classList.add('active');
@@ -4687,19 +5021,25 @@
           const toggle = cardEl.querySelector('input[type="checkbox"]');
           if (toggle) {
             toggle.addEventListener('change', (e) => {
+              console.log('🔍 Toggle change event triggered');
+              console.log('🔍 Toggle checked:', e.target.checked);
+              console.log('🔍 Card published:', card.published);
+              console.log('🔍 Card ID:', card.id);
+              console.log('🔍 Card one_thing_user_card_id:', card.one_thing_user_card_id);
+              
               // Disable toggle during API call
               toggle.disabled = true;
 
               if (e.target.checked && !card.published) {
                 // Making public
-                console.log('Showing make-public confirmation for card:', card.id);
+                console.log('🔍 Making public - showing confirmation for card:', card.id);
                 showConfirmationPopup(card.one_thing_user_card_id, 'make-public');
               } else if (!e.target.checked && card.published) {
                 // Making private
-                console.log('Showing make-private confirmation for card:', card.id);
+                console.log('🔍 Making private - showing confirmation for card:', card.id);
                 showConfirmationPopup(card.one_thing_user_card_id, 'make-private');
               } else {
-                console.log('No action needed - toggle state matches public state');
+                console.log('🔍 No action needed - toggle state matches public state');
               }
 
               // Reset the toggle to current state until confirmed with smooth animation
@@ -4811,23 +5151,27 @@
                one_thing_user_card_id: item.id,
                completed: item.completed,
                published: item.published,
+               image: item.image,
                created_at: item.created_at
              }))
              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-          var formattedCards = usersCards.map(card => ({
-            id: card.id,
-            title: card.name,
-            description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
-            category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-            imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif",
-            expiresAt: card.expired_at,
-            one_thing_user_card_id: card.one_thing_user_card_id,
-            completed: card.completed,
-            published: card.published,
-            type: "saved"
-          }));
+          var formattedCards = usersCards
+            .filter(card => !card.completed) // Only show non-completed cards in saved
+            .map(card => ({
+              id: card.id,
+              title: card.name,
+              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+              imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif",
+              expiresAt: card.expired_at,
+              one_thing_user_card_id: card.one_thing_user_card_id,
+              completed: card.completed,
+              published: card.published,
+              type: "saved"
+            }));
           savedCards = formattedCards;
+          console.log('Saved cards loaded:', savedCards.length, 'cards');
           renderCardList('saved', currentCategoryFilter);
         }
       })
@@ -4863,19 +5207,22 @@
                 }))
                 .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
 
-              var formattedCards = usersCards.map(card => ({
-                id: card.id,
-                title: card.name,
-                description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
-                category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-                imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
-                expiresAt: card.expired_at,
-                one_thing_user_card_id: card.one_thing_user_card_id,
-                completed: card.completed,
-                published: card.published,
-                type: "completed"
-              }));
-              savedCards = formattedCards;
+              var formattedCards = usersCards
+                .filter(card => card.completed) // Only show completed cards
+                .map(card => ({
+                  id: card.id,
+                  title: card.name,
+                  description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
+                  category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
+                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                  expiresAt: card.expired_at,
+                  one_thing_user_card_id: card.one_thing_user_card_id,
+                  completed: card.completed,
+                  published: card.published,
+                  type: "completed"
+                }));
+              completedCards = formattedCards;
+              console.log('Completed cards loaded:', completedCards.length, 'cards');
               renderCardList('completed', currentCategoryFilter);
             }
           })
@@ -4897,6 +5244,7 @@
             return response.json();
           })
           .then(data => {
+            console.log('🔍 Community cards data loaded:', data);
             if (data) {
 //                var usersCards = data.users_cards
 //                  .filter(item => item.published === true)
@@ -4922,6 +5270,8 @@
                   published_at: item.published_at
                 }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+                
+              console.log('🔍 User data for community cards:', { name: data.name, picture: data.picture });
 
 
               var formattedCards = usersCards.map(card => ({
@@ -4934,9 +5284,12 @@
                   one_thing_user_card_id: card.one_thing_user_card_id,
                   completed: card.completed,
                   published: card.published,
+                  author_name: data.name || 'User',
+                  author_avatar: data.picture ? (data.picture.startsWith('http') ? data.picture : `https://xu8w-at8q-hywg.n7d.xano.io${data.picture}`) : null,
                 type: "community"
               }));
-              savedCards = formattedCards;
+              publicCards = formattedCards;
+              console.log('Community cards loaded:', publicCards.length, 'cards');
               renderCardList('community', currentCategoryFilter);
             }
           })
