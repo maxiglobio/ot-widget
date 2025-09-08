@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Thing</title>
+
 <!-- Import Manrope font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -139,7 +146,9 @@
     border: 3px solid white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     object-fit: cover;
+    object-position: center;
     background: #f0f0f0;
+    display: block;
   }
 
   /* Location Section - Top Left */
@@ -231,7 +240,8 @@
     background: white;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 999px;
-    padding: 12px 18px;
+    padding: 12px 16px;
+    height: 58px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -252,11 +262,38 @@
     object-fit: cover;
   }
 
+
   .user-menu-button .user-name {
     font-size: 16px;
     font-weight: 600;
     color: #141414;
   }
+
+  .user-level-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: #B1E530;
+    background: rgba(177, 229, 48, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(177, 229, 48, 0.2);
+  }
+
+  .user-level-badge:hover {
+    background: rgba(177, 229, 48, 0.2);
+    transform: scale(1.05);
+  }
+
+  .user-divider {
+    width: 3px;
+    height: 20px;
+    background: #d0d0d0;
+    border-radius: 2px;
+    margin: 0 8px;
+  }
+
 
   .user-menu-button .dropdown-arrow {
     width: 16px;
@@ -364,7 +401,7 @@
     background: white;
     border-radius: 24px;
     padding: 40px;
-    max-width: 500px;
+    max-width: 700px;
     width: 90%;
     text-align: center;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
@@ -379,6 +416,7 @@
   .my-context-title {
     font-size: 28px;
     font-weight: 700;
+    margin-top: 0;
     margin-bottom: 16px;
     color: #141414;
     display: flex;
@@ -396,13 +434,13 @@
 
   .close-modal {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 16px;
+    right: 16px;
     background: none;
     border: none;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -432,7 +470,7 @@
   .switch-card {
     background: rgba(0,0,0,0.05);
     border-radius: 30px;
-    padding: 32px 32px;
+    padding: 12px 32px 20px 32px;
     text-align: center;
     transition: background 0.3s ease;
     display: flex;
@@ -542,7 +580,7 @@
     }
 
     .user-menu-button {
-      height: 48px;
+      height: 58px;
       padding: 0 16px;
       display: flex;
       align-items: center;
@@ -563,6 +601,17 @@
       display: inline;
       font-size: 14px;
       font-weight: 500;
+    }
+
+    .user-level-badge {
+      font-size: 10px;
+      padding: 1px 6px;
+    }
+
+    .user-divider {
+      width: 2px;
+      height: 16px;
+      margin: 0 6px;
     }
 
     .user-menu-button img {
@@ -610,7 +659,7 @@
     }
 
     .switch-card {
-      padding: 20px 28px;
+      padding: 8px 24px 16px 24px;
     }
 
     .switch-card svg {
@@ -999,31 +1048,36 @@
     border: 1px solid;
   }
 
-  .card-category-tag.daily {
+  .card-category-tag.daily,
+  .card-category-tag.DAILY {
     background: transparent;
     color: #AAB40F;
     border: 1.5px solid rgba(170, 180, 15, 0.3);
   }
 
-  .card-category-tag.places {
+  .card-category-tag.places,
+  .card-category-tag.PLACES {
     background: transparent !important;
     color: #58AD95 !important;
     border: 1.5px solid rgba(88, 173, 149, 0.3) !important;
   }
 
-  .card-category-tag.local {
+  .card-category-tag.local,
+  .card-category-tag.LOCAL {
     background: transparent;
     color: #A670BC;
     border: 1.5px solid rgba(166, 112, 188, 0.3);
   }
 
-  .card-category-tag.daily-things {
+  .card-category-tag.daily-things,
+  .card-category-tag.DAILY-THINGS {
     background: transparent;
     color: #AAB40F;
     border: 1.5px solid rgba(170, 180, 15, 0.3);
   }
 
-  .card-category-tag.local-context {
+  .card-category-tag.local-context,
+  .card-category-tag.LOCAL-CONTEXT {
     background: transparent;
     color: #A670BC;
     border: 1.5px solid rgba(166, 112, 188, 0.3);
@@ -1063,7 +1117,6 @@
     width: 180px;
     height: 180px;
     border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .card-image-placeholder .add-photo-icon {
@@ -1132,6 +1185,18 @@
     min-width: fit-content;
   }
 
+  /* Color indicators for urgency */
+  .card-expiry.warning {
+    color: #FF8C00;
+    border-color: #FF8C00;
+  }
+
+  .card-expiry.critical {
+    color: #FF4444;
+    border-color: #FF4444;
+    background: #FFF5F5;
+  }
+
   .card-author {
     font-size: 12px;
     color: #666;
@@ -1147,6 +1212,8 @@
   .author-avatar {
     border-radius: 50%;
     object-fit: cover;
+    object-position: center;
+    display: block;
   }
 
   /* Image upload loader */
@@ -1367,6 +1434,7 @@
   }
 
   .empty-state-btn {
+    display: none;
     background: #f8f8f8;
     border: 1px solid #e0e0e0;
     border-radius: 24px;
@@ -1705,6 +1773,8 @@
     font-size: 13px;
     font-weight: 600;
     margin: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .popup-category-pill.daily {
@@ -1743,10 +1813,12 @@
   }
 
   .popup-category-icon img {
-    width: 242px;
-    height: 120px;
+    width: 484px;
+    height: 240px;
     object-fit: contain;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    margin: -60px -121px;
+    position: relative;
   }
 
   /* Title and description */
@@ -1757,6 +1829,8 @@
     color: #333;
     line-height: 1.3;
     text-align: left;
+    position: relative;
+    z-index: 1;
   }
 
   .one-thing-popup-inner p {
@@ -1766,6 +1840,8 @@
     margin: 0;
     font-weight: 400;
     text-align: left;
+    position: relative;
+    z-index: 1;
   }
 
   /* Action buttons */
@@ -1834,8 +1910,10 @@
     }
 
     .popup-category-icon img {
-      width: 200px;
-      height: 100px;
+      width: 400px;
+      height: 200px;
+      margin: -50px -100px;
+      position: relative;
     }
 
     .one-thing-popup-inner h3 {
@@ -1872,8 +1950,10 @@
     }
 
     .popup-category-icon img {
-      width: 150px;
-      height: 75px;
+      width: 300px;
+      height: 150px;
+      margin: -37.5px -75px;
+      position: relative;
     }
 
     .one-thing-popup-inner h3 {
@@ -1927,8 +2007,9 @@
 
   .success-tooltip {
     background: #B1E530;
-    color: white;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    filter: drop-shadow(0 1px 3px rgba(121, 163, 5, 0.10)) drop-shadow(0 5px 5px rgba(121, 163, 5, 0.09)) drop-shadow(0 12px 7px rgba(121, 163, 5, 0.05)) drop-shadow(0 21px 9px rgba(121, 163, 5, 0.01)) drop-shadow(0 34px 9px rgba(121, 163, 5, 0.00));
   }
 
   .error-tooltip,
@@ -1942,8 +2023,9 @@
 
   .location-success-tooltip {
     background: #B1E530;
-    color: white;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    filter: drop-shadow(0 1px 3px rgba(121, 163, 5, 0.10)) drop-shadow(0 5px 5px rgba(121, 163, 5, 0.09)) drop-shadow(0 12px 7px rgba(121, 163, 5, 0.05)) drop-shadow(0 21px 9px rgba(121, 163, 5, 0.01)) drop-shadow(0 34px 9px rgba(121, 163, 5, 0.00));
   }
 
   .success-tooltip.show,
@@ -1956,16 +2038,7 @@
     transform: translateX(0);
   }
 
-  .success-tooltip img,
-  .location-success-tooltip span:first-child {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
+  /* Removed styles for tooltip icons since we now only use text */
 
   /* Mobile adjustments for tooltip */
   @media (max-width: 600px) {
@@ -1983,6 +2056,546 @@
       transform: translateY(0);
     }
   }
+
+  /* PROGRESS BAR COMPONENT CSS - START (can be easily removed) */
+  /* Progress Bar Overlay */
+  .progress-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .progress-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Progress Bar Styles */
+  .progress-bar {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    background: #ffffff;
+    border-radius: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+    z-index: 1001;
+    transform: translateY(calc(-100% - 24px));
+    transition: transform 0.3s ease;
+    overflow: hidden;
+  }
+
+
+  .progress-bar.show {
+    transform: translateY(0);
+  }
+
+  .progress-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .role-badge-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .role-badge-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  .role-badge-container img {
+    width: 96px;
+    height: 96px;
+    transition: transform 0.1s ease-out;
+    transform-style: preserve-3d;
+    position: relative;
+    z-index: 2;
+  }
+
+  .role-badge-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    animation: badgeShimmer 3s ease-in-out infinite;
+    z-index: 3;
+    border-radius: 50%;
+  }
+
+  .role-badge-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(177, 229, 48, 0.1) 0%, transparent 70%);
+    animation: badgeGlow 4s ease-in-out infinite;
+    z-index: 1;
+    border-radius: 50%;
+  }
+
+  .role-achievement-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: center;
+    background: linear-gradient(45deg, #B1E530, #8BC34A, #4CAF50, #B1E530);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(177, 229, 48, 0.3);
+    padding: 8px 0;
+    margin: 8px 0;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes badgeShimmer {
+    0% {
+      left: -100%;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes badgeGlow {
+    0% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+  }
+
+
+
+  .progress-counters {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .counter-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .counter-number {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #141414;
+    line-height: 1;
+  }
+
+  .counter-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #666;
+    line-height: 1;
+  }
+
+
+  .progress-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .progress-bar-container {
+    flex: 1;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #B1E530 0%, #8BC34A 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+    position: relative;
+    min-width: 32px;
+  }
+
+  .user-avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #B1E530;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .progress-fill .user-avatar {
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .progress-fill .user-avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #B1E530;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .more-details-btn {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #666;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .more-details-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+  }
+
+  /* Levels Popup Styles */
+  .levels-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .levels-popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .levels-popup-inner {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+  }
+
+  .levels-popup.show .levels-popup-inner {
+    transform: scale(1);
+  }
+
+  .levels-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .levels-header h3 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #222;
+    margin: 0;
+  }
+
+  .levels-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+  }
+
+  .levels-close:hover {
+    background: #f0f0f0;
+  }
+
+  .current-level-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8f8f8;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .circular-progress-container {
+    position: relative;
+  }
+
+  .circular-progress {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .progress-ring {
+    transform: rotate(-90deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .progress-ring-circle {
+    transition: stroke-dashoffset 0.5s ease-in-out;
+  }
+
+  .current-level-avatar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .current-level-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+
+  .current-level-details {
+    flex: 1;
+  }
+
+  .current-level-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #222;
+    margin-bottom: 4px;
+  }
+
+  .current-level-progress {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .levels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .level-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.2s ease;
+  }
+
+  .level-item.current {
+    background: rgba(177, 229, 48, 0.1);
+    border-color: #B1E530;
+  }
+
+  .level-item.completed {
+    background: #f0f8f0;
+    border-color: #4CAF50;
+  }
+
+  .level-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+  }
+
+  .level-details {
+    flex: 1;
+  }
+
+  .level-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #222;
+    margin-bottom: 2px;
+  }
+
+  .level-description {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+  }
+
+  .level-xp {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #666;
+  }
+
+  /* Mobile adjustments for progress bar */
+  @media (max-width: 600px) {
+    .progress-bar {
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      border-radius: 16px;
+      padding: 8px 16px;
+      transform: translateY(calc(-100% - 16px));
+    }
+    
+    .progress-content {
+      gap: 12px;
+    }
+    
+    .role-badge-container img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .role-achievement-label {
+      font-size: 20px;
+      padding: 6px 0;
+      margin: 6px 0;
+    }
+    
+    .progress-counters {
+      gap: 16px;
+    }
+    
+    .counter-number {
+      font-size: 14px;
+    }
+    
+    .counter-label {
+      font-size: 14px;
+    }
+    
+    .user-avatar img {
+      width: 28px;
+      height: 28px;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .progress-fill .user-avatar {
+      right: -14px;
+    }
+
+    .progress-fill .user-avatar img {
+      width: 28px;
+      height: 28px;
+    }
+    
+    .more-details-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+    
+    .levels-popup-inner {
+      padding: 16px;
+      width: 95%;
+    }
+  }
+  /* PROGRESS BAR COMPONENT CSS - END */
 
   /* Footer styles */
   .footer {
@@ -2099,11 +2712,14 @@
     padding: 32px;
     max-width: 480px;
     width: 90%;
+    height: 520px;
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
     transform: translateY(20px);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
   }
 
   .location-modal.show .location-modal-content {
@@ -2126,22 +2742,43 @@
     text-align: center;
   }
 
+  .location-modal-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 16px 0 32px 0;
+  }
+
+  .location-modal-icon svg {
+    width: 112px;
+    height: 112px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+
+  .location-modal-icon.hidden {
+    display: none;
+  }
+
   .close-modal {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 16px;
+    right: 16px;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background 0.2s ease;
+    padding: 0;
   }
 
   .close-modal svg {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
   }
 
   .close-modal:hover {
@@ -2186,9 +2823,14 @@
 
   .location-results {
     margin-bottom: 24px;
-    min-height: 200px;
+    min-height: 0;
     max-height: 200px;
     overflow-y: auto;
+    flex: 1;
+  }
+
+  .location-results:empty {
+    display: none;
   }
 
   .location-result-item {
@@ -2261,11 +2903,14 @@
     background: #f8f9fa;
     border-color: #e9ecef;
     cursor: default;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 16px;
   }
 
   .location-result-item.loading .location-name {
     color: #6c757d;
-    font-style: italic;
   }
 
   .location-result-item.loading .location-icon img {
@@ -2342,6 +2987,8 @@
   .location-modal-buttons {
     display: flex;
     justify-content: center;
+    margin-top: auto;
+    padding-top: 24px;
   }
 
   .location-detect-btn {
@@ -2377,6 +3024,7 @@
       padding: 24px;
       margin: 20px;
       width: calc(100% - 40px);
+      height: 480px;
     }
 
     .location-modal-title {
@@ -2575,7 +3223,8 @@
     <!-- User Menu Section - Top Right -->
     <div class="user-menu-section">
       <div class="user-menu-button" id="user-menu-button">
-        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User avatar" id="user-menu-avatar">
+        <span class="user-level-badge" id="user-level-badge">Explorer</span>
+        <div class="user-divider"></div>
         <span class="user-name" id="user-menu-name">User</span>
         <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2586,22 +3235,22 @@
       <div class="user-dropdown" id="user-dropdown">
         <div class="user-dropdown-header">
           <div class="user-email" id="dropdown-user-email">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 4L8 9L14 4M2 4C2 3.44772 2.44772 3 3 3H13C13.5523 3 14 3.44772 14 4V12C14 12.5523 13.5523 13 13 13H3C2.44772 13 2 12.5523 2 12V4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.33594 4.66675L6.77922 8.47704C7.22 8.78559 7.44039 8.93986 7.68011 8.99962C7.89187 9.0524 8.11334 9.0524 8.32509 8.99962C8.56482 8.93986 8.78521 8.78559 9.22599 8.47704L14.6693 4.66675M4.53594 13.3334H11.4693C12.5894 13.3334 13.1494 13.3334 13.5773 13.1154C13.9536 12.9237 14.2595 12.6177 14.4513 12.2414C14.6693 11.8136 14.6693 11.2535 14.6693 10.1334V5.86675C14.6693 4.74664 14.6693 4.18659 14.4513 3.75877C14.2595 3.38244 13.9536 3.07648 13.5773 2.88474C13.1494 2.66675 12.5894 2.66675 11.4693 2.66675H4.53594C3.41583 2.66675 2.85578 2.66675 2.42796 2.88474C2.05163 3.07648 1.74567 3.38244 1.55392 3.75877C1.33594 4.18659 1.33594 4.74664 1.33594 5.86675V10.1334C1.33594 11.2535 1.33594 11.8136 1.55392 12.2414C1.74567 12.6177 2.05163 12.9237 2.42796 13.1154C2.85578 13.3334 3.41583 13.3334 4.53594 13.3334Z" stroke="#949494" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>user@example.com</span>
           </div>
         </div>
         <div class="user-dropdown-item" id="my-context-btn">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 4V2M8 14V12M12 8H14M2 8H4M11.6569 4.34314L13.0711 2.92893M2.92893 13.0711L4.34314 11.6569M11.6569 11.6569L13.0711 13.0711M2.92893 2.92893L4.34314 4.34314" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.26466 12.914L6.65429 13.7903C6.77012 14.0511 6.95915 14.2728 7.19844 14.4283C7.43774 14.5839 7.71703 14.6666 8.00244 14.6666C8.28785 14.6666 8.56714 14.5839 8.80644 14.4283C9.04574 14.2728 9.23476 14.0511 9.35059 13.7903L9.74022 12.914C9.87892 12.6031 10.1122 12.3438 10.4069 12.1733C10.7034 12.0022 11.0464 11.9294 11.3869 11.9651L12.3402 12.0666C12.624 12.0966 12.9104 12.0436 13.1647 11.9141C13.419 11.7846 13.6302 11.5841 13.7728 11.337C13.9156 11.0899 13.9836 10.8068 13.9686 10.5218C13.9536 10.2369 13.8563 9.96245 13.6884 9.73177L13.1239 8.95622C12.9229 8.67801 12.8155 8.34313 12.8173 7.99992C12.8172 7.65764 12.9256 7.32415 13.1269 7.04733L13.6913 6.27177C13.8592 6.04109 13.9566 5.76663 13.9716 5.4817C13.9866 5.19677 13.9186 4.91361 13.7758 4.66659C13.6332 4.41941 13.4219 4.21891 13.1676 4.0894C12.9134 3.9599 12.627 3.90694 12.3432 3.93696L11.3898 4.03844C11.0494 4.07419 10.7064 4.00133 10.4098 3.83029C10.1146 3.65875 9.88123 3.39816 9.74318 3.08584L9.35059 2.20955C9.23476 1.9487 9.04574 1.72706 8.80644 1.57152C8.56714 1.41597 8.28785 1.33321 8.00244 1.33325C7.71703 1.33321 7.43774 1.41597 7.19844 1.57152C6.95915 1.72706 6.77012 1.9487 6.65429 2.20955L6.26466 3.08584C6.12662 3.39816 5.89325 3.65875 5.598 3.83029C5.30147 4.00133 4.95844 4.07419 4.618 4.03844L3.6617 3.93696C3.37792 3.90694 3.09153 3.9599 2.83724 4.0894C2.58296 4.21891 2.37171 4.41941 2.22911 4.66659C2.08632 4.91361 2.0183 5.19677 2.03329 5.4817C2.04828 5.76663 2.14564 6.04109 2.31355 6.27177L2.878 7.04733C3.07929 7.32415 3.18769 7.65764 3.18763 7.99992C3.18769 8.34219 3.07929 8.67569 2.878 8.95251L2.31355 9.72807C2.14564 9.95875 2.04828 10.2332 2.03329 10.5181C2.0183 10.8031 2.08632 11.0862 2.22911 11.3333C2.37185 11.5803 2.58313 11.7807 2.83737 11.9102C3.09162 12.0397 3.37794 12.0927 3.6617 12.0629L4.61503 11.9614C4.95548 11.9256 5.29851 11.9985 5.59503 12.1695C5.89139 12.3406 6.12584 12.6012 6.26466 12.914Z" stroke="#949494" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.00125 9.99992C9.10582 9.99992 10.0013 9.10449 10.0013 7.99992C10.0013 6.89535 9.10582 5.99992 8.00125 5.99992C6.89668 5.99992 6.00125 6.89535 6.00125 7.99992C6.00125 9.10449 6.89668 9.99992 8.00125 9.99992Z" stroke="#949494" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           My Context
         </div>
         <div class="user-dropdown-item" id="logout-btn">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M6 12L2 8L6 4M2 8H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.0026 5.33333L14.6693 8M14.6693 8L12.0026 10.6667M14.6693 8H6.0026M10.0026 2.80269C9.15277 2.29218 8.1661 2 7.11372 2C3.92274 2 1.33594 4.68629 1.33594 8C1.33594 11.3137 3.92274 14 7.11372 14C8.1661 14 9.15277 13.7078 10.0026 13.1973" stroke="#949494" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Logout
         </div>
@@ -2618,10 +3267,6 @@
         </svg>
       </button>
       <h2 class="my-context-title">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: inline-block; margin-right: 8px; vertical-align: middle;">
-          <path d="M12 6V4M12 20V18M18 12H20M4 12H6M17.6569 6.34314L19.0711 4.92893M4.92893 19.0711L6.34314 17.6569M17.6569 17.6569L19.0711 19.0711M4.92893 4.92893L6.34314 6.34314" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
         My Context
       </h2>
       <p class="my-context-description">Here you can set your personal context—like whether you have kids, pets, or a car. This helps Globio suggest more relevant One Things for your life in a new city.</p>
@@ -2629,11 +3274,6 @@
       <!-- Switch Options -->
       <div class="switch-row">
         <div class="switch-card">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="margin-bottom: 8px;">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
           <p class="switch-label">Kids</p>
           <label class="switch">
             <input type="checkbox" id="has-kids">
@@ -2641,9 +3281,6 @@
           </label>
         </div>
         <div class="switch-card">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="margin-bottom: 8px;">
-            <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
           <p class="switch-label">Pets</p>
           <label class="switch">
             <input type="checkbox" id="has-pets">
@@ -2651,11 +3288,6 @@
           </label>
         </div>
         <div class="switch-card">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="margin-bottom: 8px;">
-            <path d="M19 17H5C3.89543 17 3 16.1046 3 15V9C3 7.89543 3.89543 7 5 7H19C20.1046 7 21 7.89543 21 9V15C21 16.1046 20.1046 17 19 17Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 11H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M7 13H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
           <p class="switch-label">Car</p>
           <label class="switch">
             <input type="checkbox" id="has-car">
@@ -2684,6 +3316,13 @@
       
       <div class="location-input-section">
         <input type="text" id="location-input" class="location-input" placeholder="e.g., London, Berlin, Tokyo">
+      </div>
+
+      <!-- Location Icon -->
+      <div class="location-modal-icon">
+        <svg width="112" height="112" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5408 73.0105L21.4457 67.8698C21.928 67.5914 22.4941 67.4946 23.0415 67.5971L40.5625 70.8762C42.0024 71.1457 43.3316 70.0372 43.325 68.5723L43.2568 53.2207C43.255 52.8036 43.365 52.3936 43.5753 52.0335L52.4174 36.8956C52.8776 36.1077 52.8363 35.124 52.3118 34.3774L37.4242 13.1864M88.6703 22.6755C63.0036 35.0001 77.0028 51.3334 81.6703 53.6668C90.4299 58.0459 102.612 58.3332 102.612 58.3332C102.65 57.5602 102.669 56.7823 102.669 55.9999C102.669 30.2266 81.7759 9.33325 56.0026 9.33325C30.2293 9.33325 9.33594 30.2266 9.33594 55.9999C9.33594 81.7732 30.2293 102.667 56.0026 102.667C56.785 102.667 57.563 102.647 58.3359 102.609M78.2056 102.386L63.4273 63.4246L102.388 78.2029L85.1116 85.1089L78.2056 102.386Z" stroke="#E2E1E1" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
 
       <div class="location-results" id="location-results"></div>
@@ -2761,48 +3400,121 @@
   <div id="one-thing-card-list"></div>
 </div>
 
+<!-- PROGRESS BAR COMPONENT - START (can be easily removed) -->
+
+<!-- Progress Bar Overlay -->
+<div id="progress-overlay" class="progress-overlay"></div>
+
+<!-- Progress Bar (appears on scroll) -->
+<div id="progress-bar" class="progress-bar">
+  <div class="progress-content">
+        <div class="role-badge-container">
+          <img id="role-badge" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg" alt="Role Badge" width="32" height="32">
+        </div>
+        <div class="role-achievement-label" id="role-achievement-label">Explorer</div>
+    <div class="progress-counters">
+      <div class="counter-item">
+        <span class="counter-number" id="saved-counter">0</span>
+        <span class="counter-label">Things saved</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-number" id="completed-counter">0</span>
+        <span class="counter-label">Things completed</span>
+      </div>
+      <div class="counter-item">
+        <span class="counter-number" id="published-counter">0</span>
+        <span class="counter-label">Thing published</span>
+      </div>
+    </div>
+    <div class="progress-info">
+      <div class="progress-bar-container">
+        <div class="progress-fill" id="progress-fill">
+          <div class="user-avatar">
+            <img id="progress-avatar" src="" alt="User Avatar" width="32" height="32">
+          </div>
+        </div>
+      </div>
+      <button class="more-details-btn" id="more-details-btn">More Details</button>
+    </div>
+  </div>
+</div>
+<!-- PROGRESS BAR COMPONENT - END -->
+
 <!-- Success tooltip -->
 <div id="success-tooltip" class="success-tooltip">
-  <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
-    alt="Success" width="16" height="16">
-  <span>Thing completed! 🎉</span>
+  <span>Thing completed!</span>
 </div>
 
 <!-- Public success tooltip -->
 <div id="public-success-tooltip" class="success-tooltip">
-  <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6820b67bc960fe7e64297756_save-card-icon.svg"
-    alt="Success" width="16" height="16">
-  <span>Thing is Public! 🌟</span>
+  <span>Thing is Public!</span>
+</div>
+
+<!-- Private success tooltip -->
+<div id="private-success-tooltip" class="success-tooltip">
+  <span>Thing is Private!</span>
+</div>
+
+<!-- Saved success tooltip -->
+<div id="saved-success-tooltip" class="success-tooltip">
+  <span>Thing Saved!</span>
 </div>
 
 <!-- Copy Error tooltip -->
 <div id="copy-error-tooltip" class="copy-error-tooltip">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
-  </svg>
   <span>Failed to copy link. Please copy manually.</span>
 </div>
 
 <!-- HEIC Error tooltip -->
 <div id="heic-error-tooltip" class="heic-error-tooltip">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
-  </svg>
   <span>Error converting HEIC image. Please try a different image format.</span>
 </div>
 
 <!-- Location Error tooltip -->
 <div id="location-error-tooltip" class="location-error-tooltip">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
-  </svg>
   <span>Location error occurred</span>
 </div>
 
 <!-- Location Success tooltip -->
 <div id="location-success-tooltip" class="location-success-tooltip">
-  <span>📍</span>
-  <span>Location changed successfully! 🎯</span>
+  <span>Location changed successfully!</span>
+</div>
+
+<!-- Context Updated tooltip -->
+<div id="context-success-tooltip" class="success-tooltip">
+  <span>Context Updated!</span>
+</div>
+
+<!-- Levels popup -->
+<div id="levels-popup" class="levels-popup">
+  <div class="levels-popup-inner">
+    <div class="levels-header">
+      <h3>Your Progress</h3>
+      <button class="levels-close" id="levels-close">×</button>
+    </div>
+    <div class="levels-content">
+      <div class="current-level-info">
+        <div class="circular-progress-container">
+          <div class="circular-progress">
+            <svg class="progress-ring" width="80" height="80">
+              <circle class="progress-ring-circle-bg" cx="40" cy="40" r="35" fill="transparent" stroke="#e0e0e0" stroke-width="6"/>
+              <circle class="progress-ring-circle" cx="40" cy="40" r="35" fill="transparent" stroke="#B1E530" stroke-width="6" stroke-linecap="round" stroke-dasharray="219.8" stroke-dashoffset="219.8"/>
+            </svg>
+            <div class="current-level-avatar">
+              <img id="levels-avatar" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User Avatar" width="48" height="48">
+            </div>
+          </div>
+        </div>
+        <div class="current-level-details">
+          <div class="current-level-name" id="current-level-name">Explorer</div>
+          <div class="current-level-progress" id="current-level-progress">0 / 100 XP</div>
+        </div>
+      </div>
+      <div class="levels-list" id="levels-list">
+        <!-- Levels will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Confirmation popup -->
@@ -2985,19 +3697,22 @@
         console.log('🔍 User picture field:', data.picture);
         console.log('🔍 User name field:', data.name);
         
-        // Update user avatar
+        // Update user avatar (for map avatar, progress bar, and levels popup)
         if (data.picture) {
           console.log('🔍 Updating user avatar to:', data.picture);
           const userAvatar = document.getElementById('user-avatar');
-          const userMenuAvatar = document.getElementById('user-menu-avatar');
+          const progressAvatar = document.getElementById('progress-avatar');
+          const levelsAvatar = document.getElementById('levels-avatar');
           
           console.log('🔍 user-avatar element found:', !!userAvatar);
-          console.log('🔍 user-menu-avatar element found:', !!userMenuAvatar);
+          console.log('🔍 progress-avatar element found:', !!progressAvatar);
+          console.log('🔍 levels-avatar element found:', !!levelsAvatar);
           
           // Construct full URL for avatar
           const avatarUrl = data.picture.startsWith('http') ? data.picture : `https://xu8w-at8q-hywg.n7d.xano.io${data.picture}`;
           console.log('🔍 Full avatar URL:', avatarUrl);
           
+          // Update map avatar
           if (userAvatar) {
             console.log('🔍 Setting user-avatar src to:', avatarUrl);
             userAvatar.src = avatarUrl;
@@ -3012,18 +3727,34 @@
             console.log('❌ user-avatar element not found in DOM');
           }
           
-          if (userMenuAvatar) {
-            console.log('🔍 Setting user-menu-avatar src to:', avatarUrl);
-            userMenuAvatar.src = avatarUrl;
-            userMenuAvatar.onerror = function() {
-              console.log('⚠️ Failed to load user menu avatar, using placeholder');
+          // Update progress bar avatar
+          if (progressAvatar) {
+            console.log('🔍 Setting progress-avatar src to:', avatarUrl);
+            progressAvatar.src = avatarUrl;
+            progressAvatar.onerror = function() {
+              console.log('⚠️ Failed to load progress avatar, using placeholder');
               this.src = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg';
             };
-            userMenuAvatar.onload = function() {
-              console.log('✅ User menu avatar loaded successfully');
+            progressAvatar.onload = function() {
+              console.log('✅ Progress avatar loaded successfully');
             };
           } else {
-            console.log('❌ user-menu-avatar element not found in DOM');
+            console.log('❌ progress-avatar element not found in DOM');
+          }
+          
+          // Update levels popup avatar
+          if (levelsAvatar) {
+            console.log('🔍 Setting levels-avatar src to:', avatarUrl);
+            levelsAvatar.src = avatarUrl;
+            levelsAvatar.onerror = function() {
+              console.log('⚠️ Failed to load levels avatar, using placeholder');
+              this.src = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg';
+            };
+            levelsAvatar.onload = function() {
+              console.log('✅ Levels avatar loaded successfully');
+            };
+          } else {
+            console.log('❌ levels-avatar element not found in DOM');
           }
         } else {
           console.log('⚠️ No user picture found in data');
@@ -3248,6 +3979,7 @@
     const myContextModal = document.getElementById('my-context-modal');
     const closeModalBtn = document.getElementById('close-my-context-modal');
     const saveBtn = document.getElementById('save-context-btn');
+    const userDropdown = document.getElementById('user-dropdown');
     
     // Load saved context
     const hasKids = localStorage.getItem('hasKids') === 'true';
@@ -3302,7 +4034,7 @@
       myContextModal.classList.remove('show');
       
       // Show success message
-      showSuccessTooltip();
+      showContextSuccessTooltip();
     });
   }
 
@@ -3349,9 +4081,21 @@
     const locationModal = document.getElementById('location-modal');
     const closeLocationModal = document.getElementById('close-location-modal');
     const locationInput = document.getElementById('location-input');
+    const locationIcon = document.querySelector('.location-modal-icon');
 
     const locationDetectBtn = document.getElementById('location-detect-btn');
     const locationResults = document.getElementById('location-results');
+
+    // Handle input changes to show/hide location icon
+    if (locationInput && locationIcon) {
+      locationInput.addEventListener('input', () => {
+        if (locationInput.value.trim().length > 0) {
+          locationIcon.classList.add('hidden');
+        } else {
+          locationIcon.classList.remove('hidden');
+        }
+      });
+    }
 
     // Open location modal when clicking on location section
     const locationClickable = document.getElementById('location-clickable');
@@ -3368,6 +4112,10 @@
       locationModal.classList.remove('show');
       locationInput.value = '';
       locationResults.innerHTML = '';
+      // Show location icon again when modal is closed
+      if (locationIcon) {
+        locationIcon.classList.remove('hidden');
+      }
       console.log('Modal closed'); // Debug log
     }
 
@@ -3391,8 +4139,8 @@
     async function searchLocation(query) {
       if (!query.trim()) return;
 
-      // Show loading state with spinner
-      locationResults.innerHTML = '<div class="location-result-item loading"><div class="location-spinner"></div><div class="location-content"><div class="location-name">Searching locations...</div></div></div>';
+      // Show loading state with spinner only
+      locationResults.innerHTML = '<div class="location-result-item loading"><div class="location-spinner"></div></div>';
 
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
@@ -3425,9 +4173,13 @@
         `;
       }).join('');
 
-      // Add click handlers to results
-      locationResults.querySelectorAll('.location-result-item').forEach(item => {
-        item.addEventListener('click', () => {
+      // Add click handlers to results (use event delegation to avoid multiple handlers)
+      if (!locationResults.hasAttribute('data-handler-attached')) {
+        locationResults.setAttribute('data-handler-attached', 'true');
+        locationResults.addEventListener('click', (e) => {
+          const item = e.target.closest('.location-result-item');
+          if (!item) return;
+          
           console.log('Location item clicked:', item.dataset); // Debug log
           const lat = item.dataset.lat;
           const lon = item.dataset.lon;
@@ -3442,20 +4194,11 @@
             displayName = `${city}, ${country}`;
           }
           
-          // Update user location using the common function
+          // Update user location
           localStorage.setItem('userLocation', displayName);
-
           
-          // Update map if available
-          if (window.map) {
-            window.map.setCenter([parseFloat(lon), parseFloat(lat)]);
-            window.map.setZoom(10);
-          }
-          
+          // Close modal immediately
           closeModal();
-          
-          // Update UI after modal is closed
-          updateLocationUIFromModal(displayName);
           
           // Show location success message
           showLocationSuccessTooltip();
@@ -3465,7 +4208,7 @@
             location.reload();
           }, 1000);
         });
-      });
+      }
     }
 
     // Show autosuggest based on input
@@ -3530,14 +4273,8 @@
             }
             
             localStorage.setItem('userLocation', locationName);
-            updateLocationUIFromModal(locationName);
             
-            // Update map
-            if (window.map) {
-              window.map.setCenter([longitude, latitude]);
-              window.map.setZoom(10);
-            }
-            
+            // Close modal immediately
             closeModal();
             showLocationSuccessTooltip();
             
@@ -3560,12 +4297,41 @@
   function initializeLogout() {
     const logoutBtn = document.getElementById('logout-btn');
     
-    logoutBtn.addEventListener('click', () => {
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        performLogout();
+      });
+    }
+  }
+
+  // Comprehensive logout function
+  function performLogout() {
+    console.log('🔍 Logout initiated');
+    
+    // Close dropdown if open
+    const userDropdown = document.querySelector('.user-dropdown');
+    if (userDropdown) {
       userDropdown.classList.remove('show');
-      localStorage.removeItem('auth');
-      localStorage.removeItem('userId');
-      location.reload();
-    });
+    }
+    
+    // Clear all authentication data
+    localStorage.removeItem('auth');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('xano_auth');
+    localStorage.removeItem('reloadAccountOnce');
+    localStorage.removeItem('justReloaded');
+    
+    // Clear user-specific data (optional - depends on your needs)
+    // localStorage.removeItem('savedCards');
+    // localStorage.removeItem('completedCards');
+    // localStorage.removeItem('publicCards');
+    
+    console.log('✅ All auth data cleared');
+    
+    // Redirect to login page or home
+    window.location.href = 'https://globio.io/one-thing';
   }
 
   // Initialize everything when DOM is ready
@@ -3601,6 +4367,168 @@
       hasCar: localStorage.getItem('hasCar') === 'true'
     };
   }
+
+  // OAuth Configuration
+  var login_path = "/one-thing"
+  var redirect_uri = "https://my.globio.io/oauth/account"
+  var xano_oauth_init_url = "https://xu8w-at8q-hywg.n7d.xano.io/api:U0aE1wpF/oauth/google/init"
+  var xano_oauth_continue_url = "https://xu8w-at8q-hywg.n7d.xano.io/api:U0aE1wpF/oauth/google/continue"
+  var formHeaders = [];
+  var formResponse = [];
+  var authState = false;
+
+  // OAuth Functions
+  function initOauth() {
+    var fetchURL = new URL(xano_oauth_init_url);
+    fetchURL.searchParams.set("redirect_uri", redirect_uri);
+    fetchURL = fetchURL.toString();
+
+    fetch(fetchURL, {
+        headers: formHeaders,
+        method: "GET"
+    })
+    .then(res => res.json())
+    .then(data => formResponse = data)
+    .then(() => loginResponse(formResponse))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+  }
+
+  function loginResponse(res) {
+    window.location.href = res.authUrl
+  }
+
+  function continueOauth(code) {
+    var fetchURL = new URL(xano_oauth_continue_url);
+    fetchURL.searchParams.set("redirect_uri", redirect_uri);
+    fetchURL.searchParams.set("code", code);
+
+    fetchURL = fetchURL.toString();
+
+    fetch(fetchURL, {
+        headers: formHeaders,
+        method: "GET"
+    })
+    .then(res => res.json())
+    .then(data => formResponse = data)
+    .then(() => saveToken(formResponse))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+  }
+
+  function saveToken(res) {
+    window.localStorage.setItem('auth', JSON.stringify(res));
+    window.localStorage.setItem('reloadAccountOnce', 'true');
+    updateAuthState(res);
+  }
+
+  function updateAuthState(res) {
+    // Update UI with user data
+    if (res.name && document.getElementById('user-name')) {
+      document.getElementById('user-name').textContent = res.name;
+    }
+    if (res.email && document.getElementById('user-email')) {
+      document.getElementById('user-email').textContent = res.email;
+    }
+    if (res.picture && document.getElementById('user-photo')) {
+      document.getElementById('user-photo').src = res.picture;
+    }
+    
+    // Set userId for the app
+    if (res.id) {
+      localStorage.setItem('userId', res.id);
+      console.log('✅ OAuth: Set userId from token:', res.id);
+    }
+  }
+
+  // OAuth Event Handlers
+  document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("authButton")) {
+      event.preventDefault();
+      initOauth();
+    }
+  });
+
+  // Legacy logout handler (keeping for compatibility)
+  var logoutButton = document.querySelector("#logout");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      performLogout();
+    });
+  }
+
+  // Auto Reload After Authentication
+  (function() {
+    // Если только что был reload — ничего не делаем, сбрасываем флаг
+    if (localStorage.getItem('justReloaded')) {
+      localStorage.removeItem('justReloaded');
+      return;
+    }
+
+    let alreadyReloaded = false;
+
+    function pollAuthToken() {
+      if (alreadyReloaded) return;
+      const authRaw = localStorage.getItem('auth');
+      if (authRaw) {
+        alreadyReloaded = true;
+        localStorage.setItem('justReloaded', 'true');
+        location.reload();
+      } else {
+        setTimeout(pollAuthToken, 200); // Проверяем каждые 200мс
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      pollAuthToken();
+    });
+
+    // Сбросить флаг при логауте
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'auth' && !e.newValue) {
+        localStorage.removeItem('justReloaded');
+      }
+    });
+  })();
+
+  // Handle OAuth Callback on Page Load
+  window.addEventListener('load', function() {
+    var curUrl = new URL(document.location.href);
+    var code = curUrl.searchParams.get("code");
+    if (code) {
+      console.log('🔍 OAuth callback detected, processing code:', code);
+      
+      // Immediately clean URL to hide OAuth parameters from user
+      var cleanUrl = new URL(document.location.href);
+      cleanUrl.searchParams.delete("code");
+      cleanUrl.searchParams.delete("scope");
+      cleanUrl.searchParams.delete("authuser");
+      cleanUrl.searchParams.delete("hd");
+      cleanUrl.searchParams.delete("prompt");
+      history.replaceState(null, "", cleanUrl.toString());
+      
+      continueOauth(code);
+    } else {
+      var token = window.localStorage.getItem('auth');
+      if (token) {
+        try {
+          token = JSON.parse(token);
+          if (token) {
+            updateAuthState(token);
+          }
+        } catch (e) {
+          console.error('Error parsing auth token:', e);
+        }
+      }
+
+      if (!token && curUrl.pathname.indexOf('account') !== -1) {
+        document.location.href = login_path;
+      }
+    }
+  });
 
   const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
   const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
@@ -3700,9 +4628,11 @@
   });
 
   // Set active class based on currentTypeFilter
+  console.log('🔍 Setting active tab for currentTypeFilter:', currentTypeFilter);
   filterButtons.forEach(btn => {
     if (btn.getAttribute('data-filter') === currentTypeFilter) {
       btn.classList.add('active');
+      console.log('🔍 Activated button:', btn.getAttribute('data-filter'));
     }
   });
 
@@ -3722,10 +4652,434 @@
   // Initialize dropdown functionality
   initializeDropdown();
 
+  // PROGRESS BAR COMPONENT JS - START (can be easily removed)
+  // Progress Bar and Levels System
+  const levels = [
+    { level: 1, name: "Explorer", xp: 0, description: "Just starting your journey" },
+    { level: 2, name: "Adventurer", xp: 100, description: "Taking your first steps" },
+    { level: 3, name: "Discoverer", xp: 250, description: "Finding your way around" },
+    { level: 4, name: "Explorer", xp: 500, description: "Getting comfortable with exploration" },
+    { level: 5, name: "Navigator", xp: 1000, description: "Confidently exploring new places" },
+    { level: 6, name: "Pioneer", xp: 2000, description: "Leading the way for others" },
+    { level: 7, name: "Trailblazer", xp: 4000, description: "Creating new paths" },
+    { level: 8, name: "Master Explorer", xp: 8000, description: "Expert in exploration" },
+    { level: 9, name: "Legend", xp: 15000, description: "A true exploration legend" },
+    { level: 10, name: "Myth", xp: 30000, description: "The ultimate exploration myth" }
+  ];
+
+  let userXP = 0;
+  let currentLevel = 1;
+
+  // Calculate user XP based on activities
+  function calculateUserXP() {
+    const savedCount = savedCards.length;
+    const completedCount = completedCards.length;
+    const publicCount = completedCards.filter(card => card.published).length;
+    
+    console.log('🔍 Card counts:', { savedCount, completedCount, publicCount });
+    
+    // XP calculation: 10 for saved, 25 for completed, 50 for public
+    userXP = (savedCount * 10) + (completedCount * 25) + (publicCount * 50);
+    
+    console.log('🔍 Calculated XP:', userXP);
+    
+    // Find current level
+    for (let i = levels.length - 1; i >= 0; i--) {
+      if (userXP >= levels[i].xp) {
+        currentLevel = levels[i].level;
+        break;
+      }
+    }
+    
+    console.log('🔍 Current level:', currentLevel);
+    
+    return { xp: userXP, level: currentLevel };
+  }
+
+  // Update progress counters
+  function updateProgressCounters() {
+    console.log('🔍 Updating progress counters...');
+    
+    // Get saved cards count
+    const savedCards = JSON.parse(localStorage.getItem('savedUserCards') || '[]');
+    const savedCount = savedCards.length;
+    
+    // Get completed cards count
+    const completedCards = JSON.parse(localStorage.getItem('completedUserCards') || '[]');
+    const completedCount = completedCards.length;
+    
+    // Get published cards count (completed cards that are published)
+    const publishedCount = completedCards.filter(card => card.published).length;
+    
+    console.log('🔍 Card counts:', { savedCount, completedCount, publishedCount });
+    
+    // Update counter elements
+    const savedCounter = document.getElementById('saved-counter');
+    const completedCounter = document.getElementById('completed-counter');
+    const publishedCounter = document.getElementById('published-counter');
+    
+    if (savedCounter) savedCounter.textContent = savedCount;
+    if (completedCounter) completedCounter.textContent = completedCount;
+    if (publishedCounter) publishedCounter.textContent = publishedCount;
+    
+    console.log('✅ Progress counters updated');
+  }
+
+  // Update progress bar
+  function updateProgressBar() {
+    console.log('🔍 Updating progress bar...');
+    const progress = calculateUserXP();
+    console.log('🔍 User progress:', progress);
+    
+    const currentLevelData = levels.find(l => l.level === progress.level);
+    const nextLevelData = levels.find(l => l.level === progress.level + 1);
+    
+    console.log('🔍 Level data:', { currentLevelData, nextLevelData });
+    
+    if (!currentLevelData) {
+      console.error('❌ Current level data not found!');
+      return;
+    }
+    
+    const progressBar = document.getElementById('progress-bar');
+    const progressFill = document.getElementById('progress-fill');
+    const progressAvatar = document.getElementById('progress-avatar');
+    const savedCounter = document.getElementById('saved-counter');
+    const completedCounter = document.getElementById('completed-counter');
+    const publishedCounter = document.getElementById('published-counter');
+    const roleAchievementLabel = document.getElementById('role-achievement-label');
+    const roleBadge = document.getElementById('role-badge');
+    
+    if (!progressBar || !progressFill || !progressAvatar || !savedCounter || !completedCounter || !publishedCounter || !roleAchievementLabel || !roleBadge) return;
+    
+    // Update role achievement label
+    roleAchievementLabel.textContent = currentLevelData.name;
+    
+    // Update role badge based on current level
+    const badgeUrls = {
+      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg',
+      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627c06a7b55c4c17e8c_expert.svg',
+      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b496275f324ac3f37cb913_mentor.svg',
+      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627f74d369d667bff72_ambassadoe.svg'
+    };
+    
+    if (badgeUrls[progress.level]) {
+      roleBadge.src = badgeUrls[progress.level];
+    }
+    
+    // Update counters
+    updateProgressCounters();
+    
+    // Update level badge in profile menu
+    const levelBadge = document.getElementById('user-level-badge');
+    if (levelBadge) {
+      levelBadge.textContent = currentLevelData.name;
+    }
+    
+    // Update progress fill
+    if (nextLevelData) {
+      const currentLevelXP = currentLevelData.xp;
+      const nextLevelXP = nextLevelData.xp;
+      const progressPercent = ((progress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
+      progressFill.style.width = Math.min(progressPercent, 100) + '%';
+    } else {
+      progressFill.style.width = '100%';
+    }
+    
+    // Update avatar visibility based on progress
+    const progressPercent = parseFloat(progressFill.style.width);
+    if (progressPercent > 0) {
+      progressAvatar.style.opacity = '1';
+    } else {
+      progressAvatar.style.opacity = '0';
+    }
+    
+    // Avatar is now loaded directly from database in loadUserDataFromXano
+  }
+
+  // Show/hide progress bar based on scroll
+  function handleScroll() {
+    // Try multiple selectors for user avatar/menu
+    const userMenuSection = document.querySelector('.user-menu-section');
+    const userProfileAvatar = document.querySelector('.user-profile-avatar');
+    const userAvatar = document.querySelector('.user-profile-avatar img');
+    const progressBar = document.getElementById('progress-bar');
+    
+    // Use the first available element
+    const targetElement = userMenuSection || userProfileAvatar || userAvatar;
+    
+    if (!targetElement || !progressBar) {
+      console.log('🔍 Scroll handler: Missing elements', { 
+        userMenuSection: !!userMenuSection,
+        userProfileAvatar: !!userProfileAvatar,
+        userAvatar: !!userAvatar,
+        progressBar: !!progressBar,
+        targetElement: !!targetElement
+      });
+      return;
+    }
+    
+    const targetRect = targetElement.getBoundingClientRect();
+    const isTargetVisible = targetRect.top >= 0 && targetRect.bottom <= window.innerHeight;
+    
+    console.log('🔍 Scroll handler:', { 
+      targetTop: targetRect.top, 
+      targetBottom: targetRect.bottom, 
+      windowHeight: window.innerHeight,
+      isTargetVisible,
+      scrollY: window.scrollY
+    });
+    
+    if (!isTargetVisible) {
+      progressBar.classList.add('show');
+      document.getElementById('progress-overlay').classList.add('show');
+      console.log('🔍 Progress bar shown (target not visible)');
+    } else {
+      progressBar.classList.remove('show');
+      document.getElementById('progress-overlay').classList.remove('show');
+      console.log('🔍 Progress bar hidden (target visible)');
+    }
+  }
+
+  // Initialize levels popup
+  function initializeLevelsPopup() {
+    console.log('🔍 Initializing levels popup...');
+    const levelsPopup = document.getElementById('levels-popup');
+    const levelsClose = document.getElementById('levels-close');
+    const progressBar = document.getElementById('progress-bar');
+    
+    if (!levelsPopup || !levelsClose || !progressBar) {
+      console.log('❌ Missing elements for levels popup');
+      return;
+    }
+    
+    // Get current user progress
+    const progress = calculateUserXP();
+    const currentLevel = progress.level;
+    const userXP = progress.xp;
+    
+    console.log('🔍 Current progress for popup:', { currentLevel, userXP });
+    
+    // Populate levels list
+    const levelsList = document.getElementById('levels-list');
+    if (levelsList) {
+      levelsList.innerHTML = '';
+      
+      levels.forEach(level => {
+        const levelItem = document.createElement('div');
+        levelItem.className = 'level-item';
+        
+        if (level.level === currentLevel) {
+          levelItem.classList.add('current');
+        } else if (level.level < currentLevel) {
+          levelItem.classList.add('completed');
+        }
+        
+        const nextLevel = levels.find(l => l.level === level.level + 1);
+        const xpRequired = nextLevel ? nextLevel.xp - level.xp : 0;
+        
+        levelItem.innerHTML = `
+          <div class="level-avatar" style="background: ${level.level <= currentLevel ? '#B1E530' : '#ccc'}">
+            ${level.level}
+          </div>
+          <div class="level-details">
+            <div class="level-name">${level.name}</div>
+            <div class="level-description">${level.description}</div>
+          </div>
+          <div class="level-xp">${xpRequired} XP</div>
+        `;
+        
+        levelsList.appendChild(levelItem);
+      });
+      
+      console.log('✅ Levels list populated with', levels.length, 'levels');
+    }
+    
+    // Update current level info
+    const currentLevelData = levels.find(l => l.level === currentLevel);
+    const nextLevelData = levels.find(l => l.level === currentLevel + 1);
+    
+    if (currentLevelData) {
+      const currentLevelName = document.getElementById('current-level-name');
+      const currentLevelProgress = document.getElementById('current-level-progress');
+      const levelsAvatar = document.getElementById('levels-avatar');
+      
+      if (currentLevelName) currentLevelName.textContent = currentLevelData.name;
+      if (currentLevelProgress) {
+        const progressText = nextLevelData ? 
+          `${userXP - currentLevelData.xp} / ${nextLevelData.xp - currentLevelData.xp} XP` : 
+          'Max Level';
+        currentLevelProgress.textContent = progressText;
+      }
+      
+      // Update circular progress
+      const progressRing = document.querySelector('.progress-ring-circle');
+      if (progressRing) {
+        const progressPercent = nextLevelData ? 
+          Math.min(((userXP - currentLevelData.xp) / (nextLevelData.xp - currentLevelData.xp)) * 100, 100) : 
+          100;
+        const circumference = 2 * Math.PI * 35; // radius = 35
+        const offset = circumference - (progressPercent / 100) * circumference;
+        progressRing.style.strokeDashoffset = offset;
+      }
+      
+      console.log('✅ Current level info updated:', currentLevelData.name);
+    }
+    
+    // Event listeners
+    levelsClose.addEventListener('click', () => {
+      levelsPopup.classList.remove('show');
+    });
+    
+    levelsPopup.addEventListener('click', (e) => {
+      if (e.target === levelsPopup) {
+        levelsPopup.classList.remove('show');
+      }
+    });
+    
+    console.log('✅ Levels popup initialized successfully');
+  }
+
+  // Initialize progress bar system
+  function initializeProgressBar() {
+    console.log('🔍 Initializing progress bar system...');
+    
+    // Check if elements exist
+    const progressBar = document.getElementById('progress-bar');
+    const progressFill = document.getElementById('progress-fill');
+    const levelLabel = document.getElementById('level-label');
+    const progressAvatar = document.getElementById('progress-avatar');
+    
+    console.log('🔍 Progress bar elements found:', {
+      progressBar: !!progressBar,
+      progressFill: !!progressFill,
+      levelLabel: !!levelLabel,
+      progressAvatar: !!progressAvatar
+    });
+    
+    if (!progressBar) {
+      console.error('❌ Progress bar element not found!');
+      return;
+    }
+    
+    updateProgressBar();
+    initializeLevelsPopup();
+    
+    // Add single scroll listener with simple logic
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = setTimeout(() => {
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        const threshold = 100; // Show progress bar after 100px scroll
+        
+        console.log('🔍 Scroll detected:', { scrollY, threshold });
+        
+        if (scrollY > threshold) {
+          progressBar.classList.add('show');
+          document.getElementById('progress-overlay').classList.add('show');
+          console.log('🔍 Progress bar shown (scroll threshold reached)');
+        } else {
+          progressBar.classList.remove('show');
+          document.getElementById('progress-overlay').classList.remove('show');
+          console.log('🔍 Progress bar hidden (scroll threshold not reached)');
+        }
+      }, 50);
+    });
+    
+    // Show startup progress bar only on first visit (like car cold start)
+    console.log('🔍 Checking if this is first visit...');
+    const hasSeenStartup = localStorage.getItem('hasSeenStartup');
+    
+    if (!hasSeenStartup) {
+      console.log('🔍 First visit detected - showing startup progress bar');
+      progressBar.classList.add('show');
+      document.getElementById('progress-overlay').classList.add('show');
+      
+      // Mark that user has seen the startup sequence
+      localStorage.setItem('hasSeenStartup', 'true');
+      
+      setTimeout(() => {
+        progressBar.classList.remove('show');
+        document.getElementById('progress-overlay').classList.remove('show');
+        console.log('🔍 Startup progress bar completed - will not show again');
+      }, 3000);
+    } else {
+      console.log('🔍 Returning user - skipping startup progress bar');
+    }
+    
+    console.log('✅ Progress bar system initialized');
+    
+    // Development helper: Reset startup flag (uncomment for testing)
+    // localStorage.removeItem('hasSeenStartup');
+    
+  // Add overlay click handler to close progress bar
+  const progressOverlay = document.getElementById('progress-overlay');
+  if (progressOverlay) {
+    progressOverlay.addEventListener('click', () => {
+      progressBar.classList.remove('show');
+      progressOverlay.classList.remove('show');
+      console.log('🔍 Progress bar closed by overlay click');
+    });
+  }
+    
+    // Add level badge click handler
+    const levelBadge = document.getElementById('user-level-badge');
+    if (levelBadge) {
+      levelBadge.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent dropdown from opening
+        console.log('🔍 Level badge clicked - showing progress bar');
+        progressBar.classList.add('show');
+        document.getElementById('progress-overlay').classList.add('show');
+        setTimeout(() => {
+          progressBar.classList.remove('show');
+          document.getElementById('progress-overlay').classList.remove('show');
+          console.log('🔍 Progress bar hidden after 5 seconds');
+        }, 5000);
+      });
+    }
+
+    // Add more details button click handler
+    const moreDetailsBtn = document.getElementById('more-details-btn');
+    if (moreDetailsBtn) {
+      moreDetailsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('🔍 More Details button clicked - opening levels popup');
+        // Re-initialize popup to ensure fresh data
+        initializeLevelsPopup();
+        const levelsPopup = document.getElementById('levels-popup');
+        if (levelsPopup) {
+          levelsPopup.classList.add('show');
+        }
+      });
+    }
+
+    
+    // Update progress when cards change
+    const originalLoadSavedUserCards = loadSavedUserCards;
+    const originalLoadCompletedUserCards = loadCompletedUserCards;
+    
+    loadSavedUserCards = function() {
+      originalLoadSavedUserCards.call(this);
+      updateProgressBar();
+    };
+    
+    loadCompletedUserCards = function() {
+      originalLoadCompletedUserCards.call(this);
+      updateProgressBar();
+    };
+  }
+  // PROGRESS BAR COMPONENT JS - END
+
   // Initialize event listeners when DOM is ready
   function initializeEventListeners() {
     // Initialize the UI
     updateCounterUI();
+    
+    // Initialize progress bar system
+    initializeProgressBar();
 
     // Restore active state for filter buttons
 //      filterButtons.forEach(btn => {
@@ -3779,11 +5133,20 @@
           if (action === 'make-public') {
             console.log('🔍 Calling makeCardPublic for card:', cardId);
             makeCardPublic(cardId);
+            hideConfirmationPopup();
+            // Reload page to show updated state
+            setTimeout(() => {
+              location.reload();
+            }, 500);
           } else if (action === 'make-private') {
             console.log('🔍 Calling makeCardPrivate for card:', cardId);
             makeCardPrivate(cardId);
+            hideConfirmationPopup();
+            // Reload page to show updated state
+            setTimeout(() => {
+              location.reload();
+            }, 500);
           }
-          hideConfirmationPopup();
         } else {
           console.error('Missing cardId or action:', { cardId, action });
         }
@@ -3901,6 +5264,8 @@
       .then(data => {
 //            console.log("RFEFRESH");
           loadSavedUserCards();
+          // Show success tooltip
+          showSavedSuccessTooltip();
       })
       .catch(err => console.error(err));
     }
@@ -3937,22 +5302,9 @@
   btnSkip.addEventListener('click', () => {
     decrementAttempts();
 
-    // Switch to Completed tab and update UI
-    console.log('BUTTON SKIP');
+    console.log('BUTTON SKIP - skipping without switching tabs');
 
-//      filterButtons.forEach(b => b.classList.remove('active'));
-//      const completedButton = document.querySelector('button[data-filter="completed"]');
-//      if (completedButton) {
-//        completedButton.classList.add('active');
-//      }
-
-    filterButtons.forEach(b => b.classList.remove('active'));
-    const completedButton = document.querySelector('button[data-filter="completed"]');
-    if (completedButton) {
-      completedButton.classList.add('active');
-    }
-
-    renderCardList('completed', currentCategoryFilter);
+    // Just hide the popup without switching tabs
     hidePopup();
   });
 
@@ -4064,19 +5416,23 @@
       'local': 'Local Context',
       'DAILY THINGS': 'Daily Things',
       'PLACES': 'Places',
-      'LOCAL CONTEXT': 'Local Context'
+      'LOCAL CONTEXT': 'Local Context',
+      'DAILY': 'Daily Things',
+      'LOCAL': 'Local Context',
+      'DAILY-THINGS': 'Daily Things',
+      'LOCAL-CONTEXT': 'Local Context'
     };
-    return categories[category] || 'Places';
+    return categories[category] || category || 'Places';
   }
 
   function getCategoryIcon(category) {
     const icons = {
-      'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
-      'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
-      'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif',
-      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ecfee5d81a38cfe2b_2d10e4120ba1f04e841d77b0ac0343f1_daily-things-w-icon.avif',
-      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448f03113f68969d46cd_f5b48ffdd38299fb12160bbb19947d4e_places-w-icon.avif',
-      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6826448ed894827a2b78fa6f_cb98b2f22368b7cf361ebfcac726e4a_local-context-w-icon.avif'
+      'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92fd867e721bb77eeda_places-wc.avif',
+      'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92a8316dd46343eceb7_daily-things-wc.avif',
+      'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92c7d59117cf84b0aac_local-context-wc.avif',
+      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92a8316dd46343eceb7_daily-things-wc.avif',
+      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92fd867e721bb77eeda_places-wc.avif',
+      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92c7d59117cf84b0aac_local-context-wc.avif'
     };
     return icons[category] || icons['places'];
   }
@@ -4089,12 +5445,12 @@
   }
   // Loading phrases for dynamic text
   const loadingPhrases = [
-    "Gathering one thing…",
-    "Asking locals for secrets…",
-    "Digging for hidden gems…",
-    "Searching cozy nooks…",
-    "Extracting calm in chaos…",
-    "Sneaking past tourist traps…"
+    "Gathering one thing...",
+    "Asking locals for secrets...",
+    "Digging for hidden gems...",
+    "Searching cozy nooks...",
+    "Extracting calm in chaos...",
+    "Sneaking past tourist traps..."
   ];
 
   let currentLoadingIndex = 0;
@@ -4188,6 +5544,40 @@
     }
   }
 
+  function showPrivateSuccessTooltip() {
+    console.log('🔍 showPrivateSuccessTooltip called');
+    const tooltip = document.getElementById('private-success-tooltip');
+    console.log('🔍 Tooltip element found:', !!tooltip);
+    if (tooltip) {
+      tooltip.classList.add('show');
+      console.log('✅ Private success tooltip shown');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        console.log('✅ Private success tooltip hidden');
+      }, 3000);
+    } else {
+      console.error('❌ Private success tooltip element not found');
+    }
+  }
+
+  function showSavedSuccessTooltip() {
+    console.log('🔍 showSavedSuccessTooltip called');
+    const tooltip = document.getElementById('saved-success-tooltip');
+    console.log('🔍 Tooltip element found:', !!tooltip);
+    if (tooltip) {
+      tooltip.classList.add('show');
+      console.log('✅ Saved success tooltip shown');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        console.log('✅ Saved success tooltip hidden');
+      }, 3000);
+    } else {
+      console.error('❌ Saved success tooltip element not found');
+    }
+  }
+
   function showCopyErrorTooltip() {
     const tooltip = document.getElementById('copy-error-tooltip');
     if (tooltip) {
@@ -4252,6 +5642,17 @@
     }
   }
 
+  function showContextSuccessTooltip() {
+    const tooltip = document.getElementById('context-success-tooltip');
+    if (tooltip) {
+      tooltip.classList.add('show');
+      console.log('Context success tooltip shown');
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+      }, 3000);
+    }
+  }
+
   function showConfirmationPopup(one_thing_user_card_id, action) {
 //      console.log('showConfirmationPopup called:', cardId, action);
 
@@ -4304,10 +5705,13 @@
 
   // Global functions for empty state buttons
   function scrollToGetOneThing() {
-    const oneThingBtn = document.getElementById('one-thing-btn');
-    if (oneThingBtn) {
-      oneThingBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    console.log('🔍 scrollToGetOneThing() called - scrolling to top');
+    // Scroll to top of page
+    window.scrollTo({ 
+      top: 0, 
+      behavior: 'smooth' 
+    });
+    console.log('✅ Scroll command executed');
   }
 
   function showReferralPopup() {
@@ -4397,7 +5801,7 @@
     };
     console.log('🔍 Making card public:', { cardId, card: card.one_thing_user_card_id, type: card.type });
     makeApiCall(requestBody, card);
-//      loadCommunityUserCards();
+    loadCommunityUserCards();
   }
 
    function makeCardCompleted(one_thing_user_card_id) {
@@ -4439,12 +5843,12 @@
       
       makeApiCall(requestBody, card);
       
+      // Set currentTypeFilter to completed for next page load
+      localStorage.setItem('currentTypeFilter', 'completed');
+      
       // Refresh both saved and completed lists
       loadSavedUserCards();
       loadCompletedUserCards();
-      
-      // Update the current view
-      renderCardList(currentTypeFilter, currentCategoryFilter);
   }
 
   function makeApiCall(requestBody, card) {
@@ -4539,8 +5943,8 @@
             console.log('🔍 Calling showPublicSuccessTooltip');
             showPublicSuccessTooltip();
           } else {
-            console.log('🔍 Calling showSuccessTooltip');
-            showSuccessTooltip();
+            console.log('🔍 Calling showPrivateSuccessTooltip');
+            showPrivateSuccessTooltip();
           }
           console.log('🎉 Successfully updated card publish state!');
           
@@ -4609,6 +6013,7 @@
       };
       console.log('Making card private:', { cardId, card: card.one_thing_user_card_id, type: card.type });
       makeApiCall(requestBody, card);
+      loadCommunityUserCards();
   }
 
   function uploadFile(file) {
@@ -4671,12 +6076,12 @@
 
 
 
-      console.log('to filter', filter);
-      console.log('to show', toShow);
-      console.log('to categoryFilter', categoryFilter);
-      console.log('savedCards length:', savedCards.length);
-      console.log('completedCards length:', completedCards.length);
-      console.log('publicCards length:', (publicCards || []).length);
+      console.log('🔍 renderCardList called with filter:', filter);
+      console.log('🔍 to show', toShow);
+      console.log('🔍 to categoryFilter', categoryFilter);
+      console.log('🔍 savedCards length:', savedCards.length);
+      console.log('🔍 completedCards length:', completedCards.length);
+      console.log('🔍 publicCards length:', (publicCards || []).length);
 
       // Filter by category
 //        if (categoryFilter !== 'all') {
@@ -4741,7 +6146,13 @@
         let expiryHtml = '';
         if (card.type === 'saved') {
           const daysLeft = Math.ceil((card.expiresAt - now) / (1000 * 60 * 60 * 24));
-          expiryHtml = `<div class="card-expiry">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
+          let urgencyClass = '';
+          if (daysLeft === 1) {
+            urgencyClass = ' critical';
+          } else if (daysLeft <= 3) {
+            urgencyClass = ' warning';
+          }
+          expiryHtml = `<div class="card-expiry${urgencyClass}">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
         }
         let toggleHtml = '';
 
@@ -4758,6 +6169,12 @@
         }
 
         // Get category text
+        console.log('🔍 Card category debug:', {
+          cardId: card.id,
+          cardCategory: card.category,
+          cardTitle: card.title,
+          cardType: card.type
+        });
         const categoryText = getCategoryText(card.category);
 
         // Check if the image is the default add-photo icon
@@ -4770,7 +6187,13 @@
           if (isDefaultImage) {
             // Show expiry counter for cards without photos
             const daysLeft = Math.ceil((card.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
-            actionHtml = `<div class="card-expiry">${daysLeft} days left</div>`;
+            let urgencyClass = '';
+            if (daysLeft === 1) {
+              urgencyClass = ' critical';
+            } else if (daysLeft <= 3) {
+              urgencyClass = ' warning';
+            }
+            actionHtml = `<div class="card-expiry${urgencyClass}">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
           } else {
             // Show complete button for cards with photos
             actionHtml = `<button class="complete-thing-btn" data-card-id="${card.one_thing_user_card_id}">Complete Thing</button>`;
@@ -4836,7 +6259,7 @@
         }
 
         cardEl.innerHTML = `
-      <div class="card-category-tag ${card.category}">${categoryText}</div>
+      <div class="card-category-tag ${card.category || 'PLACES'}">${categoryText}</div>
       ${imageHtml}
       <h4>${card.title}</h4>
       <p>${card.description}</p>
@@ -5001,17 +6424,10 @@
               // Show success tooltip
               showSuccessTooltip();
 
-              // Switch to Completed tab
-              filterButtons.forEach(b => b.classList.remove('active'));
-              const completedButton = document.querySelector('button[data-filter="completed"]');
-              if (completedButton) {
-                completedButton.classList.add('active');
-                currentTypeFilter = 'completed';
-                localStorage.setItem('currentTypeFilter', 'completed');
-              }
-
-              // Re-render the list
-              renderCardList('completed', currentCategoryFilter);
+              // Reload page to show updated state and switch to Completed tab
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
             }
           });
         }
@@ -5233,64 +6649,116 @@
 
    function loadCommunityUserCards() {
 
-        const userId = ensureUserId();
-        if (!userId) {
-          console.log('No userId');
-          return;
-        }
-
-        fetch(API_USERS + '/' + userId)
+        // Get all published cards from all users
+        console.log('🔍 Fetching community cards from API...');
+        fetch('https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards')
           .then(response => {
             return response.json();
           })
           .then(data => {
             console.log('🔍 Community cards data loaded:', data);
-            if (data) {
-//                var usersCards = data.users_cards
-//                  .filter(item => item.published === true)
-//                  .map(item => ({
-//                    ...item.card,
-//                    expired_at: item.expired_at,
-//                    one_thing_user_card_id: item.id,
-//                    completed: item.completed,
-//                      published: item.published,
-//                      imageSrc: item.image
-//                  }))
-//                  .sort((a, b) => b.one_thing_user_card_id - a.one_thing_user_card_id);
-
-              var usersCards = data.users_cards
-                .filter(item => item.published_at !== null)
-                .map(item => ({
-                  ...item.card,
-                  expired_at: item.expired_at,
-                  one_thing_user_card_id: item.id,
-                  completed: item.completed,
-                  published: item.published,
-                  imageSrc: item.image,
-                  published_at: item.published_at
-                }))
+            console.log('🔍 First card structure:', data[0]);
+            console.log('🔍 All available fields in first card:', Object.keys(data[0] || {}));
+            if (data && Array.isArray(data)) {
+              // Filter only published cards from all users
+              var publishedCards = data
+                .filter(item => item.published === true && item.completed === true)
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
                 
-              console.log('🔍 User data for community cards:', { name: data.name, picture: data.picture });
+              console.log('🔍 Published cards found:', publishedCards.length);
 
-
-              var formattedCards = usersCards.map(card => ({
+              // Get unique user IDs and card IDs to fetch details
+              var userIds = [...new Set(publishedCards.map(card => card.one_thing_users_id))];
+              var cardIds = [...new Set(publishedCards.map(card => card.one_thing_cards_id))];
+              
+              console.log('🔍 Unique user IDs:', userIds);
+              console.log('🔍 Unique card IDs:', cardIds);
+              console.log('🔍 Published cards details:', publishedCards.map(card => ({
                 id: card.id,
-                  title: card.name,
-                  description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
-                  category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
+                one_thing_cards_id: card.one_thing_cards_id,
+                one_thing_users_id: card.one_thing_users_id,
+                published: card.published,
+                completed: card.completed
+              })));
+
+              // Fetch only user details (skip card details since they don't exist)
+              Promise.all([
+                // Fetch all users
+                ...userIds.map(userId => 
+                  fetch(`https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`)
+                    .then(response => response.json())
+                    .then(userData => ({ userId, userData }))
+                )
+              ]).then(results => {
+                // Process user data only
+                var userDataMap = {};
+                
+                results.forEach(result => {
+                  if (result.userId) {
+                    userDataMap[result.userId] = result.userData;
+                  }
+                });
+
+                console.log('🔍 User data map:', userDataMap);
+
+                // Format cards using only publishedCards data (since cardData doesn't exist)
+                var formattedCards = publishedCards.map(card => {
+                  var userData = userDataMap[card.one_thing_users_id];
+                  
+                  // Debug logging
+                  console.log('🔍 Community card debug:', {
+                    cardId: card.one_thing_cards_id,
+                    publishedCard: card,
+                    allCardFields: Object.keys(card),
+                    cardValues: card
+                  });
+                  
+                  // Use fallback data since cardData doesn't exist
+                  const cardName = `Community Card ${card.one_thing_cards_id}`;
+                  const cardCity = 'your area';
+                  const cardTags = 'exploration';
+                  const cardCategory = 'PLACES';
+                  
+                  return {
+                    id: card.one_thing_cards_id,
+                    title: cardName,
+                    description: cardName && cardCity ? 
+                      `Discover the ${cardName} in ${cardCity}. A great spot for ${cardTags.split(",").join(", ")}.` : 
+                      `A community shared experience`,
+                    category: cardCategory,
+                    imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "",
+                    expiresAt: card.expired_at,
+                    one_thing_user_card_id: card.id,
+                    completed: card.completed,
+                    published: card.published,
+                    author_name: userData ? (userData.name || 'User') : `User ${card.one_thing_users_id}`,
+                    author_avatar: userData && userData.picture ? (userData.picture.startsWith('http') ? userData.picture : `https://xu8w-at8q-hywg.n7d.xano.io${userData.picture}`) : null,
+                    type: "community"
+                  };
+                });
+
+                publicCards = formattedCards;
+                console.log('Community cards loaded with full details:', publicCards.length, 'cards');
+              }).catch(error => {
+                console.error('Error loading user/card details:', error);
+                // Fallback to basic cards if detailed loading fails
+                var formattedCards = publishedCards.map(card => ({
+                  id: card.one_thing_cards_id,
+                  title: `Community Card ${card.id}`,
+                  description: `A community shared card from user ${card.one_thing_users_id}`,
+                  category: "PLACES",
+                  imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "",
                   expiresAt: card.expired_at,
-                  one_thing_user_card_id: card.one_thing_user_card_id,
+                  one_thing_user_card_id: card.id,
                   completed: card.completed,
                   published: card.published,
-                  author_name: data.name || 'User',
-                  author_avatar: data.picture ? (data.picture.startsWith('http') ? data.picture : `https://xu8w-at8q-hywg.n7d.xano.io${data.picture}`) : null,
-                type: "community"
-              }));
-              publicCards = formattedCards;
-              console.log('Community cards loaded:', publicCards.length, 'cards');
-              renderCardList('community', currentCategoryFilter);
+                  author_name: `User ${card.one_thing_users_id}`,
+                  author_avatar: null,
+                  type: "community"
+                }));
+                publicCards = formattedCards;
+                console.log('Community cards loaded (fallback):', publicCards.length, 'cards');
+              });
             }
           })
           .catch(error => {
@@ -5301,18 +6769,10 @@
 
 
 
-  completedButton.addEventListener('click', () => {
-      loadCompletedUserCards();
-  });
+  // Removed duplicate event listener - handled by filterButtonsGroup.forEach
 
 
-  savedButton.addEventListener('click', () => {
-      loadSavedUserCards();
-  });
-
-  communityButton.addEventListener('click', () => {
-      loadCommunityUserCards();
-  });
+  // Removed duplicate event listeners - handled by filterButtonsGroup.forEach
 
 
 
@@ -5423,9 +6883,7 @@ console.log('BUTTON DROP down');
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-left">
-      <a href="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6832d9b8e5b4f439621d5a12_one-thing-by-globio.svg" target="_blank" rel="noopener noreferrer">
-        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6832d9b8e5b4f439621d5a12_one-thing-by-globio.svg" alt="One Thing by Globio" class="footer-logo">
-      </a>
+      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6832d9b8e5b4f439621d5a12_one-thing-by-globio.svg" alt="One Thing by Globio" class="footer-logo">
     </div>
     <div class="footer-right">
       <a href="https://www.globio.io/privacy" target="_blank" rel="noopener noreferrer" class="footer-link">Privacy Policy</a>
