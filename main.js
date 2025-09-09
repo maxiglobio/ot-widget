@@ -2755,7 +2755,7 @@
    function loadCommunityUserCards() {
 
         // Get all published cards from all users
-        fetch('https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards')
+        fetch(API_SAVE)
           .then(response => {
             return response.json();
           })
@@ -2764,7 +2764,19 @@
               // Filter only published cards from all users
               var publishedCards = data
                 .filter(item => item.published === true && item.completed === true)
+                .map(item => ({
+                                  ...item.card,
+                                  expired_at: item.expired_at,
+                                  one_thing_user_card_id: item.id,
+                                  completed: item.completed,
+                                  published: item.published,
+                                  imageSrc: item.image,
+                                  completed_at: item.completed_at
+                                }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+
+
+//                cnsole.log('publishedCards', publishedCards);
 
 
               // Get unique user IDs and card IDs to fetch details
@@ -2794,6 +2806,7 @@
                 var formattedCards = publishedCards.map(card => {
                   var userData = userDataMap[card.one_thing_users_id];
 
+                    console.log('card = ', card);
                   // Debug logging
 
                   // Use fallback data since cardData doesn't exist
@@ -2804,10 +2817,10 @@
 
                   return {
                     id: card.one_thing_cards_id,
-                    title: card.title,
-                    description: card.description,
+                      title: card.title,
+                      description: card.description,
                     category: cardCategory,
-                    imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "",
+                    imageSrc: card.imageSrc,
                     expiresAt: card.expired_at,
                     one_thing_user_card_id: card.id,
                     completed: card.completed,
@@ -2823,10 +2836,10 @@
                 // Fallback to basic cards if detailed loading fails
                 var formattedCards = publishedCards.map(card => ({
                   id: card.one_thing_cards_id,
-                  title: `Community Card ${card.id}`,
-                  description: `A community shared card from user ${card.one_thing_users_id}`,
+                  title: card.title,
+                  description: card.description,
                   category: "PLACES",
-                  imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "",
+                  imageSrc: card.imageSrc,
                   expiresAt: card.expired_at,
                   one_thing_user_card_id: card.id,
                   completed: card.completed,
