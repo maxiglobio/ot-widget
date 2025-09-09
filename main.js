@@ -987,124 +987,98 @@
     return { xp: userXP, level: currentLevel };
   }
 
-  // Update progress counters
-  function updateProgressCounters() {
-
-    // Get saved cards count
-    const savedCards = JSON.parse(localStorage.getItem('savedUserCards') || '[]');
-    const savedCount = savedCards.length;
-
-    // Get completed cards count
-    const completedCards = JSON.parse(localStorage.getItem('completedUserCards') || '[]');
-    const completedCount = completedCards.length;
-
-    // Get published cards count (completed cards that are published)
-    const publishedCount = completedCards.filter(card => card.published).length;
 
 
-    // Update counter elements
-    const savedCounter = document.getElementById('saved-counter');
-    const completedCounter = document.getElementById('completed-counter');
-    const publishedCounter = document.getElementById('published-counter');
 
-    if (savedCounter) savedCounter.textContent = savedCount;
-    if (completedCounter) completedCounter.textContent = completedCount;
-    if (publishedCounter) publishedCounter.textContent = publishedCount;
+  // Initialize progress tabs
+  function initializeProgressTabs() {
+    const localTab = document.getElementById('local-tab');
+    const globalTab = document.getElementById('global-tab');
 
+    if (!localTab || !globalTab) return;
+
+    // Set default to local
+    localTab.classList.add('active');
+    globalTab.classList.remove('active');
+    updateTabDescription('local');
+
+    // Tab click handlers
+    localTab.addEventListener('click', () => {
+      localTab.classList.add('active');
+      globalTab.classList.remove('active');
+      updateTabDescription('local');
+      updateProgressDisplay('local');
+    });
+
+    globalTab.addEventListener('click', () => {
+      globalTab.classList.add('active');
+      localTab.classList.remove('active');
+      updateTabDescription('global');
+      updateProgressDisplay('global');
+    });
   }
 
-  // Update progress bar
-  function updateProgressBar() {
-    const progress = calculateUserXP();
+  // Update tab description based on selected tab
+  function updateTabDescription(tabType) {
+    const descriptionText = document.getElementById('tab-description-text');
+    if (!descriptionText) return;
 
+    if (tabType === 'local') {
+      descriptionText.textContent = 'Progress in your current location';
+    } else if (tabType === 'global') {
+      descriptionText.textContent = 'Total progress across all locations';
+    }
+  }
+
+  // Update dynamic visual based on level
+  function updateDynamicVisual(level) {
+    const dynamicVisual = document.getElementById('dynamic-visual');
+    if (!dynamicVisual) return;
+
+    // Define visual URLs for different levels
+    const visualUrls = {
+      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg',
+      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg', // Will be updated later
+      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg', // Will be updated later
+      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg'  // Will be updated later
+    };
+
+    // Update visual source
+    if (visualUrls[level]) {
+      dynamicVisual.src = visualUrls[level];
+    }
+  }
+
+  // Update progress display based on selected tab
+  function updateProgressDisplay(tabType) {
+    const progress = calculateUserXP();
     const currentLevelData = levels.find(l => l.level === progress.level);
     const nextLevelData = levels.find(l => l.level === progress.level + 1);
 
+    if (!currentLevelData) return;
 
-    if (!currentLevelData) {
-      return;
-    }
-
-    const progressBar = document.getElementById('progress-bar');
-    const progressFill = document.getElementById('progress-fill');
-    const progressAvatar = document.getElementById('progress-avatar');
-    const savedCounter = document.getElementById('saved-counter');
-    const completedCounter = document.getElementById('completed-counter');
-    const publishedCounter = document.getElementById('published-counter');
-    const roleAchievementLabel = document.getElementById('role-achievement-label');
-    const roleBadge = document.getElementById('role-badge');
-
-    if (!progressBar || !progressFill || !progressAvatar || !savedCounter || !completedCounter || !publishedCounter || !roleAchievementLabel || !roleBadge) return;
-
-    // Update role achievement label
-    roleAchievementLabel.textContent = currentLevelData.name;
-
-    // Update role badge based on current level
-    const badgeUrls = {
-      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg',
-      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627c06a7b55c4c17e8c_expert.svg',
-      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b496275f324ac3f37cb913_mentor.svg',
-      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b49627f74d369d667bff72_ambassadoe.svg'
-    };
-
-    if (badgeUrls[progress.level]) {
-      roleBadge.src = badgeUrls[progress.level];
-    }
-
-    // Update counters
-    updateProgressCounters();
-
+    // For now, we'll use the same logic for both tabs
+    // In the future, you can implement different logic for local vs global
+    const userXP = progress.xp;
+    
     // Update level badge in profile menu
     const levelBadge = document.getElementById('user-level-badge');
     if (levelBadge) {
       levelBadge.textContent = currentLevelData.name;
     }
 
-    // Update progress fill
-    if (nextLevelData) {
-      const currentLevelXP = currentLevelData.xp;
-      const nextLevelXP = nextLevelData.xp;
-      const progressPercent = ((progress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
-      progressFill.style.width = Math.min(progressPercent, 100) + '%';
-    } else {
-      progressFill.style.width = '100%';
-    }
+    // Update dynamic visual based on level
+    updateDynamicVisual(currentLevelData.level);
 
-    // Update avatar visibility based on progress
-    const progressPercent = parseFloat(progressFill.style.width);
-    if (progressPercent > 0) {
-      progressAvatar.style.opacity = '1';
-    } else {
-      progressAvatar.style.opacity = '0';
-    }
-
-    // Avatar is now loaded directly from database in loadUserDataFromXano
-  }
-
-  // Show/hide progress bar based on scroll
-  function handleScroll() {
-    // Try multiple selectors for user avatar/menu
-    const userMenuSection = document.querySelector('.user-menu-section');
-    const userProfileAvatar = document.querySelector('.user-profile-avatar');
-    const userAvatar = document.querySelector('.user-profile-avatar img');
-    const progressBar = document.getElementById('progress-bar');
-
-    // Use the first available element
-    const targetElement = userMenuSection || userProfileAvatar || userAvatar;
-
-    if (!targetElement || !progressBar) {
-      return;
-    }
-
-    const targetRect = targetElement.getBoundingClientRect();
-    const isTargetVisible = targetRect.top >= 0 && targetRect.bottom <= window.innerHeight;
-
-    if (!isTargetVisible) {
-      progressBar.classList.add('show');
-      document.getElementById('progress-overlay').classList.add('show');
-    } else {
-      progressBar.classList.remove('show');
-      document.getElementById('progress-overlay').classList.remove('show');
+    // Update circular progress
+    const progressRing = document.querySelector('.progress-ring-circle');
+    if (progressRing) {
+      const progressPercent = nextLevelData ?
+        Math.min(((userXP - currentLevelData.xp) / (nextLevelData.xp - currentLevelData.xp)) * 100, 100) :
+        100;
+      const circumference = 2 * Math.PI * 35; // radius = 35
+      const offset = circumference - (progressPercent / 100) * circumference;
+      progressRing.style.strokeDashoffset = offset;
     }
   }
 
@@ -1112,9 +1086,8 @@
   function initializeLevelsPopup() {
     const levelsPopup = document.getElementById('levels-popup');
     const levelsClose = document.getElementById('levels-close');
-    const progressBar = document.getElementById('progress-bar');
 
-    if (!levelsPopup || !levelsClose || !progressBar) {
+    if (!levelsPopup || !levelsClose) {
       return;
     }
 
@@ -1163,17 +1136,14 @@
     const nextLevelData = levels.find(l => l.level === currentLevel + 1);
 
     if (currentLevelData) {
-      const currentLevelName = document.getElementById('current-level-name');
-      const currentLevelProgress = document.getElementById('current-level-progress');
-      const levelsAvatar = document.getElementById('levels-avatar');
-
-      if (currentLevelName) currentLevelName.textContent = currentLevelData.name;
-      if (currentLevelProgress) {
-        const progressText = nextLevelData ?
-          `${userXP - currentLevelData.xp} / ${nextLevelData.xp - currentLevelData.xp} XP` :
-          'Max Level';
-        currentLevelProgress.textContent = progressText;
+      // Update level badge in profile menu
+      const levelBadge = document.getElementById('user-level-badge');
+      if (levelBadge) {
+        levelBadge.textContent = currentLevelData.name;
       }
+
+      // Update dynamic visual based on level
+      updateDynamicVisual(currentLevelData.level);
 
       // Update circular progress
       const progressRing = document.querySelector('.progress-ring-circle');
@@ -1187,6 +1157,9 @@
       }
 
     }
+
+    // Initialize tabs
+    initializeProgressTabs();
 
     // Event listeners
     levelsClose.addEventListener('click', () => {
@@ -1204,89 +1177,15 @@
   // Initialize progress bar system
   function initializeProgressBar() {
 
-    // Check if elements exist
-    const progressBar = document.getElementById('progress-bar');
-    const progressFill = document.getElementById('progress-fill');
-    const levelLabel = document.getElementById('level-label');
-    const progressAvatar = document.getElementById('progress-avatar');
-
-    if (!progressBar) {
-      return;
-    }
-
-    updateProgressBar();
     initializeLevelsPopup();
 
-    // Add single scroll listener with simple logic
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      scrollTimeout = setTimeout(() => {
-        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        const threshold = 100; // Show progress bar after 100px scroll
 
-
-        if (scrollY > threshold) {
-          progressBar.classList.add('show');
-          document.getElementById('progress-overlay').classList.add('show');
-        } else {
-          progressBar.classList.remove('show');
-          document.getElementById('progress-overlay').classList.remove('show');
-        }
-      }, 50);
-    });
-
-    // Show startup progress bar only on first visit (like car cold start)
-    const hasSeenStartup = localStorage.getItem('hasSeenStartup');
-
-    if (!hasSeenStartup) {
-      progressBar.classList.add('show');
-      document.getElementById('progress-overlay').classList.add('show');
-
-      // Mark that user has seen the startup sequence
-      localStorage.setItem('hasSeenStartup', 'true');
-
-      setTimeout(() => {
-        progressBar.classList.remove('show');
-        document.getElementById('progress-overlay').classList.remove('show');
-      }, 3000);
-    } else {
-    }
-
-
-    // Development helper: Reset startup flag (uncomment for testing)
-    // localStorage.removeItem('hasSeenStartup');
-
-  // Add overlay click handler to close progress bar
-  const progressOverlay = document.getElementById('progress-overlay');
-  if (progressOverlay) {
-    progressOverlay.addEventListener('click', () => {
-      progressBar.classList.remove('show');
-      progressOverlay.classList.remove('show');
-    });
-  }
 
     // Add level badge click handler
     const levelBadge = document.getElementById('user-level-badge');
     if (levelBadge) {
       levelBadge.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevent dropdown from opening
-        progressBar.classList.add('show');
-        document.getElementById('progress-overlay').classList.add('show');
-        setTimeout(() => {
-          progressBar.classList.remove('show');
-          document.getElementById('progress-overlay').classList.remove('show');
-        }, 5000);
-      });
-    }
-
-    // Add more details button click handler
-    const moreDetailsBtn = document.getElementById('more-details-btn');
-    if (moreDetailsBtn) {
-      moreDetailsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
         // Re-initialize popup to ensure fresh data
         initializeLevelsPopup();
         const levelsPopup = document.getElementById('levels-popup');
@@ -1297,18 +1196,17 @@
     }
 
 
+
     // Update progress when cards change
     const originalLoadSavedUserCards = loadSavedUserCards;
     const originalLoadCompletedUserCards = loadCompletedUserCards;
 
     loadSavedUserCards = function() {
       originalLoadSavedUserCards.call(this);
-      updateProgressBar();
     };
 
     loadCompletedUserCards = function() {
       originalLoadCompletedUserCards.call(this);
-      updateProgressBar();
     };
   }
   // PROGRESS BAR COMPONENT JS - END
@@ -1373,13 +1271,11 @@
             hideConfirmationPopup();
             // Update UI without reloading page
             renderCardList(currentTypeFilter, currentCategoryFilter);
-            updateProgressBar();
           } else if (action === 'make-private') {
             makeCardPrivate(cardId);
             hideConfirmationPopup();
             // Update UI without reloading page
             renderCardList(currentTypeFilter, currentCategoryFilter);
-            updateProgressBar();
           }
         } else {
         }
@@ -2553,7 +2449,6 @@
               renderCardList('completed', currentCategoryFilter);
               
               // Update progress bar to reflect new completed card
-              updateProgressBar();
             }
           });
         }
@@ -2755,7 +2650,7 @@
    function loadCommunityUserCards() {
 
         // Get all published cards from all users
-        fetch(API_SAVE)
+        fetch('https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards')
           .then(response => {
             return response.json();
           })
@@ -2764,19 +2659,7 @@
               // Filter only published cards from all users
               var publishedCards = data
                 .filter(item => item.published === true && item.completed === true)
-                .map(item => ({
-                                  ...item.card,
-                                  expired_at: item.expired_at,
-                                  one_thing_user_card_id: item.id,
-                                  completed: item.completed,
-                                  published: item.published,
-                                  imageSrc: item.image,
-                                  completed_at: item.completed_at
-                                }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-
-
-//                cnsole.log('publishedCards', publishedCards);
 
 
               // Get unique user IDs and card IDs to fetch details
@@ -2806,7 +2689,6 @@
                 var formattedCards = publishedCards.map(card => {
                   var userData = userDataMap[card.one_thing_users_id];
 
-                    console.log('card = ', card);
                   // Debug logging
 
                   // Use fallback data since cardData doesn't exist
@@ -2817,10 +2699,10 @@
 
                   return {
                     id: card.one_thing_cards_id,
-                      title: card.title,
-                      description: card.description,
+                    title: card.title,
+                    description: card.description,
                     category: cardCategory,
-                    imageSrc: card.imageSrc,
+                    imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "",
                     expiresAt: card.expired_at,
                     one_thing_user_card_id: card.id,
                     completed: card.completed,
@@ -2836,10 +2718,10 @@
                 // Fallback to basic cards if detailed loading fails
                 var formattedCards = publishedCards.map(card => ({
                   id: card.one_thing_cards_id,
-                  title: card.title,
-                  description: card.description,
+                  title: `Community Card ${card.id}`,
+                  description: `A community shared card from user ${card.one_thing_users_id}`,
                   category: "PLACES",
-                  imageSrc: card.imageSrc,
+                  imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "",
                   expiresAt: card.expired_at,
                   one_thing_user_card_id: card.id,
                   completed: card.completed,
