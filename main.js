@@ -460,6 +460,26 @@
       }
     });
 
+
+
+    // Search location functionality
+    async function searchLocationOld(query) {
+      if (!query.trim()) return;
+
+      // Show loading state with spinner only
+      locationResults.innerHTML = '<div class="location-result-item loading"><div class="location-spinner"></div></div>';
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+        const data = await response.json();
+
+        displayLocationResultsOld(data);
+      } catch (error) {
+        locationResults.innerHTML = '<div class="location-result-item error"><div class="location-error-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Error" width="20" height="20"></div><div class="location-content"><div class="location-name">Search error</div><div class="location-details">Please try again</div></div></div>';
+      }
+    }
+
+
     // Search location functionality
     async function searchLocation(query) {
       if (!query.trim()) return;
@@ -469,7 +489,6 @@
       query = query + '%';
 
       try {
-//        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
         const response = await fetch(API_CITIES + `?city=${encodeURIComponent(query)}&limit=5`);
         const data = await response.json();
 
@@ -479,25 +498,71 @@
       }
     }
 
+
+    // Display search results
+    function displayLocationResultsOld(results) {
+      if (results.length === 0) {
+        locationResults.innerHTML = '<div class="location-result-item no-results"><div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div><div class="location-content"><div class="location-name">No locations found</div><div class="location-details">Try a different search term</div></div></div>';
+        return;
+      }
+
+      locationResults.innerHTML = results.map(result => {
+        const displayName = result.display_name.split(', ').slice(0, 2).join(', ');
+        return `
+          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lon}" data-display-name="${result.display_name}">
+            <div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div>
+            <div class="location-content">
+              <div class="location-name">${displayName}</div>
+              <div class="location-details">${result.display_name}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add click handlers to results (use event delegation to avoid multiple handlers)
+      if (!locationResults.hasAttribute('data-handler-attached')) {
+        locationResults.setAttribute('data-handler-attached', 'true');
+        locationResults.addEventListener('click', (e) => {
+          const item = e.target.closest('.location-result-item');
+          if (!item) return;
+
+          const lat = item.dataset.lat;
+          const lon = item.dataset.lon;
+          let displayName = item.dataset.displayName;
+
+          // Limit to city and country only
+          const parts = displayName.split(', ');
+          if (parts.length > 2) {
+            // Take city and country, skip detailed address
+            const city = parts[0];
+            const country = parts[parts.length - 1];
+            displayName = `${city}, ${country}`;
+          }
+
+          // Update user location
+          localStorage.setItem('userLocation', displayName);
+
+          // Close modal immediately
+          closeModal();
+
+          // Show location success message
+          showLocationSuccessTooltip();
+
+          // Reload page to update the map with new location
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        });
+      }
+    }
+
+
     // Display search results
     function displayLocationResults(results) {
       if (results.length === 0) {
         locationResults.innerHTML = '<div class="location-result-item no-results"><div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div><div class="location-content"><div class="location-name">No locations found</div><div class="location-details">Try a different search term</div></div></div>';
         return;
       }
-
-//      locationResults.innerHTML = results.map(result => {
-//        const displayName = result.display_name.split(', ').slice(0, 2).join(', ');
-//        return `
-//          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lon}" data-display-name="${result.display_name}">
-//            <div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div>
-//            <div class="location-content">
-//              <div class="location-name">${displayName}</div>
-//              <div class="location-details">${result.display_name}</div>
-//            </div>
-//          </div>
-//        `;
-//      }).join('');
 
        locationResults.innerHTML = results.map(result => {
         const displayName = result.city + ', ' + result.country + ', ' + result.iso3;
