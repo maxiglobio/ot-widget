@@ -33,6 +33,7 @@
   // Geocode location
   function geocodeLocation(query, callback) {
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+//    fetch(API_CITIES + `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
@@ -66,6 +67,9 @@
   function loadMap() {
     const manualLocation = localStorage.getItem("userLocation");
     if (manualLocation) {
+
+      console.log('load map');
+
       geocodeLocation(manualLocation, initializeMap);
     } else {
       fallbackLocation(initializeMap);
@@ -462,12 +466,14 @@
 
       // Show loading state with spinner only
       locationResults.innerHTML = '<div class="location-result-item loading"><div class="location-spinner"></div></div>';
+      query = query + '%';
 
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+//        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+        const response = await fetch(API_CITIES + `?city=${encodeURIComponent(query)}&limit=5`);
         const data = await response.json();
 
-        displayLocationResults(data);
+        displayLocationResults(data.items);
       } catch (error) {
         locationResults.innerHTML = '<div class="location-result-item error"><div class="location-error-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Error" width="20" height="20"></div><div class="location-content"><div class="location-name">Search error</div><div class="location-details">Please try again</div></div></div>';
       }
@@ -480,14 +486,27 @@
         return;
       }
 
-      locationResults.innerHTML = results.map(result => {
-        const displayName = result.display_name.split(', ').slice(0, 2).join(', ');
+//      locationResults.innerHTML = results.map(result => {
+//        const displayName = result.display_name.split(', ').slice(0, 2).join(', ');
+//        return `
+//          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lon}" data-display-name="${result.display_name}">
+//            <div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div>
+//            <div class="location-content">
+//              <div class="location-name">${displayName}</div>
+//              <div class="location-details">${result.display_name}</div>
+//            </div>
+//          </div>
+//        `;
+//      }).join('');
+
+       locationResults.innerHTML = results.map(result => {
+        const displayName = result.city + ', ' + result.country + ', ' + result.iso3;
         return `
-          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lon}" data-display-name="${result.display_name}">
+          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lon}" data-display-name="${displayName}">
             <div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div>
             <div class="location-content">
-              <div class="location-name">${displayName}</div>
-              <div class="location-details">${result.display_name}</div>
+              <div class="location-name">${result.city}</div>
+              <div class="location-details">${displayName}</div>
             </div>
           </div>
         `;
@@ -521,10 +540,6 @@
 
           // Show location success message
           showLocationSuccessTooltip();
-
-          console.log('ssss');
-
-          debugger
 
           // Reload page to update the map with new location
           setTimeout(() => {
@@ -846,6 +861,7 @@
   const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
   const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
   const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
+  const API_CITIES = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_cities'
   const MAX_ATTEMPTS = 3;
   const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
