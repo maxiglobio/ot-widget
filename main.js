@@ -2960,111 +2960,27 @@
             return response.json();
           })
           .then(data => {
-            console.log(data);
-
-            if (data && Array.isArray(data)) {
               // Filter only published cards from all users
               var publishedCards = data
                 .filter(item => item.published === true && item.completed === true)
                 .map(item => ({
                   ...item.card,
-                  expired_at: item.expired_at,
+                  expiredAt: item.expired_at,
                   one_thing_user_card_id: item.id,
                   completed: item.completed,
                   published: item.published,
-                  imageSrc: item.image,
-                  completed_at: item.completed_at
+                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + item.image,
+                  completed_at: item.completed_at,
+                  author_name: item.user.name,
+                  author_avatar: item.user.picture,
+                  type: "community"
                 }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-
-
-              // Get unique user IDs and card IDs to fetch details
-              var userIds = [...new Set(publishedCards.map(card => card.one_thing_users_id))];
-              var cardIds = [...new Set(publishedCards.map(card => card.one_thing_cards_id))];
-
-              // Fetch only user details (skip card details since they don't exist)
-              Promise.all([
-                // Fetch all users
-                ...userIds.map(userId =>
-                  fetch(`https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`)
-                    .then(response => response.json())
-                    .then(userData => ({ userId, userData }))
-                )
-              ]).then(results => {
-                // Process user data only
-                var userDataMap = {};
-
-                results.forEach(result => {
-                  if (result.userId) {
-                    userDataMap[result.userId] = result.userData;
-                  }
-                });
-
-
-                // Format cards using only publishedCards data (since cardData doesn't exist)
-                var formattedCards = publishedCards.map(card => {
-                  var userData = userDataMap[card.one_thing_users_id];
-
-                  // Debug logging
-
-                  // Use fallback data since cardData doesn't exist
-                  const cardName = `Community Card ${card.one_thing_cards_id}`;
-                  const cardCity = 'your area';
-                  const cardTags = 'exploration';
-                  const cardCategory = 'PLACES';
-
-                  return {
-                    id: card.one_thing_cards_id,
-                    title: card.title,
-                    description: card.description,
-                    category: cardCategory,
-                    imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
-                    expiresAt: card.expired_at,
-                    one_thing_user_card_id: card.id,
-                    completed: card.completed,
-                    published: card.published,
-                    author_name: userData ? (userData.name || 'User') : `User ${card.one_thing_users_id}`,
-                    author_avatar: userData && userData.picture ? (userData.picture.startsWith('http') ? userData.picture : `https://xu8w-at8q-hywg.n7d.xano.io${userData.picture}`) : null,
-                    type: "community"
-                  };
-                });
-
-                publicCards = formattedCards;
-              }).catch(error => {
-                // Fallback to basic cards if detailed loading fails
-                var formattedCards = publishedCards.map(card => ({
-                  id: card.one_thing_cards_id,
-                   title: card.title,
-                   description: card.description,
-                  category: "PLACES",
-                  imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + card.imageSrc,
-                  expiresAt: card.expired_at,
-                  one_thing_user_card_id: card.id,
-                  completed: card.completed,
-                  published: card.published,
-                  author_name: `User ${card.one_thing_users_id}`,
-                  author_avatar: null,
-                  type: "community"
-                }));
-                publicCards = formattedCards;
-              });
-            }
+                publicCards = publishedCards;
           })
           .catch(error => {
           });
       }
-
-
-
-
-  // Removed duplicate event listener - handled by filterButtonsGroup.forEach
-
-
-  // Removed duplicate event listeners - handled by filterButtonsGroup.forEach
-
-
-
-
 
 
   // All Categories Dropdown Functionality
