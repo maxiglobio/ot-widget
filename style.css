@@ -1,11 +1,10 @@
-<style>
-  /* Reset and base styles for iframe compatibility */
+/* Reset and base styles for iframe compatibility */
   html,
   body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    min-height: 120vh; /* Allow scrolling */
     overflow-x: hidden;
     box-sizing: border-box;
     background-color: #F7F7F7;
@@ -73,6 +72,95 @@
     margin-bottom: 40px;
     overflow: hidden;
     margin-left: calc(-50vw + 50%);
+  }
+
+  /* Sticky User Summary Section */
+  .sticky-user-summary {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    opacity: 0;
+    visibility: visible;
+    transition: all 0.3s ease;
+  }
+
+  .sticky-user-summary.show {
+    top: 8px;
+    opacity: 1;
+  }
+
+  .sticky-user-content {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px 12px 16px;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-width: auto;
+    white-space: nowrap;
+  }
+
+  .sticky-user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .sticky-user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sticky-user-location {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .sticky-location-prefix {
+    color: #707070;
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .sticky-location-name {
+    color: #000000;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .sticky-user-role {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #707070;
+    line-height: 1.2;
+  }
+
+  .sticky-level-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: #B1E530;
+    background: rgba(177, 229, 48, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(177, 229, 48, 0.2);
+  }
+
+  .sticky-level-badge:hover {
+    background: rgba(177, 229, 48, 0.2);
+    transform: scale(1.05);
   }
 
   /* Map Background */
@@ -384,8 +472,8 @@
   }
 
   .my-context-title {
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 600;
     margin-top: 0;
     margin-bottom: 16px;
     color: #141414;
@@ -404,8 +492,8 @@
 
   .close-modal {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 32px;
+    right: 32px;
     background: none;
     border: none;
     cursor: pointer;
@@ -414,18 +502,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s ease;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
   }
 
-  .close-modal svg {
-    width: 24px;
-    height: 24px;
-    color: #666;
-    transition: color 0.2s ease;
+  .close-modal img {
+    width: 32px;
+    height: 32px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
   }
 
-  .close-modal:hover svg {
-    color: #000;
+  .close-modal:hover {
+    background: #f0f0f0;
+  }
+
+  .close-modal:hover img {
+    opacity: 1;
   }
 
   /* Switch Options */
@@ -1271,7 +1364,7 @@
 
   .referral-popup-inner {
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 32px;
     max-width: 480px;
     width: 95%;
@@ -1286,7 +1379,7 @@
   }
 
   .referral-popup h3 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     margin-bottom: 16px;
     color: #333;
@@ -1701,7 +1794,7 @@
 
   .one-thing-popup-inner {
     background: #ffffff;
-    border-radius: 30px;
+    border-radius: 24px;
     padding: 8px 8px 32px 8px;
     width: 90%;
     max-width: 380px;
@@ -1793,7 +1886,7 @@
 
   /* Title and description */
   .one-thing-popup-inner h3 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     margin: 0 0 8px 0;
     color: #333;
@@ -1887,7 +1980,7 @@
     }
 
     .one-thing-popup-inner h3 {
-      font-size: 20px;
+      font-size: 22px;
     }
 
     .one-thing-popup-inner p {
@@ -1927,7 +2020,7 @@
     }
 
     .one-thing-popup-inner h3 {
-      font-size: 18px;
+      font-size: 22px;
     }
 
     .one-thing-popup-inner p {
@@ -2027,271 +2120,15 @@
     }
   }
 
-  /* PROGRESS BAR COMPONENT CSS - START (can be easily removed) */
-  /* Progress Bar Overlay */
-  .progress-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
-
-  .progress-overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  /* Progress Bar Styles */
-  .progress-bar {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    background: #ffffff;
-    border-radius: 24px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 12px 20px;
-    z-index: 1001;
-    transform: translateY(calc(-100% - 24px));
-    transition: transform 0.3s ease;
-    overflow: hidden;
-  }
-
-
-  .progress-bar.show {
-    transform: translateY(0);
-  }
-
-  .progress-content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .role-badge-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 8px;
-  }
-
-  .role-badge-container {
-    position: relative;
-    overflow: hidden;
-    border-radius: 50%;
-  }
-
-  .role-badge-container img {
-    width: 96px;
-    height: 96px;
-    transition: transform 0.1s ease-out;
-    transform-style: preserve-3d;
-    position: relative;
-    z-index: 2;
-  }
-
-  .role-badge-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-    animation: badgeShimmer 3s ease-in-out infinite;
-    z-index: 3;
-    border-radius: 50%;
-  }
-
-  .role-badge-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, rgba(177, 229, 48, 0.1) 0%, transparent 70%);
-    animation: badgeGlow 4s ease-in-out infinite;
-    z-index: 1;
-    border-radius: 50%;
-  }
-
-  .role-achievement-label {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    text-align: center;
-    background: linear-gradient(45deg, #B1E530, #8BC34A, #4CAF50, #B1E530);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradientShift 3s ease-in-out infinite;
-    text-shadow: 0 0 20px rgba(177, 229, 48, 0.3);
-    padding: 8px 0;
-    margin: 8px 0;
-  }
-
-  @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  @keyframes badgeShimmer {
-    0% {
-      left: -100%;
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      left: 100%;
-      opacity: 0;
-    }
-  }
-
-  @keyframes badgeGlow {
-    0% {
-      opacity: 0.3;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.6;
-      transform: scale(1.05);
-    }
-    100% {
-      opacity: 0.3;
-      transform: scale(1);
-    }
-  }
 
 
 
-  .progress-counters {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .counter-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .counter-number {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    color: #141414;
-    line-height: 1;
-  }
-
-  .counter-label {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    color: #666;
-    line-height: 1;
-  }
 
 
-  .progress-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex: 1;
-  }
 
-  .progress-bar-container {
-    flex: 1;
-    height: 8px;
-    background: #f0f0f0;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-  }
 
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #B1E530 0%, #8BC34A 100%);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-    width: 0%;
-    position: relative;
-    min-width: 32px;
-  }
 
-  .user-avatar img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid #B1E530;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
 
-  .progress-fill .user-avatar {
-    position: absolute;
-    right: -16px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .progress-fill .user-avatar img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid #B1E530;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  .more-details-btn {
-    font-family: 'Manrope', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    color: #666;
-    background: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
-
-  .more-details-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.2);
-    transform: translateY(-1px);
-  }
 
   /* Levels Popup Styles */
   .levels-popup {
@@ -2316,15 +2153,17 @@
   }
 
   .levels-popup-inner {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 0;
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
-    overflow-y: auto;
+    overflow: hidden;
     transform: scale(0.9);
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
   }
 
   .levels-popup.show .levels-popup-inner {
@@ -2333,15 +2172,19 @@
 
   .levels-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 24px 24px 0 24px;
+    background: #FFFFFF;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
-  .levels-header h3 {
+  .levels-title {
     font-family: 'Manrope', sans-serif;
-    font-weight: 700;
-    font-size: 20px;
+    font-weight: 600;
+    font-size: 22px;
     color: #222;
     margin: 0;
   }
@@ -2349,8 +2192,6 @@
   .levels-close {
     background: none;
     border: none;
-    font-size: 24px;
-    color: #666;
     cursor: pointer;
     padding: 0;
     width: 32px;
@@ -2359,25 +2200,182 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    position: absolute;
+    top: 26px;
+    right: 26px;
+    z-index: 20;
     transition: background 0.2s ease;
+  }
+
+  .levels-close img {
+    width: 32px;
+    height: 32px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
   }
 
   .levels-close:hover {
     background: #f0f0f0;
   }
 
-  .current-level-info {
+  .levels-close:hover img {
+    opacity: 1;
+  }
+
+  /* Progress Tabs */
+  .progress-tabs-container {
+    display: flex;
+    justify-content: center;
+    padding: 0 24px;
+    position: sticky;
+    top: 80px;
+    z-index: 10;
+    background: #FFFFFF;
+  }
+
+  .progress-tabs {
+    display: inline-flex;
+    gap: 8px;
+    background: #f0f0f0;
+    border-radius: 999px;
+    padding: 4px;
+    align-self: center;
+  }
+
+  .progress-tab {
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 16px;
-    background: #f8f8f8;
+    justify-content: center;
+    white-space: nowrap;
+    min-width: 80px;
+    flex: 1;
+  }
+
+  .progress-tab.active {
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .progress-tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .tab-label {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .tab-description-container {
+    text-align: center;
+    padding: 12px 24px 20px 24px;
+    position: sticky;
+    top: 134px;
+    z-index: 10;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .tab-description-container:first-of-type {
+    margin-bottom: 8px;
+  }
+
+  .tab-description-text {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .info-icon {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .info-icon svg {
+    width: 12px;
+    height: 12px;
+    transition: opacity 0.2s ease;
+  }
+
+  .info-icon:hover svg {
+    opacity: 0.7;
+  }
+
+  .info-icon::after {
+    content: "Create cards, complete them, and make them public to grow your progress";
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-80%);
+    background: #FFFFFF;
+    color: #666;
+    padding: 12px 16px;
     border-radius: 12px;
-    margin-bottom: 20px;
+    font-size: 12px;
+    font-family: 'Manrope', sans-serif;
+    white-space: normal;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 1000;
+    width: 280px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    line-height: 1.4;
+  }
+
+  .info-icon:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .current-level-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 24px;
+    position: relative;
+    min-height: 200px;
+  }
+
+  .dynamic-visual-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+
+  .dynamic-visual-container img {
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+
+  .dynamic-visual-container img:hover {
+    opacity: 1;
   }
 
   .circular-progress-container {
     position: relative;
+    z-index: 2;
   }
 
   .circular-progress {
@@ -2436,10 +2434,18 @@
     color: #666;
   }
 
+  .levels-scrollable-content {
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
   .levels-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding: 0 24px 24px 24px;
   }
 
   .level-item {
@@ -2447,7 +2453,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 24px;
     border: 2px solid #e0e0e0;
     transition: all 0.2s ease;
   }
@@ -2458,8 +2464,8 @@
   }
 
   .level-item.completed {
-    background: #f0f8f0;
-    border-color: #4CAF50;
+    background: #F0F0F0;
+    border: none;
   }
 
   .level-avatar {
@@ -2472,6 +2478,10 @@
     font-weight: 700;
     font-size: 14px;
     color: white;
+  }
+
+  .level-item.completed .level-avatar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .level-details {
@@ -2500,72 +2510,12 @@
     color: #666;
   }
 
-  /* Mobile adjustments for progress bar */
   @media (max-width: 600px) {
-    .progress-bar {
-      top: 8px;
-      left: 8px;
-      right: 8px;
-      border-radius: 16px;
-      padding: 8px 16px;
-      transform: translateY(calc(-100% - 16px));
-    }
-    
-    .progress-content {
-      gap: 12px;
-    }
-    
-    .role-badge-container img {
-      width: 80px;
-      height: 80px;
-    }
-
-    .role-achievement-label {
-      font-size: 20px;
-      padding: 6px 0;
-      margin: 6px 0;
-    }
-    
-    .progress-counters {
-      gap: 16px;
-    }
-    
-    .counter-number {
-      font-size: 14px;
-    }
-    
-    .counter-label {
-      font-size: 14px;
-    }
-    
-    .user-avatar img {
-      width: 28px;
-      height: 28px;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-
-    .progress-fill .user-avatar {
-      right: -14px;
-    }
-
-    .progress-fill .user-avatar img {
-      width: 28px;
-      height: 28px;
-    }
-    
-    .more-details-btn {
-      font-size: 12px;
-      padding: 6px 12px;
-    }
-    
     .levels-popup-inner {
       padding: 16px;
       width: 95%;
     }
   }
-  /* PROGRESS BAR COMPONENT CSS - END */
 
   /* Footer styles */
   .footer {
@@ -2701,11 +2651,10 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 24px;
-    position: relative;
   }
 
   .location-modal-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     color: #141414;
     margin: 0;
@@ -2732,27 +2681,34 @@
 
   .close-modal {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 32px;
+    right: 32px;
     background: none;
     border: none;
     cursor: pointer;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s ease;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
     padding: 0;
   }
 
-  .close-modal svg {
-    width: 24px;
-    height: 24px;
+  .close-modal img {
+    width: 32px;
+    height: 32px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
   }
 
   .close-modal:hover {
     background: #f0f0f0;
+  }
+
+  .close-modal:hover img {
+    opacity: 1;
   }
 
   .location-input-section {
@@ -2998,7 +2954,7 @@
     }
 
     .location-modal-title {
-      font-size: 20px;
+      font-size: 22px;
     }
 
     .location-detect-btn {
@@ -3095,7 +3051,7 @@
 
   .confirmation-popup-inner {
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 32px;
     max-width: 400px;
     width: 95%;
@@ -3110,7 +3066,7 @@
   }
 
   .confirmation-popup h3 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     margin: 0 0 16px 0;
     color: #141414;
@@ -3157,4 +3113,3 @@
   .confirmation-confirm:hover {
     background: #B1E530;
   }
-</style>
