@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>One Thing</title>
 
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="https://my.globio.io/oauth/account/Files/favicon.ico">
+
 <!-- Import Manrope font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,13 +103,26 @@
     </div>
   </div>
 
+  <!-- Sticky User Summary Section -->
+  <div class="sticky-user-summary" id="sticky-user-summary">
+    <div class="sticky-user-content">
+      <img class="sticky-user-avatar" id="sticky-user-avatar" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User Avatar" width="34" height="34">
+      <div class="sticky-user-info">
+        <div class="sticky-user-location" id="sticky-user-location">
+          <span class="sticky-location-prefix">at Home in </span>
+          <span class="sticky-location-name" id="sticky-location-name">Sofia</span>
+        </div>
+        <span class="sticky-user-role" id="sticky-user-role">as</span>
+        <span class="sticky-level-badge" id="sticky-level-badge">Visitor</span>
+      </div>
+    </div>
+  </div>
+
   <!-- My Context Modal -->
   <div class="my-context-modal" id="my-context-modal">
     <div class="my-context-content">
       <button class="close-modal" id="close-my-context-modal">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
-        </svg>
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
       </button>
       <h2 class="my-context-title">
         My Context
@@ -145,15 +161,13 @@
   <!-- Location Change Modal -->
   <div class="location-modal" id="location-modal">
     <div class="location-modal-content">
+      <button class="close-modal" id="close-location-modal">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+      </button>
       <div class="location-modal-header">
         <div class="location-modal-title">
           Change Location
         </div>
-        <button class="close-modal" id="close-location-modal">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
-          </svg>
-        </button>
       </div>
       
       <div class="location-input-section">
@@ -242,45 +256,6 @@
   <div id="one-thing-card-list"></div>
 </div>
 
-<!-- PROGRESS BAR COMPONENT - START (can be easily removed) -->
-
-<!-- Progress Bar Overlay -->
-<div id="progress-overlay" class="progress-overlay"></div>
-
-<!-- Progress Bar (appears on scroll) -->
-<div id="progress-bar" class="progress-bar">
-  <div class="progress-content">
-        <div class="role-badge-container">
-          <img id="role-badge" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68b4962706ed934b893dd109_adaptio.svg" alt="Role Badge" width="32" height="32">
-        </div>
-        <div class="role-achievement-label" id="role-achievement-label">Explorer</div>
-    <div class="progress-counters">
-      <div class="counter-item">
-        <span class="counter-number" id="saved-counter">0</span>
-        <span class="counter-label">Things saved</span>
-      </div>
-      <div class="counter-item">
-        <span class="counter-number" id="completed-counter">0</span>
-        <span class="counter-label">Things completed</span>
-      </div>
-      <div class="counter-item">
-        <span class="counter-number" id="published-counter">0</span>
-        <span class="counter-label">Thing published</span>
-      </div>
-    </div>
-    <div class="progress-info">
-      <div class="progress-bar-container">
-        <div class="progress-fill" id="progress-fill">
-          <div class="user-avatar">
-            <img id="progress-avatar" src="" alt="User Avatar" width="32" height="32">
-          </div>
-        </div>
-      </div>
-      <button class="more-details-btn" id="more-details-btn">More Details</button>
-    </div>
-  </div>
-</div>
-<!-- PROGRESS BAR COMPONENT - END -->
 
 <!-- Success tooltip -->
 <div id="success-tooltip" class="success-tooltip">
@@ -289,12 +264,12 @@
 
 <!-- Public success tooltip -->
 <div id="public-success-tooltip" class="success-tooltip">
-  <span>Thing is Public!</span>
+  <span>Thing is now Public!</span>
 </div>
 
 <!-- Private success tooltip -->
 <div id="private-success-tooltip" class="success-tooltip">
-  <span>Thing is Private!</span>
+  <span>Thing is now Private!</span>
 </div>
 
 <!-- Saved success tooltip -->
@@ -330,12 +305,44 @@
 <!-- Levels popup -->
 <div id="levels-popup" class="levels-popup">
   <div class="levels-popup-inner">
+    <button class="levels-close" id="levels-close">
+      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+    </button>
     <div class="levels-header">
-      <h3>Your Progress</h3>
-      <button class="levels-close" id="levels-close">×</button>
+      <h3 class="levels-title">Your Progress</h3>
     </div>
-    <div class="levels-content">
+    
+    <!-- Progress Tabs -->
+    <div class="progress-tabs-container">
+      <div class="progress-tabs">
+        <button class="progress-tab active" id="local-tab" data-tab="local">
+          <span class="tab-label">Local</span>
+        </button>
+        <button class="progress-tab" id="global-tab" data-tab="global">
+          <span class="tab-label">Global</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Tab Description -->
+    <div class="tab-description-container">
+      <p class="tab-description-text" id="tab-description-text">Progress in your current location</p>
+      <div class="info-icon">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="6" cy="6" r="5" stroke="#666" stroke-width="1"/>
+          <path d="M6 4v4M6 8h.01" stroke="#666" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Scrollable Content -->
+    <div class="levels-scrollable-content">
       <div class="current-level-info">
+        <!-- Dynamic Visual Container (behind avatar) -->
+        <div class="dynamic-visual-container">
+            <img id="dynamic-visual" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg" alt="Level Visual" width="200" height="200">
+        </div>
+        
         <div class="circular-progress-container">
           <div class="circular-progress">
             <svg class="progress-ring" width="80" height="80">
@@ -346,10 +353,6 @@
               <img id="levels-avatar" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User Avatar" width="48" height="48">
             </div>
           </div>
-        </div>
-        <div class="current-level-details">
-          <div class="current-level-name" id="current-level-name">Explorer</div>
-          <div class="current-level-progress" id="current-level-progress">0 / 100 XP</div>
         </div>
       </div>
       <div class="levels-list" id="levels-list">
