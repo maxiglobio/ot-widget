@@ -566,7 +566,7 @@
       }
 
        locationResults.innerHTML = results.map(result => {
-        const displayName = result.city + ', ' + result.country + ', ' + result.iso3;
+        const displayName = result.city + ', ' + result.country;
         return `
           <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lng}" data-display-name="${displayName}">
             <div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div>
