@@ -177,6 +177,9 @@
           }
         } else {
         }
+        
+        // Update sticky user summary after loading user data
+        updateStickyUserSummary();
       })
       .catch(error => {
       });
@@ -235,6 +238,9 @@
           newLocationClickable.addEventListener('click', showLocationPrompt);
         }
       }
+      
+      // Update sticky user summary when location changes
+      updateStickyUserSummary();
     }
 
     function showLocationPrompt() {
@@ -388,6 +394,9 @@
         });
       }
     }
+      
+      // Update sticky user summary when location changes from modal
+      updateStickyUserSummary();
   }
 
   // Location Modal functionality
@@ -654,6 +663,8 @@
     initializeMyContextModal();
     initializeLocationModal();
     initializeLogout();
+    updateUserLevelBadge();
+    initializeStickyUserSummary();
   }
 
   // Initialize when DOM is ready
@@ -948,21 +959,36 @@
 
   // PROGRESS BAR COMPONENT JS - START (can be easily removed)
   // Progress Bar and Levels System
-  const levels = [
-    { level: 1, name: "Explorer", xp: 0, description: "Just starting your journey" },
-    { level: 2, name: "Adventurer", xp: 100, description: "Taking your first steps" },
-    { level: 3, name: "Discoverer", xp: 250, description: "Finding your way around" },
-    { level: 4, name: "Explorer", xp: 500, description: "Getting comfortable with exploration" },
-    { level: 5, name: "Navigator", xp: 1000, description: "Confidently exploring new places" },
-    { level: 6, name: "Pioneer", xp: 2000, description: "Leading the way for others" },
-    { level: 7, name: "Trailblazer", xp: 4000, description: "Creating new paths" },
-    { level: 8, name: "Master Explorer", xp: 8000, description: "Expert in exploration" },
-    { level: 9, name: "Legend", xp: 15000, description: "A true exploration legend" },
-    { level: 10, name: "Myth", xp: 30000, description: "The ultimate exploration myth" }
+  // Local levels - for current location progress
+  const localLevels = [
+    { level: 1, name: "Visitor", xp: 0, description: "Just arrived in this place" },
+    { level: 2, name: "Local", xp: 50, description: "Getting familiar with the area" },
+    { level: 3, name: "Regular", xp: 150, description: "Becoming a regular here" },
+    { level: 4, name: "Insider", xp: 300, description: "You know the local secrets" },
+    { level: 5, name: "Native", xp: 500, description: "You're practically a local" },
+    { level: 6, name: "Ambassador", xp: 750, description: "Representing this place" },
+    { level: 7, name: "Guardian", xp: 1000, description: "Protecting this location" },
+    { level: 8, name: "Legend", xp: 1500, description: "A legend in this place" }
   ];
 
-  let userXP = 0;
-  let currentLevel = 1;
+  // Global levels - for overall progress across all locations
+  const globalLevels = [
+    { level: 1, name: "Wanderer", xp: 0, description: "Starting your global journey" },
+    { level: 2, name: "Traveler", xp: 200, description: "Exploring multiple places" },
+    { level: 3, name: "Explorer", xp: 500, description: "Discovering new territories" },
+    { level: 4, name: "Adventurer", xp: 1000, description: "Seeking new adventures" },
+    { level: 5, name: "Pioneer", xp: 2000, description: "Leading exploration efforts" },
+    { level: 6, name: "Master", xp: 4000, description: "Master of exploration" },
+    { level: 7, name: "Legend", xp: 8000, description: "A global exploration legend" },
+    { level: 8, name: "Myth", xp: 15000, description: "The ultimate global explorer" }
+  ];
+
+  // Progress tracking for both tabs
+  let localXP = 0;
+  let globalXP = 0;
+  let currentLocalLevel = 1;
+  let currentGlobalLevel = 1;
+  let activeTab = 'local'; // Track which tab is currently active
 
   // Calculate user XP based on activities
   function calculateUserXP() {
@@ -971,20 +997,38 @@
     const publicCount = completedCards.filter(card => card.published).length;
 
 
-    // XP calculation: 10 for saved, 25 for completed, 50 for public
-    userXP = (savedCount * 10) + (completedCount * 25) + (publicCount * 50);
+    // Local XP: Only current location activities (simplified for demo)
+    // In real app, this would filter by current location
+    localXP = Math.floor((savedCount * 5) + (completedCount * 15) + (publicCount * 30));
 
+    // Global XP: All activities across all locations
+    globalXP = (savedCount * 10) + (completedCount * 25) + (publicCount * 50);
 
-    // Find current level
-    for (let i = levels.length - 1; i >= 0; i--) {
-      if (userXP >= levels[i].xp) {
-        currentLevel = levels[i].level;
+    // Find current local level - find the highest level user has achieved
+    currentLocalLevel = 1; // Default to level 1
+    for (let i = 0; i < localLevels.length; i++) {
+      if (localXP >= localLevels[i].xp) {
+        currentLocalLevel = localLevels[i].level;
+      } else {
+        break;
+      }
+    }
+
+    // Find current global level - find the highest level user has achieved
+    currentGlobalLevel = 1; // Default to level 1
+    for (let i = 0; i < globalLevels.length; i++) {
+      if (globalXP >= globalLevels[i].xp) {
+        currentGlobalLevel = globalLevels[i].level;
+      } else {
         break;
       }
     }
 
 
-    return { xp: userXP, level: currentLevel };
+    return { 
+      local: { xp: localXP, level: currentLocalLevel },
+      global: { xp: globalXP, level: currentGlobalLevel }
+    };
   }
 
 
@@ -1006,15 +1050,19 @@
     localTab.addEventListener('click', () => {
       localTab.classList.add('active');
       globalTab.classList.remove('active');
+      activeTab = 'local';
       updateTabDescription('local');
       updateProgressDisplay('local');
+      populateLevelsList('local');
     });
 
     globalTab.addEventListener('click', () => {
       globalTab.classList.add('active');
       localTab.classList.remove('active');
+      activeTab = 'global';
       updateTabDescription('global');
       updateProgressDisplay('global');
+      populateLevelsList('global');
     });
   }
 
@@ -1030,18 +1078,142 @@
     }
   }
 
+  // Initialize sticky user summary
+  function initializeStickyUserSummary() {
+    const stickySummary = document.getElementById('sticky-user-summary');
+    const userAvatar = document.getElementById('user-avatar');
+    const stickyLevelBadge = document.getElementById('sticky-level-badge');
+    
+    if (!stickySummary || !userAvatar) return;
+
+    // Update sticky summary content
+    updateStickyUserSummary();
+
+    // Add click handler to sticky level badge to open levels popup
+    if (stickyLevelBadge) {
+      stickyLevelBadge.addEventListener('click', () => {
+        const levelsPopup = document.getElementById('levels-popup');
+        if (levelsPopup) {
+          levelsPopup.classList.add('show');
+        }
+      });
+    }
+
+    // Handle scroll to show/hide sticky summary
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const shouldShow = scrollY > 100;
+      
+      if (shouldShow) {
+        stickySummary.classList.add('show');
+      } else {
+        stickySummary.classList.remove('show');
+      }
+    });
+  }
+
+  // Update sticky user summary content
+  function updateStickyUserSummary() {
+    const stickyAvatar = document.getElementById('sticky-user-avatar');
+    const stickyLocationName = document.getElementById('sticky-location-name');
+    const userAvatar = document.getElementById('user-avatar');
+    
+    if (!stickyAvatar || !stickyLocationName) return;
+
+    // Copy avatar from main user avatar (which is already loaded from Xano)
+    if (userAvatar && userAvatar.src) {
+      stickyAvatar.src = userAvatar.src;
+      // Add error handling for sticky avatar
+      stickyAvatar.onerror = function() {
+        this.src = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg';
+      };
+    }
+
+    // Get current location from window.userLocation (same as Location Section)
+    const currentLocation = window.userLocation || 'your place';
+    
+    // Update location name only
+    stickyLocationName.textContent = currentLocation;
+    
+    // Level badge is now updated in updateUserLevelBadge function
+  }
+
+  // Update user level badge with colors
+  function updateUserLevelBadge() {
+    const levelBadge = document.getElementById('user-level-badge');
+    const stickyLevelBadge = document.getElementById('sticky-level-badge');
+    
+    if (!levelBadge) return;
+
+    const progress = calculateUserXP();
+    const currentLevel = progress.local.level; // Always use local level for user badge
+    
+    // Define colors for local levels
+    const localColors = {
+      1: '#9CA3AF', // Visitor
+      2: '#4ADE80', // Local
+      3: '#22C55E', // Regular
+      4: '#0EA5E9', // Insider
+      5: '#2563EB', // Native
+      6: '#7C3AED', // Ambassador
+      7: '#D97706', // Guardian
+      8: '#EAB308'  // Legend
+    };
+
+    // Show the current level (the one user is working towards)
+    const currentLevelData = localLevels.find(level => level.level === currentLevel);
+    if (currentLevelData) {
+      // Update main badge
+      levelBadge.textContent = currentLevelData.name;
+      
+      // Apply colors to main badge
+      const roleColor = localColors[currentLevel];
+      levelBadge.style.background = `${roleColor}20`; // 20% opacity
+      levelBadge.style.borderColor = roleColor;
+      levelBadge.style.color = roleColor;
+      
+      // Update sticky badge with same logic
+      if (stickyLevelBadge) {
+        stickyLevelBadge.textContent = currentLevelData.name;
+        stickyLevelBadge.style.background = `${roleColor}20`; // 20% opacity
+        stickyLevelBadge.style.borderColor = roleColor;
+        stickyLevelBadge.style.color = roleColor;
+      }
+    }
+
+    // Update sticky summary content
+    updateStickyUserSummary();
+  }
+
   // Update dynamic visual based on level
-  function updateDynamicVisual(level) {
+  function updateDynamicVisual(level, tabType = 'local') {
     const dynamicVisual = document.getElementById('dynamic-visual');
     if (!dynamicVisual) return;
 
-    // Define visual URLs for different levels
-    const visualUrls = {
-      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg',
-      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg', // Will be updated later
-      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg', // Will be updated later
-      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg'  // Will be updated later
+    // Define visual URLs for different levels and tab types
+    const localVisualUrls = {
+      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125978b3f6756bdd1344c_01-Visitor.svg', // Visitor
+      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c12597cae559b96926b1f5_02-Local.svg', // Local
+      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125976b32833c22afd1b9_03-Regular.svg', // Regular
+      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125973fef6ffd2269b985_04-Insider.svg', // Insider
+      5: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125979527a790ca7de1d6_05-Native.svg', // Native
+      6: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c1259711585667f0bde54c_06-Ambassador.svg', // Ambassador
+      7: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c12597ae8a938e130dd2a2_07-Guardian.svg', // Guardian
+      8: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c12597f36fa951c2bfc1d6_09-Legend.svg'  // Legend
     };
+
+    const globalVisualUrls = {
+      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a78ac593e86b8ea520_01-Wanderer.svg', // Wanderer
+      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a7109f56bcfbb3bde5_02-Traveler.svg', // Traveler
+      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a75927df77f0806867_03-Explorer.svg', // Explorer
+      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a7b7f3263d2c6e2596_04-Adventurer.svg', // Adventurer
+      5: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a71deef2506979baba_05-Pioneer.svg', // Pioneer
+      6: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a7d7b3ac5029d29107_06-Master.svg', // Master
+      7: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a775ccf00f000786f6_07-Legend.svg', // Legend
+      8: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c129a7609028457aa80150_08-Myth.svg'  // Myth
+    };
+
+    const visualUrls = tabType === 'local' ? localVisualUrls : globalVisualUrls;
 
     // Update visual source
     if (visualUrls[level]) {
@@ -1052,23 +1224,20 @@
   // Update progress display based on selected tab
   function updateProgressDisplay(tabType) {
     const progress = calculateUserXP();
-    const currentLevelData = levels.find(l => l.level === progress.level);
-    const nextLevelData = levels.find(l => l.level === progress.level + 1);
+    const levels = tabType === 'local' ? localLevels : globalLevels;
+    const currentProgress = tabType === 'local' ? progress.local : progress.global;
+    
+    const currentLevelData = levels.find(l => l.level === currentProgress.level);
+    const nextLevelData = levels.find(l => l.level === currentProgress.level + 1);
 
     if (!currentLevelData) return;
 
-    // For now, we'll use the same logic for both tabs
-    // In the future, you can implement different logic for local vs global
-    const userXP = progress.xp;
+    const userXP = currentProgress.xp;
     
-    // Update level badge in profile menu
-    const levelBadge = document.getElementById('user-level-badge');
-    if (levelBadge) {
-      levelBadge.textContent = currentLevelData.name;
-    }
+    // Update level badge in profile menu (use global for main badge)
 
     // Update dynamic visual based on level
-    updateDynamicVisual(currentLevelData.level);
+    updateDynamicVisual(currentLevelData.level, tabType);
 
     // Update circular progress
     const progressRing = document.querySelector('.progress-ring-circle');
@@ -1082,24 +1251,41 @@
     }
   }
 
-  // Initialize levels popup
-  function initializeLevelsPopup() {
-    const levelsPopup = document.getElementById('levels-popup');
-    const levelsClose = document.getElementById('levels-close');
-
-    if (!levelsPopup || !levelsClose) {
-      return;
-    }
-
-    // Get current user progress
-    const progress = calculateUserXP();
-    const currentLevel = progress.level;
-    const userXP = progress.xp;
-
-
-    // Populate levels list
+  // Populate levels list based on active tab
+  function populateLevelsList(tabType) {
     const levelsList = document.getElementById('levels-list');
-    if (levelsList) {
+    if (!levelsList) return;
+
+    const levels = tabType === 'local' ? localLevels : globalLevels;
+    const progress = calculateUserXP();
+    const currentProgress = tabType === 'local' ? progress.local : progress.global;
+    const currentLevel = currentProgress.level;
+
+    // Define colors for each level
+    const localColors = {
+      1: '#9CA3AF', // Visitor
+      2: '#4ADE80', // Local
+      3: '#22C55E', // Regular
+      4: '#0EA5E9', // Insider
+      5: '#2563EB', // Native
+      6: '#7C3AED', // Ambassador
+      7: '#D97706', // Guardian
+      8: '#EAB308'  // Legend
+    };
+
+    const globalColors = {
+      1: '#94A3B8', // Wanderer
+      2: '#38BDF8', // Traveler
+      3: '#14B8A6', // Explorer
+      4: '#2563EB', // Adventurer
+      5: '#7C3AED', // Pioneer
+      6: '#9333EA', // Master
+      7: '#E11D48', // Legend
+      8: '#FACC15'  // Myth
+    };
+
+    const colors = tabType === 'local' ? localColors : globalColors;
+
       levelsList.innerHTML = '';
 
       levels.forEach(level => {
@@ -1115,8 +1301,24 @@
         const nextLevel = levels.find(l => l.level === level.level + 1);
         const xpRequired = nextLevel ? nextLevel.xp - level.xp : 0;
 
+      // Determine colors based on status
+      let backgroundColor, borderColor;
+      if (level.level < currentLevel) {
+        // Completed levels - black
+        backgroundColor = '#000000';
+        borderColor = '#000000';
+      } else if (level.level === currentLevel) {
+        // Current level - use role color
+        backgroundColor = colors[level.level] || '#B1E530';
+        borderColor = colors[level.level] || '#B1E530';
+      } else {
+        // Future levels - gray
+        backgroundColor = '#ccc';
+        borderColor = '#ccc';
+      }
+
         levelItem.innerHTML = `
-          <div class="level-avatar" style="background: ${level.level <= currentLevel ? '#B1E530' : '#ccc'}">
+        <div class="level-avatar" style="background: ${backgroundColor}; border-color: ${borderColor}; color: ${level.level < currentLevel ? '#fff' : level.level === currentLevel ? '#fff' : '#666'}">
             ${level.level}
           </div>
           <div class="level-details">
@@ -1126,40 +1328,31 @@
           <div class="level-xp">${xpRequired} XP</div>
         `;
 
+      // Apply background and border colors for current level
+      if (level.level === currentLevel) {
+        const roleColor = colors[level.level];
+        levelItem.style.background = `${roleColor}20`; // 20% opacity
+        levelItem.style.borderColor = roleColor;
+      }
+
         levelsList.appendChild(levelItem);
       });
+  }
 
+  // Initialize levels popup
+  function initializeLevelsPopup() {
+    const levelsPopup = document.getElementById('levels-popup');
+    const levelsClose = document.getElementById('levels-close');
+
+    if (!levelsPopup || !levelsClose) {
+      return;
     }
 
-    // Update current level info
-    const currentLevelData = levels.find(l => l.level === currentLevel);
-    const nextLevelData = levels.find(l => l.level === currentLevel + 1);
-
-    if (currentLevelData) {
-      // Update level badge in profile menu
-      const levelBadge = document.getElementById('user-level-badge');
-      if (levelBadge) {
-        levelBadge.textContent = currentLevelData.name;
-      }
-
-      // Update dynamic visual based on level
-      updateDynamicVisual(currentLevelData.level);
-
-      // Update circular progress
-      const progressRing = document.querySelector('.progress-ring-circle');
-      if (progressRing) {
-        const progressPercent = nextLevelData ?
-          Math.min(((userXP - currentLevelData.xp) / (nextLevelData.xp - currentLevelData.xp)) * 100, 100) :
-          100;
-        const circumference = 2 * Math.PI * 35; // radius = 35
-        const offset = circumference - (progressPercent / 100) * circumference;
-        progressRing.style.strokeDashoffset = offset;
-      }
-
-    }
-
-    // Initialize tabs
+    // Initialize tabs and populate levels list
     initializeProgressTabs();
+    populateLevelsList('local'); // Start with local tab
+    updateProgressDisplay('local'); // Initialize with local tab
+
 
     // Event listeners
     levelsClose.addEventListener('click', () => {
