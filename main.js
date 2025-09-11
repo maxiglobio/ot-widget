@@ -932,6 +932,7 @@
   const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
   const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
   const API_CITIES = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_cities'
+  const API_COMMUNITY_CARD = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/nearly'
   const MAX_ATTEMPTS = 3;
   const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -2953,9 +2954,11 @@
    function loadCommunityUserCards() {
 
         let cityId = localStorage.getItem('userCityId');
+        let lat = localStorage.getItem('userLat');
+        let lng = localStorage.getItem('userLon');
 
         // Get all published cards from all users
-        fetch(API_SAVE + '?city_id=' + cityId)
+        fetch(API_COMMUNITY_CARD + '?lat=' + lat +'&lng=' + lng + '&radius=50&limit=20')
           .then(response => {
             return response.json();
           })
@@ -2971,14 +2974,21 @@
                   published: item.published,
                   imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + item.image,
                   completed_at: item.completed_at,
-                  author_name: item.user.name,
-                  author_avatar: item.user.picture,
+                  author_name: item.user_name,
+                  author_avatar: item.user_picture,
+                  title: item.card_title,
+                  description: item.card_description,
+                  category: item.card_category,
                   type: "community"
                 }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
                 publicCards = publishedCards;
           })
           .catch(error => {
+
+
+          console.log('error', error);
+
           });
       }
 
