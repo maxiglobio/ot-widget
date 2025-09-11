@@ -2843,13 +2843,16 @@
       return;
     }
 
-    fetch(API_USERS + '/' + userId)
+    let cityId = localStorage.getItem('userCityId');
+
+    fetch(API_SAVE + '?user_id=' + userId + '&city_id=' + cityId)
       .then(response => {
         return response.json();
       })
       .then(data => {
         if (data) {
-       var usersCards = data.users_cards
+
+       var usersCards = data
              .filter(item => item.created_at !== null)
              .map(item => ({
                ...item.card,
@@ -2861,6 +2864,19 @@
                created_at: item.created_at
              }))
              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+//       var usersCards = data
+//             .filter(item => item.created_at !== null)
+//             .map(item => ({
+//               ...item.card,
+//               expired_at: item.expired_at,
+//               one_thing_user_card_id: item.id,
+//               completed: item.completed,
+//               published: item.published,
+//               image: item.image,
+//               created_at: item.created_at
+//             }))
+//             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
           var formattedCards = usersCards
             .filter(card => !card.completed) // Only show non-completed cards in saved
@@ -2891,13 +2907,15 @@
           return;
         }
 
-        fetch(API_USERS + '/' + userId)
+        let cityId = localStorage.getItem('userCityId');
+
+        fetch(API_SAVE + '?user_id=' + userId + '&city_id=' + cityId)
           .then(response => {
             return response.json();
           })
           .then(data => {
             if (data) {
-              var usersCards = data.users_cards
+              var usersCards = data
                 .filter(item => item.completed_at !== null)
                 .map(item => ({
                   ...item.card,
@@ -2934,12 +2952,16 @@
 
    function loadCommunityUserCards() {
 
+        let cityId = localStorage.getItem('userCityId');
+
         // Get all published cards from all users
-        fetch(API_SAVE)
+        fetch(API_SAVE + '?city_id=' + cityId)
           .then(response => {
             return response.json();
           })
           .then(data => {
+            console.log(data);
+
             if (data && Array.isArray(data)) {
               // Filter only published cards from all users
               var publishedCards = data
