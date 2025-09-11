@@ -568,7 +568,7 @@
        locationResults.innerHTML = results.map(result => {
         const displayName = result.city + ', ' + result.country;
         return `
-          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lng}" data-display-name="${displayName}">
+          <div class="location-result-item" data-lat="${result.lat}" data-lon="${result.lng}" data-display-name="${displayName}" data-city-id="${result.id}">
             <div class="location-icon"><img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Location" width="20" height="20"></div>
             <div class="location-content">
               <div class="location-name">${result.city}</div>
@@ -588,6 +588,7 @@
           const lat = item.dataset.lat;
           const lon = item.dataset.lon;
           let displayName = item.dataset.displayName;
+          let cityId = item.dataset.cityId;
 
           // Limit to city and country only
           const parts = displayName.split(', ');
@@ -602,6 +603,7 @@
           localStorage.setItem('userLocation', displayName);
           localStorage.setItem('userLat', lat);
           localStorage.setItem('userLon', lon);
+          localStorage.setItem('userCityId', cityId);
 
           // Close modal immediately
           closeModal();
@@ -1653,12 +1655,18 @@
   btnSave.addEventListener('click', () => {
     if (!currentSuggestion) return;
     const userId = ensureUserId();
+    let cityId = localStorage.getItem('userCityId');
 
     if (userId && currentSuggestion.id) {
       fetch(API_SAVE, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ one_thing_users_id: userId, one_thing_cards_id: currentSuggestion.id, expired_at: Date.now() + 1000 * 60 * 60 * 24 * 30 })
+        body: JSON.stringify({
+            one_thing_users_id: userId,
+            one_thing_cards_id: currentSuggestion.id,
+            expired_at: Date.now() + 1000 * 60 * 60 * 24 * 30,
+            one_thing_cities_id: cityId
+        })
       })
       .then(response => {
         return response.json();
