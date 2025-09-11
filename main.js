@@ -31,20 +31,21 @@
   }
 
   // Geocode location
-  function geocodeLocation(query, callback) {
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-//    fetch(API_CITIES + `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-          callback(lat, lon);
-        } else {
-          fallbackLocation(callback);
-        }
-      })
-      .catch(() => fallbackLocation(callback));
+  function geocodeLocation(lat, lon, callback) {
+    callback(parseFloat(lat), parseFloat(lon));
+//    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+////    fetch(API_CITIES + `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}`)
+//      .then(res => res.json())
+//      .then(data => {
+//        if (data && data.length > 0) {
+//          const lat = parseFloat(data[0].lat);
+//          const lon = parseFloat(data[0].lon);
+//          callback(lat, lon);
+//        } else {
+//          fallbackLocation(callback);
+//        }
+//      })
+//      .catch(() => fallbackLocation(callback));
   }
 
   // Fallback location
@@ -65,9 +66,12 @@
 
   // Load map
   function loadMap() {
-    const manualLocation = localStorage.getItem("userLocation");
-    if (manualLocation) {
-      geocodeLocation(manualLocation, initializeMap);
+//    const manualLocation = localStorage.getItem("userLocation");
+
+    const manualLat = localStorage.getItem("userLat");
+    const manualLon = localStorage.getItem("userLon");
+    if (manualLat && manualLon) {
+      geocodeLocation(manualLat, manualLon, initializeMap);
     } else {
       fallbackLocation(initializeMap);
     }
@@ -596,6 +600,8 @@
 
           // Update user location
           localStorage.setItem('userLocation', displayName);
+          localStorage.setItem('userLat', lat);
+          localStorage.setItem('userLon', lon);
 
           // Close modal immediately
           closeModal();
