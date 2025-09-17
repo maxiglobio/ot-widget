@@ -1175,8 +1175,11 @@
     }
   });
 
-  const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
-  const API_SAVE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
+//  const API_SUGGEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/get_card';
+  const API_SUGGEST = "https://placeapi-fyawhxapepddg6ap.westeurope-01.azurewebsites.net/api/Place"
+  const API_SAVE_CARD = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/save_card';
+  const API_USER_CARDS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards';
+  const API_USER_CARDS_TEST = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards_test';
   const API_USERS = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users';
   const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
   const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
@@ -2478,29 +2481,46 @@
     btn.classList.add('loading');
     startLoadingAnimation();
     const context = window.getUserContext ? window.getUserContext() : {};
-    let qs = '?';
-    for (const key in context) {
-      if (context.hasOwnProperty(key)) qs += encodeURIComponent(key) + '=' + encodeURIComponent(context[key]) + '&';
-    }
-    fetch(API_SUGGEST + qs, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'one-thing-session-id': generateUUID() }
+//    let qs = '?';
+//    for (const key in context) {
+//      if (context.hasOwnProperty(key)) qs += encodeURIComponent(key) + '=' + encodeURIComponent(context[key]) + '&';
+//    }
+    fetch(API_SUGGEST, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              lat: localStorage.getItem('userLat'),
+              lng: localStorage.getItem('userLon'),
+              kids: (localStorage.getItem('hasKids') === 'true'),
+              pets: (localStorage.getItem('hasPets') === 'true'),
+              car: (localStorage.getItem('hasCar') === 'true'),
+              excludeIds: []
+          })
     })
-      .then(res => res.json())
-      .then(data => {
+    .then(res => res.json())
+    .then(data => {
         btn.classList.remove('loading');
         stopLoadingAnimation();
 
+        let dataParams = Object.assign(data, {forsquareId: data.id});
 
-        currentSuggestion = {
-          id: data.id || data.card_id || data.cardId || data.card?.id || data.item?.id || data.thing?.id || data.name || 'generated-' + Date.now(),
-          title: data.title || data.name || 'No Tip This Time',
-          description: data.description || 'Sometimes even the best advice needs a rest. Come back later.',
-          category: data.category || data.card?.category || data.item?.category || data.thing?.category || 'places'
-        };
+        fetch(API_SAVE_CARD, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(dataParams)
+        })
+        .then(res => res.json())
+        .then(dataResponse => {
+            currentSuggestion = {
+              id: dataResponse.id,
+//              id: data.id || data.card_id || data.cardId || data.card?.id || data.item?.id || data.thing?.id || data.name || 'generated-' + Date.now(),
+              title: dataResponse.title || dataResponse.name || 'No Tip This Time',
+              description: dataResponse.description || 'Sometimes even the best advice needs a rest. Come back later.',
+              category: dataResponse.category || dataResponse.card?.category || dataResponse.item?.category || dataResponse.thing?.category || 'places'
+            };
 
-
-        showPopup(currentSuggestion);
+            showPopup(currentSuggestion);
+        });
       })
       .catch(err => {
         btn.classList.remove('loading');
@@ -2524,7 +2544,7 @@
     let cityId = localStorage.getItem('userCityId');
 
     if (userId && currentSuggestion.id) {
-      fetch(API_SAVE, {
+      fetch(API_USER_CARDS, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -4196,7 +4216,7 @@
 
     let cityId = localStorage.getItem('userCityId');
 
-    fetch(API_SAVE + '?user_id=' + userId + '&city_id=' + cityId)
+    fetch(API_USER_CARDS_TEST + '?user_id=' + userId + '&city_id=' + cityId)
       .then(response => {
         return response.json();
       })
@@ -4260,7 +4280,7 @@
 
         let cityId = localStorage.getItem('userCityId');
 
-        fetch(API_SAVE + '?user_id=' + userId + '&city_id=' + cityId)
+        fetch(API_USER_CARDS_TEST + '?user_id=' + userId + '&city_id=' + cityId)
           .then(response => {
             return response.json();
           })
@@ -4306,7 +4326,7 @@
         let cityId = localStorage.getItem('userCityId');
 
         // Get all published cards from all users
-        fetch(API_SAVE + '?city_id=' + cityId)
+        fetch(API_USER_CARDS_TEST + '?city_id=' + cityId)
           .then(response => {
             return response.json();
           })
