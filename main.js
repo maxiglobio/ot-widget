@@ -2,6 +2,55 @@
   // Mapbox configuration
   const mapboxToken = "pk.eyJ1IjoibWF4aW1nbG9iaW8iLCJhIjoiY205ZTV1Z3Q0MTJuZjJrczduaWpmczFxOSJ9.uxg6_dvAoTHfmhAicl9pjA";
 
+  // Calculate circle size for 50km radius at current zoom level
+  function calculateCircleSize(zoom) {
+    // At zoom level 5.5, 50km radius should be approximately 100px
+    // Previous calculation was wrong - it was showing ~138km instead of 50km
+    // Corrected size: 280px / 2.76 ≈ 101px for 50km at zoom 5.5
+    const baseZoom = 5.5;
+    const baseSize = 101; // pixels for 50km at zoom 5.5 (corrected)
+    const scaleFactor = Math.pow(2, zoom - baseZoom);
+    return Math.round(baseSize * scaleFactor);
+  }
+
+  // Update zone circle size based on map zoom
+  function updateZoneCircleSize(zoom) {
+    const circle = document.getElementById('user-zone-circle');
+    if (circle) {
+      const size = calculateCircleSize(zoom);
+      circle.style.width = size + 'px';
+      circle.style.height = size + 'px';
+    }
+  }
+
+  // Toggle zone circle visibility
+  function toggleZoneCircle() {
+    const circle = document.getElementById('user-zone-circle');
+    if (circle) {
+      const isVisible = circle.style.opacity !== '0';
+      circle.style.opacity = isVisible ? '0' : '0.7';
+      circle.style.pointerEvents = isVisible ? 'none' : 'auto';
+    }
+  }
+
+  // Add click event listener to zone circle
+  function initializeZoneCircle() {
+    const circle = document.getElementById('user-zone-circle');
+    if (circle) {
+      // Add click event to show "How One Things Work" popup
+      circle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        showHowOneThingsWorkPopup();
+      });
+
+      // Add double-click event to show info (keep for compatibility)
+      circle.addEventListener('dblclick', function(e) {
+        e.stopPropagation();
+        showHowOneThingsWorkPopup();
+      });
+    }
+  }
+
   // Initialize map
   function initializeMap(lat, lon) {
     if (typeof mapboxgl === 'undefined') {
@@ -16,8 +65,18 @@
       center: [lon, lat],
       zoom: 5.5,
       projection: 'globe',
-      interactive: false
+      interactive: false,
+      // Add performance optimizations
+      renderWorldCopies: false,
+      maxZoom: 10,
+      minZoom: 3
     });
+
+    // Initialize zone circle size
+    updateZoneCircleSize(5.5);
+
+    // Initialize zone circle interactions immediately
+    initializeZoneCircle();
 
     map.on('style.load', () => {
       map.setFog({
@@ -90,13 +149,13 @@
 
         // Update user avatar (for map avatar, progress bar, and levels popup)
         if (data.picture) {
+          // Save user avatar to localStorage for author display
+          const avatarUrl = data.picture.startsWith('http') ? data.picture : `https://xu8w-at8q-hywg.n7d.xano.io${data.picture}`;
+          localStorage.setItem('userAvatar', avatarUrl);
+          
           const userAvatar = document.getElementById('user-avatar');
           const progressAvatar = document.getElementById('progress-avatar');
           const levelsAvatar = document.getElementById('levels-avatar');
-
-
-          // Construct full URL for avatar
-          const avatarUrl = data.picture.startsWith('http') ? data.picture : `https://xu8w-at8q-hywg.n7d.xano.io${data.picture}`;
 
           // Update map avatar
           if (userAvatar) {
@@ -135,6 +194,9 @@
 
         // Update user name
         if (data.name) {
+          // Save user name to localStorage for author display
+          localStorage.setItem('userName', data.name);
+          
           const userMenuName = document.getElementById('user-menu-name');
           const dropdownUserName = document.getElementById('dropdown-user-name');
 
@@ -153,6 +215,8 @@
 
         // Update user email
         if (data.email) {
+          // Save user email to localStorage for author display
+          localStorage.setItem('userEmail', data.email);
 
           // Try multiple selectors
           const emailElement1 = document.querySelector('#dropdown-user-email span');
@@ -256,7 +320,11 @@
         // Focus on input field
         const locationInput = document.getElementById('location-input');
         if (locationInput) {
-          locationInput.focus();
+          setTimeout(() => {
+            locationInput.focus();
+            // Move cursor to end instead of selecting all text
+            locationInput.setSelectionRange(locationInput.value.length, locationInput.value.length);
+          }, 100);
         }
       }
     }
@@ -369,6 +437,83 @@
     });
   }
 
+  // My Referrals modal functionality
+  function initializeMyReferralsModal() {
+    const myReferralsBtn = document.getElementById('my-referrals-btn');
+    const myReferralsModal = document.getElementById('my-referrals-modal');
+    const closeModalBtn = document.getElementById('close-my-referrals-modal');
+    const copyBtn = document.getElementById('copy-referral-btn');
+    const shareBtn = document.getElementById('share-referral-btn');
+    const referralCodeElement = document.getElementById('referral-link-code');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    // Generate referral code (you can replace this with actual user ID from Xano)
+    const referralCode = '1964-2207'; // This should come from user data
+    const referralLink = `globio.io/one-thing?ref=${referralCode}`;
+    
+    // Set referral code in display
+    referralCodeElement.textContent = referralCode;
+
+    // Open modal
+    myReferralsBtn.addEventListener('click', () => {
+      userDropdown.classList.remove('show');
+      myReferralsModal.classList.add('show');
+    });
+
+    // Close modal
+    closeModalBtn.addEventListener('click', () => {
+      myReferralsModal.classList.remove('show');
+    });
+
+    // Close modal when clicking outside
+    myReferralsModal.addEventListener('click', (e) => {
+      if (e.target === myReferralsModal) {
+        myReferralsModal.classList.remove('show');
+      }
+    });
+
+    // Copy referral link
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(referralLink);
+        // Show success feedback
+        copyBtn.style.background = '#B1E530';
+        copyBtn.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c456ad0331f5ca11d27c0f_check.svg" alt="Copied" width="24" height="24">';
+        setTimeout(() => {
+          copyBtn.style.background = 'transparent';
+          copyBtn.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4522bf8804bd3b586530a_copy-06.svg" alt="Copy" width="24" height="24">';
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = referralLink;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    });
+
+    // Share referral link
+    shareBtn.addEventListener('click', () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Join me on Globio One Thing!',
+          text: 'Discover amazing things in your area with Globio One Thing',
+          url: `https://${referralLink}`
+        });
+      } else {
+        // Fallback: copy to clipboard
+        copyBtn.click();
+      }
+    });
+
+    // Load referral stats (you can replace this with actual API call)
+    const referralCount = 0; // This should come from API
+    document.getElementById('referral-count').textContent = referralCount;
+  }
+
   // Helper function to update location UI from modal
   function updateLocationUIFromModal(locationName) {
     window.userLocation = locationName;
@@ -393,7 +538,11 @@
             locationModal.classList.add('show');
             const locationInput = document.getElementById('location-input');
             if (locationInput) {
-              locationInput.focus();
+              setTimeout(() => {
+                locationInput.focus();
+                // Move cursor to end instead of selecting all text
+                locationInput.setSelectionRange(locationInput.value.length, locationInput.value.length);
+              }, 100);
             }
           }
         });
@@ -414,13 +563,17 @@
     const locationDetectBtn = document.getElementById('location-detect-btn');
     const locationResults = document.getElementById('location-results');
 
+    // Removed conflicting click handler that was interfering with location selection
+
     // Handle input changes to show/hide location icon
     if (locationInput && locationIcon) {
       locationInput.addEventListener('input', () => {
         if (locationInput.value.trim().length > 0) {
           locationIcon.classList.add('hidden');
+          locationIcon.style.display = 'none';
         } else {
           locationIcon.classList.remove('hidden');
+          locationIcon.style.display = 'flex';
         }
       });
     }
@@ -430,7 +583,12 @@
     if (locationClickable) {
       locationClickable.addEventListener('click', () => {
         locationModal.classList.add('show');
-        locationInput.focus();
+        // Focus on input but don't select all text
+        setTimeout(() => {
+          locationInput.focus();
+          // Move cursor to end instead of selecting all text
+          locationInput.setSelectionRange(locationInput.value.length, locationInput.value.length);
+        }, 100);
       });
     }
 
@@ -442,6 +600,7 @@
       // Show location icon again when modal is closed
       if (locationIcon) {
         locationIcon.classList.remove('hidden');
+        locationIcon.style.display = 'flex';
       }
     }
 
@@ -485,6 +644,12 @@
     async function searchLocation(query) {
       if (!query.trim()) return;
 
+      // Hide location icon when search starts
+      if (locationIcon) {
+        locationIcon.classList.add('hidden');
+        locationIcon.style.display = 'none';
+      }
+
       // Show loading state with spinner only
       locationResults.innerHTML = '<div class="location-result-item loading"><div class="location-spinner"></div></div>';
       query = query + '%';
@@ -523,9 +688,15 @@
       // Add click handlers to results (use event delegation to avoid multiple handlers)
       if (!locationResults.hasAttribute('data-handler-attached')) {
         locationResults.setAttribute('data-handler-attached', 'true');
-        locationResults.addEventListener('click', (e) => {
+        locationResults.addEventListener('mousedown', (e) => {
           const item = e.target.closest('.location-result-item');
           if (!item) return;
+
+          // Prevent event bubbling to avoid triggering other handlers
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Focus removed to prevent selection issues - handled by event prevention
 
           const lat = item.dataset.lat;
           const lon = item.dataset.lon;
@@ -581,9 +752,15 @@
       // Add click handlers to results (use event delegation to avoid multiple handlers)
       if (!locationResults.hasAttribute('data-handler-attached')) {
         locationResults.setAttribute('data-handler-attached', 'true');
-        locationResults.addEventListener('click', (e) => {
+        locationResults.addEventListener('mousedown', (e) => {
           const item = e.target.closest('.location-result-item');
           if (!item) return;
+
+          // Prevent event bubbling to avoid triggering other handlers
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Focus removed to prevent selection issues - handled by event prevention
 
           const lat = item.dataset.lat;
           const lon = item.dataset.lon;
@@ -634,6 +811,11 @@
       } else {
         // Clear results when input is empty
         locationResults.innerHTML = '';
+        // Show location icon again when input is empty
+        if (locationIcon) {
+          locationIcon.classList.remove('hidden');
+          locationIcon.style.display = 'flex';
+        }
       }
     });
 
@@ -648,56 +830,61 @@
     });
 
     // Search on blur (when input loses focus)
-    locationInput.addEventListener('blur', () => {
+    locationInput.addEventListener('blur', (e) => {
+      // Don't search if the blur is caused by clicking on a location result item
+      if (e.relatedTarget && e.relatedTarget.closest('.location-result-item')) {
+        return;
+      }
+      
       const query = locationInput.value.trim();
       if (query && query.length >= 2) {
         searchLocation(query);
       }
     });
 
-    // Use current location
-    locationDetectBtn.addEventListener('click', async () => {
-      if (navigator.geolocation) {
-        try {
-          const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject);
-          });
+    // Use current location - DISABLED
+    // locationDetectBtn.addEventListener('click', async () => {
+    //   if (navigator.geolocation) {
+    //     try {
+    //       const position = await new Promise((resolve, reject) => {
+    //         navigator.geolocation.getCurrentPosition(resolve, reject);
+    //       });
 
-          const { latitude, longitude } = position.coords;
+    //       const { latitude, longitude } = position.coords;
 
-          // Reverse geocode to get location name
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
-          const data = await response.json();
+    //       // Reverse geocode to get location name
+    //       const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`);
+    //       const data = await response.json();
 
-          if (data.display_name) {
-            // Limit to city and country only
-            let locationName = data.display_name;
-            const parts = locationName.split(', ');
-            if (parts.length > 2) {
-              // Take city and country, skip detailed address
-              const city = parts[0];
-              const country = parts[parts.length - 1];
-              locationName = `${city}, ${country}`;
-            }
+    //       if (data.display_name) {
+    //         // Limit to city and country only
+    //         let locationName = data.display_name;
+    //         const parts = locationName.split(', ');
+    //         if (parts.length > 2) {
+    //           // Take city and country, skip detailed address
+    //           const city = parts[0];
+    //           const country = parts[parts.length - 1];
+    //           locationName = `${city}, ${country}`;
+    //         }
 
-            localStorage.setItem('userLocation', locationName);
+    //         localStorage.setItem('userLocation', locationName);
 
-            // Close modal immediately
-            closeModal();
-            showLocationSuccessTooltip();
+    //         // Close modal immediately
+    //         closeModal();
+    //         showLocationSuccessTooltip();
 
-            // Reload page to update the map with new location
-            setTimeout(() => {
-              location.reload();
-            }, 1000);
-          }
-        } catch (error) {
-          showLocationErrorTooltip('Could not get your current location. Please try searching manually.');
-        }
-      } else {
-        showLocationErrorTooltip('Geolocation is not supported by this browser.');
-      }
-    });
+    //         // Reload page to update the map with new location
+    //         setTimeout(() => {
+    //           location.reload();
+    //         }, 1000);
+    //       }
+    //     } catch (error) {
+    //       showLocationErrorTooltip('Could not get your current location. Please try searching manually.');
+    //     }
+    //   } else {
+    //     showLocationErrorTooltip('Geolocation is not supported by this browser.');
+    //   }
+    // });
   }
 
   // Logout functionality
@@ -740,16 +927,78 @@
   }
 
   // Initialize everything when DOM is ready
+  function checkHeic2AnyLibrary() {
+    if (typeof heic2any !== 'undefined' && heic2any) {
+      console.log('✅ HEIC2Any library is loaded and ready');
+      return true;
+    } else {
+      console.warn('⚠️ HEIC2Any library is not loaded');
+      return false;
+    }
+  }
+
+  function initializeImagePopup() {
+    const imagePopupModal = document.getElementById('image-popup-modal');
+    const imagePopupClose = document.getElementById('image-popup-close');
+    const imagePopupImg = document.getElementById('image-popup-img');
+    const imagePopupOverlay = imagePopupModal.querySelector('.image-popup-overlay');
+
+    // Close popup function
+    function closeImagePopup() {
+      imagePopupModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    // Open popup function
+    function openImagePopup(imageSrc) {
+      imagePopupImg.src = imageSrc;
+      imagePopupModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close button click
+    imagePopupClose.addEventListener('click', closeImagePopup);
+
+    // Overlay click to close
+    imagePopupOverlay.addEventListener('click', closeImagePopup);
+
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && imagePopupModal.classList.contains('show')) {
+        closeImagePopup();
+      }
+    });
+
+    // Make openImagePopup globally available
+    window.openImagePopup = openImagePopup;
+  }
+
   function initializeEverything() {
+    // Initialize core components first
     loadMap();
     initializeUserProfile();
     initializeLocation();
     initializeUserDropdown();
     initializeMyContextModal();
+    initializeMyReferralsModal();
     initializeLocationModal();
+    initializeImagePopup();
     initializeLogout();
     updateUserLevelBadge();
     initializeStickyUserSummary();
+    
+    // Initialize popups
+    initializeConfirmationPopup();
+    initializeReferralPopup();
+    initializeCommunityEmptyPopup();
+    initializeLevelsPopup();
+    initializeRoleAchievementPopup();
+    initializeHowOneThingsWorkPopup();
+    
+    // Check if HEIC2Any library is loaded after core initialization
+    setTimeout(() => {
+      checkHeic2AnyLibrary();
+    }, 1000); // Check after 1 second to allow library to load
   }
 
   // Initialize when DOM is ready
@@ -932,7 +1181,6 @@
   const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
   const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
   const API_CITIES = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_cities'
-  const API_COMMUNITY_CARD = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/nearly'
   const MAX_ATTEMPTS = 3;
   const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -1048,26 +1296,122 @@
   // Progress Bar and Levels System
   // Local levels - for current location progress
   const localLevels = [
-    { level: 1, name: "Visitor", xp: 0, description: "Just arrived in this place" },
-    { level: 2, name: "Local", xp: 50, description: "Getting familiar with the area" },
-    { level: 3, name: "Regular", xp: 150, description: "Becoming a regular here" },
-    { level: 4, name: "Insider", xp: 300, description: "You know the local secrets" },
-    { level: 5, name: "Native", xp: 500, description: "You're practically a local" },
-    { level: 6, name: "Ambassador", xp: 750, description: "Representing this place" },
-    { level: 7, name: "Guardian", xp: 1000, description: "Protecting this location" },
-    { level: 8, name: "Legend", xp: 1500, description: "A legend in this place" }
+    { 
+      level: 1, 
+      name: "Visitor", 
+      xp: 0, 
+      description: "Just arrived in this place",
+      requirements: { xp: 0, referrals: 0, customCards: 0, remixedCards: 0, places: 0, dailyThings: 0, localContext: 0, categoryBalance: 0 }
+    },
+    { 
+      level: 2, 
+      name: "Local", 
+      xp: 50, 
+      description: "Getting familiar with the area",
+      requirements: { xp: 50, referrals: 0, customCards: 0, remixedCards: 0, places: 0, dailyThings: 0, localContext: 0, categoryBalance: 0 }
+    },
+    { 
+      level: 3, 
+      name: "Regular", 
+      xp: 150, 
+      description: "Becoming a regular here",
+      requirements: { xp: 150, referrals: 0, customCards: 0, remixedCards: 0, places: 0, dailyThings: 0, localContext: 0, categoryBalance: 2 }
+    },
+    { 
+      level: 4, 
+      name: "Insider", 
+      xp: 300, 
+      description: "You know the local secrets",
+      requirements: { xp: 300, referrals: 0, customCards: 0, remixedCards: 0, places: 3, dailyThings: 2, localContext: 0, categoryBalance: 0 }
+    },
+    { 
+      level: 5, 
+      name: "Native", 
+      xp: 500, 
+      description: "You're practically a local",
+      requirements: { xp: 500, referrals: 0, customCards: 0, remixedCards: 0, places: 5, dailyThings: 3, localContext: 2, categoryBalance: 0 }
+    },
+    { 
+      level: 6, 
+      name: "Ambassador", 
+      xp: 750, 
+      description: "Representing this place",
+      requirements: { xp: 750, referrals: 0, customCards: 0, remixedCards: 0, places: 7, dailyThings: 5, localContext: 3, categoryBalance: 0 }
+    },
+    { 
+      level: 7, 
+      name: "Guardian", 
+      xp: 1000, 
+      description: "Protecting this location",
+      requirements: { xp: 1000, referrals: 2, customCards: 0, remixedCards: 0, places: 10, dailyThings: 7, localContext: 5, categoryBalance: 0 }
+    },
+    { 
+      level: 8, 
+      name: "Legend", 
+      xp: 3000, 
+      description: "A legend in this place",
+      requirements: { xp: 3000, referrals: 8, customCards: 3, remixedCards: 2, places: 25, dailyThings: 20, localContext: 15, categoryBalance: 3 }
+    }
   ];
 
   // Global levels - for overall progress across all locations
   const globalLevels = [
-    { level: 1, name: "Wanderer", xp: 0, description: "Starting your global journey" },
-    { level: 2, name: "Traveler", xp: 200, description: "Exploring multiple places" },
-    { level: 3, name: "Explorer", xp: 500, description: "Discovering new territories" },
-    { level: 4, name: "Adventurer", xp: 1000, description: "Seeking new adventures" },
-    { level: 5, name: "Pioneer", xp: 2000, description: "Leading exploration efforts" },
-    { level: 6, name: "Master", xp: 4000, description: "Master of exploration" },
-    { level: 7, name: "Legend", xp: 8000, description: "A global exploration legend" },
-    { level: 8, name: "Myth", xp: 15000, description: "The ultimate global explorer" }
+    { 
+      level: 1, 
+      name: "Wanderer", 
+      xp: 0, 
+      description: "Starting your global journey",
+      requirements: { xp: 0, referrals: 0, customCards: 0, remixedCards: 0, places: 0, dailyThings: 0, localContext: 0, categoryBalance: 0 }
+    },
+    { 
+      level: 2, 
+      name: "Traveler", 
+      xp: 200, 
+      description: "Exploring multiple places",
+      requirements: { xp: 200, referrals: 0, customCards: 0, remixedCards: 0, places: 0, dailyThings: 0, localContext: 0, categoryBalance: 0 }
+    },
+    { 
+      level: 3, 
+      name: "Explorer", 
+      xp: 500, 
+      description: "Discovering new territories",
+      requirements: { xp: 500, referrals: 0, customCards: 0, remixedCards: 0, places: 0, dailyThings: 0, localContext: 0, categoryBalance: 2 }
+    },
+    { 
+      level: 4, 
+      name: "Adventurer", 
+      xp: 1000, 
+      description: "Seeking new adventures",
+      requirements: { xp: 1000, referrals: 0, customCards: 0, remixedCards: 0, places: 5, dailyThings: 3, localContext: 0, categoryBalance: 0 }
+    },
+    { 
+      level: 5, 
+      name: "Pioneer", 
+      xp: 2000, 
+      description: "Leading exploration efforts",
+      requirements: { xp: 2000, referrals: 0, customCards: 0, remixedCards: 0, places: 8, dailyThings: 5, localContext: 3, categoryBalance: 0 }
+    },
+    { 
+      level: 6, 
+      name: "Master", 
+      xp: 4000, 
+      description: "Master of exploration",
+      requirements: { xp: 4000, referrals: 3, customCards: 0, remixedCards: 0, places: 12, dailyThings: 8, localContext: 5, categoryBalance: 0 }
+    },
+    { 
+      level: 7, 
+      name: "Legend", 
+      xp: 8000, 
+      description: "A global exploration legend",
+      requirements: { xp: 8000, referrals: 5, customCards: 2, remixedCards: 0, places: 15, dailyThings: 12, localContext: 8, categoryBalance: 0 }
+    },
+    { 
+      level: 8, 
+      name: "Myth", 
+      xp: 15000, 
+      description: "The ultimate global explorer",
+      requirements: { xp: 15000, referrals: 8, customCards: 3, remixedCards: 1, places: 20, dailyThings: 15, localContext: 10, categoryBalance: 0 }
+    }
   ];
 
   // Progress tracking for both tabs
@@ -1076,41 +1420,391 @@
   let currentLocalLevel = 1;
   let currentGlobalLevel = 1;
   let activeTab = 'local'; // Track which tab is currently active
+  
+  // Additional progress metrics
+  let userReferrals = 0; // Number of friends invited via referral link
+  let customCards = 0; // Number of custom cards created (not generated)
+  let remixedCards = 0; // Number of cards that have been remixed by others
+  
+  // Category tracking
+  let completedPlaces = 0; // Number of completed Places cards
+  let completedDailyThings = 0; // Number of completed Daily Things cards
+  let completedLocalContext = 0; // Number of completed Local Context cards
+  
+  // Detailed XP tracking
+  let savedCardsCount = 0; // Cards saved (5 XP each)
+  let cardsWithPhotos = 0; // Cards with photos (10 XP each)
+  let publishedCards = 0; // Cards made public (20 XP each)
+  let completedCardsCount = 0; // Cards completed (15 XP each)
+  let publishedCompletedCards = 0; // Completed cards made public (+10 XP bonus)
+  
+  // Role achievement tracking
+  let lastLocalLevel = 1;
+  let lastGlobalLevel = 1;
+
+  // Update additional progress metrics
+  function updateProgressMetrics() {
+    // Count completed cards by category
+    completedPlaces = completedCards.filter(card => card.category === 'places').length;
+    completedDailyThings = completedCards.filter(card => card.category === 'daily').length;
+    completedLocalContext = completedCards.filter(card => card.category === 'local').length;
+    
+    // Count detailed XP metrics
+    savedCardsCount = savedCards.length;
+    cardsWithPhotos = completedCards.filter(card => card.photo && card.photo !== '').length;
+    publishedCards = completedCards.filter(card => card.published).length;
+    completedCardsCount = completedCards.length;
+    publishedCompletedCards = completedCards.filter(card => card.published && card.completed).length;
+    
+    // In a real app, these would come from API calls
+    // For demo purposes, we'll simulate some data
+    userReferrals = Math.floor(Math.random() * 3); // Simulate 0-2 referrals (reduced for later roles)
+    customCards = Math.floor(Math.random() * 2); // Simulate 0-1 custom cards
+    remixedCards = Math.floor(Math.random() * 1); // Simulate 0-1 remixed cards
+    
+    // Update referral count in UI
+    const referralCountElement = document.getElementById('referral-count');
+    if (referralCountElement) {
+      referralCountElement.textContent = userReferrals;
+    }
+  }
+
+  // Show role achievement popup
+  function showRoleAchievementPopup(roleData, tabType) {
+    // Show popup only for local roles
+    if (tabType !== 'local') return;
+    
+    const popup = document.getElementById('role-achievement-popup');
+    const avatar = document.getElementById('achievement-avatar');
+    const roleName = document.getElementById('achievement-role-name');
+    const roleBadge = document.getElementById('achievement-role-badge');
+    const dynamicVisual = document.getElementById('achievement-dynamic-visual');
+    
+    if (!popup || !avatar || !roleName || !roleBadge || !dynamicVisual) return;
+    
+    // Update avatar
+    const userAvatar = document.getElementById('user-avatar');
+    if (userAvatar && userAvatar.src) {
+      avatar.src = userAvatar.src;
+    }
+    
+    // Update role information
+    roleName.textContent = roleData.name;
+    
+    // Apply role-specific color to badge
+    const localColors = {
+      1: '#9CA3AF', 2: '#4ADE80', 3: '#22C55E', 4: '#0EA5E9',
+      5: '#2563EB', 6: '#7C3AED', 7: '#D97706', 8: '#EAB308'
+    };
+    
+    const roleColor = localColors[roleData.level] || '#B1E530';
+    roleBadge.style.color = roleColor;
+    roleBadge.style.background = `${roleColor}20`;
+    roleBadge.style.borderColor = `${roleColor}33`;
+    
+    // Update dynamic visual based on role level
+    const localVisuals = {
+      1: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125978b3f6756bdd1344c_01-Visitor.svg', // Visitor
+      2: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c12597cae559b96926b1f5_02-Local.svg', // Local
+      3: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125976b32833c22afd1b9_03-Regular.svg', // Regular
+      4: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125973fef6ffd2269b985_04-Insider.svg', // Insider
+      5: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125979527a790ca7de1d6_05-Native.svg', // Native
+      6: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c1259711585667f0bde54c_06-Ambassador.svg', // Ambassador
+      7: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c12597ae8a938e130dd2a2_07-Guardian.svg', // Guardian
+      8: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c12597f36fa951c2bfc1d6_09-Legend.svg'  // Legend
+    };
+    
+    const visualUrl = localVisuals[roleData.level] || 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c125978b3f6756bdd1344c_01-Visitor.svg';
+    dynamicVisual.src = visualUrl;
+    
+    // Show popup
+    popup.classList.add('show');
+  }
+
+  // Hide role achievement popup
+  function hideRoleAchievementPopup() {
+    const popup = document.getElementById('role-achievement-popup');
+    if (popup) {
+      popup.classList.remove('show');
+    }
+  }
+
+  // Check for role achievements
+  function checkRoleAchievements() {
+    const progress = calculateUserXP();
+    const newLocalLevel = progress.local.level;
+    const newGlobalLevel = progress.global.level;
+    
+    // Check for local role achievement
+    if (newLocalLevel > lastLocalLevel) {
+      const roleData = localLevels.find(level => level.level === newLocalLevel);
+      if (roleData) {
+        showRoleAchievementPopup(roleData, 'local');
+      }
+      lastLocalLevel = newLocalLevel;
+    }
+    
+    // Check for global role achievement
+    if (newGlobalLevel > lastGlobalLevel) {
+      const roleData = globalLevels.find(level => level.level === newGlobalLevel);
+      if (roleData) {
+        showRoleAchievementPopup(roleData, 'global');
+      }
+      lastGlobalLevel = newGlobalLevel;
+    }
+  }
+
+  // Test function to show role achievement popup (for demo purposes)
+  function testRoleAchievementPopup() {
+    const testRoleData = {
+      level: 3,
+      name: "Regular",
+      description: "Becoming a regular here"
+    };
+    showRoleAchievementPopup(testRoleData, 'local');
+  }
+
+  // Make test function available globally for demo
+  window.testRoleAchievementPopup = testRoleAchievementPopup;
+
+
+  // Test function to simulate different XP levels for demo
+  function testXPProgress() {
+    // Simulate different XP levels to test progress display
+    localXP = 75; // Between Local (50) and Regular (150)
+    globalXP = 350; // Between Traveler (200) and Explorer (500)
+    updateUserLevelBadge();
+    
+    // Re-initialize levels popup to see changes
+    const levelsPopup = document.getElementById('levels-popup');
+    if (levelsPopup) {
+      levelsPopup.classList.add('show');
+    }
+  }
+
+  // Show XP gain notification
+  function showXPGainNotification(xpAmount, action) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'xp-gain-notification';
+    notification.innerHTML = `
+      <div class="xp-gain-content">
+        <span class="xp-gain-icon">⚡</span>
+        <span class="xp-gain-text">+${xpAmount} XP</span>
+        <span class="xp-gain-action">${action}</span>
+      </div>
+    `;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 100);
+    
+    // Remove after animation
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }, 2000);
+  }
+
+  // Award XP for specific actions
+  function awardXP(action, amount) {
+    // Update progress metrics first
+    updateProgressMetrics();
+    
+    // Show notification
+    showXPGainNotification(amount, action);
+    
+    // Update UI
+    updateUserLevelBadge();
+    checkRoleAchievements();
+  }
+
+  // Test function for XP system
+  function testXPSystem() {
+    // Test different XP actions
+    awardXP('Saved card', 5);
+    
+    setTimeout(() => {
+      awardXP('Added photo', 10);
+    }, 500);
+    
+    setTimeout(() => {
+      awardXP('Made public', 20);
+    }, 1000);
+    
+    setTimeout(() => {
+      awardXP('Completed card', 15);
+    }, 1500);
+    
+    setTimeout(() => {
+      awardXP('Published completed', 10);
+    }, 2000);
+  }
+
+  // Test function for tooltips
+  function testTooltips() {
+    // Simulate some progress to see tooltips
+    completedPlaces = 2;
+    completedDailyThings = 1;
+    completedLocalContext = 0;
+    userReferrals = 1;
+    customCards = 0;
+    remixedCards = 0;
+    
+    // Update and show levels popup
+    updateProgressMetrics();
+    const levelsPopup = document.getElementById('levels-popup');
+    if (levelsPopup) {
+      levelsPopup.classList.add('show');
+    }
+  }
+
+  // Smart tooltip positioning to prevent clipping
+  function setupSmartTooltips() {
+    const chips = document.querySelectorAll('.requirement-chip[data-tooltip]');
+    
+    chips.forEach(chip => {
+      chip.addEventListener('mouseenter', function() {
+        const popup = document.getElementById('levels-popup');
+        if (!popup) return;
+        
+        // Get positions
+        const chipRect = this.getBoundingClientRect();
+        const popupRect = popup.getBoundingClientRect();
+        
+        // Estimate tooltip width based on content
+        const tooltipText = this.getAttribute('data-tooltip');
+        const estimatedWidth = Math.min(tooltipText.length * 7 + 32, 300); // Rough estimation
+        
+        // Calculate tooltip position if centered
+        const chipCenterX = chipRect.left + (chipRect.width / 2);
+        const tooltipLeft = chipCenterX - (estimatedWidth / 2);
+        const tooltipRight = chipCenterX + (estimatedWidth / 2);
+        
+        // Check boundaries with padding
+        const padding = 20;
+        const popupLeft = popupRect.left + padding;
+        const popupRight = popupRect.right - padding;
+        
+        let transformValue = 'translateX(-50%)';
+        
+        if (tooltipLeft < popupLeft) {
+          // Too far left - align to left edge of popup
+          const offset = popupLeft - chipCenterX;
+          transformValue = `translateX(calc(-50% + ${offset}px))`;
+        } else if (tooltipRight > popupRight) {
+          // Too far right - align to right edge of popup
+          const offset = chipCenterX - popupRight;
+          transformValue = `translateX(calc(-50% - ${offset}px))`;
+        }
+        
+        this.style.setProperty('--tooltip-transform', transformValue);
+      });
+    });
+  }
+
+  // Make test functions available globally for demo
+  window.testXPProgress = testXPProgress;
+  window.testXPSystem = testXPSystem;
+  window.testTooltips = testTooltips;
 
   // Calculate user XP based on activities
   function calculateUserXP() {
-    const savedCount = savedCards.length;
-    const completedCount = completedCards.length;
-    const publicCount = completedCards.filter(card => card.published).length;
-
+    // Detailed XP calculation based on specific actions
+    // Save cards: 5 XP each
+    const saveXP = savedCardsCount * 5;
+    
+    // Cards with photos: 10 XP each
+    const photoXP = cardsWithPhotos * 10;
+    
+    // Published cards: 20 XP each
+    const publishXP = publishedCards * 20;
+    
+    // Completed cards: 15 XP each
+    const completeXP = completedCardsCount * 15;
+    
+    // Published completed cards: +10 XP bonus
+    const publishedCompleteBonus = publishedCompletedCards * 10;
+    
+    // Total XP calculation
+    const totalXP = saveXP + photoXP + publishXP + completeXP + publishedCompleteBonus;
 
     // Local XP: Only current location activities (simplified for demo)
     // In real app, this would filter by current location
-    localXP = Math.floor((savedCount * 5) + (completedCount * 15) + (publicCount * 30));
+    localXP = Math.floor(totalXP * 0.7); // 70% for local progress
 
     // Global XP: All activities across all locations
-    globalXP = (savedCount * 10) + (completedCount * 25) + (publicCount * 50);
+    globalXP = totalXP; // 100% for global progress
 
-    // Find current local level - find the highest level user has achieved
+    // Find current local level - check all requirements, not just XP
     currentLocalLevel = 1; // Default to level 1
     for (let i = 0; i < localLevels.length; i++) {
-      if (localXP >= localLevels[i].xp) {
-        currentLocalLevel = localLevels[i].level;
+      const level = localLevels[i];
+      const req = level.requirements;
+      
+      // Check category balance requirement
+      let categoryBalanceMet = true;
+      if (req.categoryBalance > 0) {
+        const categoriesWithProgress = [
+          completedPlaces > 0,
+          completedDailyThings > 0,
+          completedLocalContext > 0
+        ].filter(Boolean).length;
+        categoryBalanceMet = categoriesWithProgress >= req.categoryBalance;
+      }
+      
+      if (localXP >= req.xp && 
+          userReferrals >= req.referrals &&
+          customCards >= req.customCards &&
+          remixedCards >= req.remixedCards &&
+          completedPlaces >= req.places &&
+          completedDailyThings >= req.dailyThings &&
+          completedLocalContext >= req.localContext &&
+          categoryBalanceMet) {
+        currentLocalLevel = level.level;
       } else {
         break;
       }
     }
 
-    // Find current global level - find the highest level user has achieved
+    // Find current global level - check all requirements, not just XP
     currentGlobalLevel = 1; // Default to level 1
     for (let i = 0; i < globalLevels.length; i++) {
-      if (globalXP >= globalLevels[i].xp) {
-        currentGlobalLevel = globalLevels[i].level;
+      const level = globalLevels[i];
+      const req = level.requirements;
+      
+      // Check category balance requirement
+      let categoryBalanceMet = true;
+      if (req.categoryBalance > 0) {
+        const categoriesWithProgress = [
+          completedPlaces > 0,
+          completedDailyThings > 0,
+          completedLocalContext > 0
+        ].filter(Boolean).length;
+        categoryBalanceMet = categoriesWithProgress >= req.categoryBalance;
+      }
+      
+      if (globalXP >= req.xp && 
+          userReferrals >= req.referrals &&
+          customCards >= req.customCards &&
+          remixedCards >= req.remixedCards &&
+          completedPlaces >= req.places &&
+          completedDailyThings >= req.dailyThings &&
+          completedLocalContext >= req.localContext &&
+          categoryBalanceMet) {
+        currentGlobalLevel = level.level;
       } else {
         break;
       }
     }
-
 
     return { 
       local: { xp: localXP, level: currentLocalLevel },
@@ -1338,6 +2032,92 @@
     }
   }
 
+
+  // Create requirement chips for each level
+  function createRequirementChips(requirements, levelNumber, tabType = 'local') {
+    if (levelNumber === 1) return ''; // First level has no requirements
+    
+    const currentXP = tabType === 'local' ? localXP : globalXP;
+    const chips = [];
+    
+    // XP requirement
+    if (requirements.xp > 0) {
+      const isCompleted = currentXP >= requirements.xp;
+      const icon = isCompleted ? 
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757117bb751fdfcb924_done-requirments.svg" alt="✓" class="requirement-icon">` :
+        '';
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}">${icon}${requirements.xp} XP</span>`);
+    }
+    
+    // Category balance requirement
+    if (requirements.categoryBalance > 0) {
+      const categoriesWithProgress = [
+        completedPlaces > 0,
+        completedDailyThings > 0,
+        completedLocalContext > 0
+      ].filter(Boolean).length;
+      const isCompleted = categoriesWithProgress >= requirements.categoryBalance;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Complete cards from ${requirements.categoryBalance} different categories">${requirements.categoryBalance} categories</span>`);
+    }
+    
+    // Places requirement
+    if (requirements.places > 0) {
+      const isCompleted = completedPlaces >= requirements.places;
+      const icon = isCompleted ? 
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757117bb751fdfcb924_done-requirments.svg" alt="✓" class="requirement-icon">` :
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c697571bc52240d6cc686f_places-requirments.svg" alt="📍" class="requirement-icon">`;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Complete ${requirements.places} place-related cards">${icon} ${requirements.places} places</span>`);
+    }
+    
+    // Daily Things requirement
+    if (requirements.dailyThings > 0) {
+      const isCompleted = completedDailyThings >= requirements.dailyThings;
+      const icon = isCompleted ? 
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757117bb751fdfcb924_done-requirments.svg" alt="✓" class="requirement-icon">` :
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c6975708a0af94ec5eee35_daily-requirments.svg" alt="📅" class="requirement-icon">`;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Complete ${requirements.dailyThings} daily activity cards">${icon} ${requirements.dailyThings} daily things</span>`);
+    }
+    
+    // Local Context requirement
+    if (requirements.localContext > 0) {
+      const isCompleted = completedLocalContext >= requirements.localContext;
+      const icon = isCompleted ? 
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757117bb751fdfcb924_done-requirments.svg" alt="✓" class="requirement-icon">` :
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757497f18f550f1d61e_context-requirments.svg" alt="🏠" class="requirement-icon">`;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Complete ${requirements.localContext} local context cards">${icon} ${requirements.localContext} local context</span>`);
+    }
+    
+    // Referrals requirement
+    if (requirements.referrals > 0) {
+      const isCompleted = userReferrals >= requirements.referrals;
+      const icon = isCompleted ? 
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757117bb751fdfcb924_done-requirments.svg" alt="✓" class="requirement-icon">` :
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c698a131719af3c7c747ed_refferals-requirments.svg" alt="👥" class="requirement-icon">`;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Invite ${requirements.referrals} friends to join the platform">${icon} ${requirements.referrals} referrals</span>`);
+    }
+    
+    // Custom cards requirement
+    if (requirements.customCards > 0) {
+      const isCompleted = customCards >= requirements.customCards;
+      const icon = isCompleted ? 
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c69757117bb751fdfcb924_done-requirments.svg" alt="✓" class="requirement-icon">` :
+        `<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c698a0b0931ec8d45fcd8a_custom-requirments.svg" alt="✨" class="requirement-icon">`;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Create ${requirements.customCards} your own custom cards">${icon} ${requirements.customCards} custom cards</span>`);
+    }
+    
+    // Remixed cards requirement
+    if (requirements.remixedCards > 0) {
+      const isCompleted = remixedCards >= requirements.remixedCards;
+      chips.push(`<span class="requirement-chip ${isCompleted ? 'completed' : 'pending'}" data-tooltip="Have ${requirements.remixedCards} of your cards remixed by other users">🔄 ${requirements.remixedCards} remixed cards</span>`);
+    }
+    
+    if (chips.length === 0) return '';
+    
+    return `<div class="requirement-chips">
+      ${chips.join('')}
+    </div>`;
+  }
+
   // Populate levels list based on active tab
   function populateLevelsList(tabType) {
     const levelsList = document.getElementById('levels-list');
@@ -1404,6 +2184,10 @@
         borderColor = '#ccc';
       }
 
+        // Create requirement chips
+        const requirements = level.requirements;
+        const requirementChips = createRequirementChips(requirements, level.level, tabType);
+        
         levelItem.innerHTML = `
         <div class="level-avatar" style="background: ${backgroundColor}; border-color: ${borderColor}; color: ${level.level < currentLevel ? '#fff' : level.level === currentLevel ? '#fff' : '#666'}">
             ${level.level}
@@ -1411,8 +2195,8 @@
           <div class="level-details">
             <div class="level-name">${level.name}</div>
             <div class="level-description">${level.description}</div>
+            ${requirementChips}
           </div>
-          <div class="level-xp">${xpRequired} XP</div>
         `;
 
       // Apply background and border colors for current level
@@ -1424,6 +2208,11 @@
 
         levelsList.appendChild(levelItem);
       });
+      
+      // Setup smart tooltips for new elements
+      setTimeout(() => {
+        setupSmartTooltips();
+      }, 50);
   }
 
   // Initialize levels popup
@@ -1435,10 +2224,37 @@
       return;
     }
 
+    // Update progress metrics first
+    updateProgressMetrics();
+    
     // Initialize tabs and populate levels list
     initializeProgressTabs();
     populateLevelsList('local'); // Start with local tab
     updateProgressDisplay('local'); // Initialize with local tab
+    
+    // Setup smart tooltips after a short delay to ensure DOM is ready
+    setTimeout(() => {
+      setupSmartTooltips();
+    }, 100);
+
+    // Scroll shadow logic
+    const scrollableContent = levelsPopup.querySelector('.levels-scrollable-content');
+    if (scrollableContent) {
+      function handleScrollShadow() {
+        const tabDescriptionContainer = document.querySelector('.tab-description-container');
+        if (tabDescriptionContainer) {
+          if (scrollableContent.scrollTop > 0) {
+            tabDescriptionContainer.classList.add('scrolled');
+          } else {
+            tabDescriptionContainer.classList.remove('scrolled');
+          }
+        }
+      }
+
+      scrollableContent.addEventListener('scroll', handleScrollShadow);
+      // Initial check
+      handleScrollShadow();
+    }
 
 
     // Event listeners
@@ -1454,10 +2270,40 @@
 
   }
 
+  // Initialize role achievement popup
+  function initializeRoleAchievementPopup() {
+    const popup = document.getElementById('role-achievement-popup');
+    const closeBtn = document.getElementById('achievement-close-btn');
+    const viewProgressBtn = document.getElementById('achievement-view-progress-btn');
+    
+    if (!popup || !closeBtn || !viewProgressBtn) return;
+    
+    // Close button handler
+    closeBtn.addEventListener('click', hideRoleAchievementPopup);
+    
+    // View progress button handler
+    viewProgressBtn.addEventListener('click', () => {
+      hideRoleAchievementPopup();
+      // Open levels popup
+      const levelsPopup = document.getElementById('levels-popup');
+      if (levelsPopup) {
+        levelsPopup.classList.add('show');
+      }
+    });
+    
+    // Close on overlay click
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup || e.target.classList.contains('role-achievement-overlay')) {
+        hideRoleAchievementPopup();
+      }
+    });
+  }
+
   // Initialize progress bar system
   function initializeProgressBar() {
 
     initializeLevelsPopup();
+    initializeRoleAchievementPopup();
 
 
 
@@ -1483,10 +2329,16 @@
 
     loadSavedUserCards = function() {
       originalLoadSavedUserCards.call(this);
+      updateProgressMetrics();
+      updateUserLevelBadge();
+      checkRoleAchievements();
     };
 
     loadCompletedUserCards = function() {
       originalLoadCompletedUserCards.call(this);
+      updateProgressMetrics();
+      updateUserLevelBadge();
+      checkRoleAchievements();
     };
   }
   // PROGRESS BAR COMPONENT JS - END
@@ -1556,6 +2408,9 @@
             hideConfirmationPopup();
             // Update UI without reloading page
             renderCardList(currentTypeFilter, currentCategoryFilter);
+          } else if (action === 'delete') {
+            deleteCardFromServer(cardId);
+            hideConfirmationPopup();
           }
         } else {
         }
@@ -1650,6 +2505,16 @@
       .catch(err => {
         btn.classList.remove('loading');
         stopLoadingAnimation();
+        
+        // Show fallback card on error
+        currentSuggestion = {
+          id: 'fallback-' + Date.now(),
+          title: 'No Tip This Time',
+          description: 'Sometimes even the best advice needs a rest. Come back later.',
+          category: 'fallback'
+        };
+        
+        showPopup(currentSuggestion);
       });
   });
 
@@ -1682,7 +2547,7 @@
     // Add expiry timestamp with default image
 //      savedCards.unshift({
 //        ...currentSuggestion,
-//        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif',
+//        imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif',
 //        expiresAt: Date.now() + EXPIRY_MS
 //      });
 
@@ -1783,6 +2648,51 @@
     const categoryClass = category.toLowerCase().replace(/\s+/g, '-');
     categoryPill.className = 'popup-category-pill ' + categoryClass;
 
+    // Handle fallback cards specially
+    const isFallback = card.category === 'fallback';
+    const popupButtons = document.querySelector('.popup-buttons');
+    const skipBtn = document.getElementById('popup-skip');
+    const saveBtn = document.getElementById('popup-save');
+    
+    if (isFallback) {
+      // Hide Skip/Save buttons for fallback cards
+      skipBtn.style.display = 'none';
+      saveBtn.style.display = 'none';
+      
+      // Create or update fallback button
+      let fallbackBtn = document.getElementById('popup-fallback-btn');
+      if (!fallbackBtn) {
+        fallbackBtn = document.createElement('button');
+        fallbackBtn.id = 'popup-fallback-btn';
+        fallbackBtn.className = 'popup-fallback-btn';
+        fallbackBtn.innerHTML = `
+          <span>Try Again</span>
+        `;
+        popupButtons.appendChild(fallbackBtn);
+        
+        // Add click handler for fallback button
+        fallbackBtn.addEventListener('click', () => {
+          hidePopup();
+          // Automatically trigger new card generation
+          const oneThingBtn = document.getElementById('one-thing-btn');
+          if (oneThingBtn) {
+            oneThingBtn.click();
+          }
+        });
+      }
+      fallbackBtn.style.display = 'flex';
+    } else {
+      // Show normal buttons for regular cards
+      skipBtn.style.display = 'flex';
+      saveBtn.style.display = 'flex';
+      
+      // Hide fallback button if it exists
+      const fallbackBtn = document.getElementById('popup-fallback-btn');
+      if (fallbackBtn) {
+        fallbackBtn.style.display = 'none';
+      }
+    }
+
     // Ensure popup is positioned correctly
     const popupElement = document.getElementById('one-thing-popup');
     popupElement.style.position = 'fixed';
@@ -1794,6 +2704,17 @@
 
     // Show popup with animation
     popup.classList.add('show');
+    
+    // Add click outside handler for fallback cards only
+    if (isFallback) {
+      const handleClickOutside = (e) => {
+        if (e.target === popup) {
+          hidePopup();
+          popup.removeEventListener('click', handleClickOutside);
+        }
+      };
+      popup.addEventListener('click', handleClickOutside);
+    }
   }
 
   function hidePopup() {
@@ -1812,19 +2733,21 @@
       'DAILY': 'Daily Things',
       'LOCAL': 'Local Context',
       'DAILY-THINGS': 'Daily Things',
-      'LOCAL-CONTEXT': 'Local Context'
+      'LOCAL-CONTEXT': 'Local Context',
+      'fallback': 'Wooops'
     };
     return categories[category] || category || 'Places';
   }
 
   function getCategoryIcon(category) {
     const icons = {
-      'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92fd867e721bb77eeda_places-wc.avif',
-      'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92a8316dd46343eceb7_daily-things-wc.avif',
-      'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92c7d59117cf84b0aac_local-context-wc.avif',
-      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92a8316dd46343eceb7_daily-things-wc.avif',
-      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92fd867e721bb77eeda_places-wc.avif',
-      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68baa92c7d59117cf84b0aac_local-context-wc.avif'
+      'places': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017194725f4b9935fd0_b3b5a752b7759f16d1f0153fc3ab73bb_places-wc.avif',
+      'daily': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e0175e67b782216cac03_daily-things-wc.avif',
+      'local': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017b95895d194199d31_local-context-wc.avif',
+      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e0175e67b782216cac03_daily-things-wc.avif',
+      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017194725f4b9935fd0_b3b5a752b7759f16d1f0153fc3ab73bb_places-wc.avif',
+      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017b95895d194199d31_local-context-wc.avif',
+      'fallback': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e4096042d5b1882cd74e_fallback-wc.avif'
     };
     return icons[category] || icons['places'];
   }
@@ -2054,6 +2977,7 @@
     document.getElementById('confirmation-popup').classList.remove('show');
     delete document.getElementById('confirmation-popup').dataset.cardId;
     delete document.getElementById('confirmation-popup').dataset.action;
+    restoreBodyScroll();
   }
 
   // Global functions for empty state buttons
@@ -2065,16 +2989,31 @@
     });
   }
 
+  // Functions to prevent body scroll when popup is open
+  function preventBodyScroll() {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+  }
+
+  function restoreBodyScroll() {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+  }
+
   function showReferralPopup() {
     const userId = ensureUserId();
     const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
 
     document.getElementById('referral-code').textContent = referralCode;
     document.getElementById('referral-popup').classList.add('show');
+    preventBodyScroll();
   }
 
   function hideReferralPopup() {
     document.getElementById('referral-popup').classList.remove('show');
+    restoreBodyScroll();
   }
 
   function copyReferralLink() {
@@ -2084,12 +3023,12 @@
 
     navigator.clipboard.writeText(fullLink).then(() => {
       const copyBtn = document.getElementById('copy-referral-btn');
-      copyBtn.textContent = 'Copied!';
-      copyBtn.classList.add('copied');
+      copyBtn.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c456ad0331f5ca11d27c0f_check.svg" alt="Copied" width="24" height="24">';
+      copyBtn.style.background = '#B1E530';
 
       setTimeout(() => {
-        copyBtn.textContent = 'Copy';
-        copyBtn.classList.remove('copied');
+        copyBtn.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4522bf8804bd3b586530a_copy-06.svg" alt="Copy" width="24" height="24">';
+        copyBtn.style.background = 'transparent';
       }, 2000);
     }).catch(err => {
       showCopyErrorTooltip();
@@ -2102,10 +3041,12 @@
 
     document.getElementById('community-referral-code').textContent = referralCode;
     document.getElementById('community-empty-popup').classList.add('show');
+    preventBodyScroll();
   }
 
   function hideCommunityEmptyPopup() {
     document.getElementById('community-empty-popup').classList.remove('show');
+    restoreBodyScroll();
   }
 
   function copyCommunityReferralLink() {
@@ -2115,12 +3056,12 @@
 
     navigator.clipboard.writeText(fullLink).then(() => {
       const copyBtn = document.getElementById('copy-community-referral-btn');
-      copyBtn.textContent = 'Copied!';
-      copyBtn.classList.add('copied');
+      copyBtn.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c456ad0331f5ca11d27c0f_check.svg" alt="Copied" width="24" height="24">';
+      copyBtn.style.background = '#B1E530';
 
       setTimeout(() => {
-        copyBtn.textContent = 'Copy';
-        copyBtn.classList.remove('copied');
+        copyBtn.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4522bf8804bd3b586530a_copy-06.svg" alt="Copy" width="24" height="24">';
+        copyBtn.style.background = 'transparent';
       }, 2000);
     }).catch(err => {
       showCopyErrorTooltip();
@@ -2142,10 +3083,29 @@
     card.published = true;
     card.published_at = Date.now();
     
-    // Add to publicCards array at the beginning
+    // Get current user info for author display
+    const userEmail = localStorage.getItem('userEmail') || 'User';
+    const userAvatar = localStorage.getItem('userAvatar') || '';
+    let userName = localStorage.getItem('userName');
+    
+    // Fallback: try to get name from DOM if not in localStorage
+    if (!userName) {
+      const userMenuName = document.getElementById('user-menu-name');
+      if (userMenuName && userMenuName.textContent) {
+        userName = userMenuName.textContent;
+        localStorage.setItem('userName', userName);
+      } else {
+        userName = userEmail.split('@')[0] || 'User';
+      }
+    }
+    
+    // Add to publicCards array at the beginning with author info
     const publicCard = {
       ...card,
-      type: 'community'
+      type: 'community',
+      author_name: userName,
+      author_avatar: userAvatar,
+      user_name: userName
     };
     publicCards.unshift(publicCard);
     
@@ -2250,10 +3210,29 @@
             // Add card to publicCards if it's not already there
             const existingPublicCard = publicCards.find(pc => pc.one_thing_user_card_id == requestBody.one_thing_user_card_id);
             if (!existingPublicCard && cardToUpdate) {
+              // Get current user info for author display
+              const userEmail = localStorage.getItem('userEmail') || 'User';
+              const userAvatar = localStorage.getItem('userAvatar') || '';
+              let userName = localStorage.getItem('userName');
+              
+              // Fallback: try to get name from DOM if not in localStorage
+              if (!userName) {
+                const userMenuName = document.getElementById('user-menu-name');
+                if (userMenuName && userMenuName.textContent) {
+                  userName = userMenuName.textContent;
+                  localStorage.setItem('userName', userName);
+                } else {
+                  userName = userEmail.split('@')[0] || 'User';
+                }
+              }
+              
               const publicCard = {
                 ...cardToUpdate,
                 type: 'community',
-                published_at: Date.now()
+                published_at: Date.now(),
+                author_name: userName,
+                author_avatar: userAvatar,
+                user_name: userName
               };
               publicCards.unshift(publicCard); // Add to beginning of array
             }
@@ -2351,24 +3330,47 @@
           body: formData
       })
      .then(response => {
+       if (!response.ok) {
+         throw new Error(`HTTP error! status: ${response.status}`);
+       }
        return response.json();
      })
      .then(data => {
+       if (!data.path) {
+         throw new Error('No image path returned from server');
+       }
        const imagePath = data.path;
        return imagePath;
      })
       .catch(error => {
+        console.error('Upload error:', error);
+        throw error; // Re-throw to be caught by the calling function
       });
 };
 
-  function renderCardList(filter = 'all', categoryFilter = 'all') {
-    // Add fade out effect
-    cardList.style.opacity = '0.7';
-    cardList.style.transform = 'scale(0.98)';
-    cardList.style.transition = 'all 0.2s ease';
+  function getGradientForCategory(category) {
+    const gradients = {
+      'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/687245da801bfd9b1f426970_daily-gradient.svg',
+      'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/687223f28a440e377b116948_places-gradient.svg',
+      'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/687245cfc59498b19f5f84d4_context-gradient.svg',
+      // Fallback for different formats
+      'DAILY': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/687245da801bfd9b1f426970_daily-gradient.svg',
+      'CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/687245cfc59498b19f5f84d4_context-gradient.svg'
+    };
+    const gradientUrl = gradients[category] || gradients['PLACES'];
+    console.log(`🎨 Gradient for category "${category}": ${gradientUrl}`);
+    return gradientUrl;
+  }
 
-    setTimeout(() => {
-      cardList.innerHTML = '';
+  function renderCardList(filter = 'all', categoryFilter = 'all') {
+    // Use requestAnimationFrame for smoother transitions
+    requestAnimationFrame(() => {
+      cardList.style.opacity = '0.7';
+      cardList.style.transform = 'scale(0.98)';
+      cardList.style.transition = 'all 0.15s ease';
+
+      setTimeout(() => {
+        cardList.innerHTML = '';
       // Remove expired cards
       const now = Date.now();
       savedCards = savedCards.filter(card => card.expiresAt > now);
@@ -2539,8 +3541,8 @@
           imageHtml = `
       <div class="card-image-placeholder">
         <img src="${card.imageSrc}" alt="Card image" class="${isDefaultImage ? 'add-photo-icon' : 'uploaded-image'}" style="display: ${isDefaultImage ? 'none' : 'block'}" data-card-id="${card.id}"
-             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'; this.className='add-photo-icon'; this.style.display='block'; this.nextElementSibling.style.display='none';">
-        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif"
+             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif'; this.className='add-photo-icon'; this.style.display='block'; this.nextElementSibling.style.display='none';">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif"
              alt="Add photo"
              class="add-photo-icon"
              style="display: ${isDefaultImage ? 'block' : 'none'}"
@@ -2548,23 +3550,56 @@
         <input type="file" accept="image/*,.heic,.heif" data-card-id="${card.id}">
         <div class="image-upload-loader" data-card-id="${card.id}">
           <div class="spinner"></div>
-          <div class="loading-text">Uploading image...</div>
+          <div class="loading-text"></div>
         </div>
       </div>`;
         } else if (card.type === 'completed') {
-          // For completed cards, show static image only
+          // For completed cards, show static image with gradient background
+          const gradientUrl = getGradientForCategory(card.category);
           imageHtml = `
       <div class="card-image-placeholder">
+        <div class="card-gradient-background" style="background-image: url('${gradientUrl}');"></div>
         <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}"
-             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'">
+             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif'">
       </div>`;
         } else {
-          // For community cards, show static image
+          // For community cards, show static image with gradient background
+          const gradientUrl = getGradientForCategory(card.category);
           imageHtml = `
       <div class="card-image-placeholder">
+        <div class="card-gradient-background" style="background-image: url('${gradientUrl}');"></div>
         <img src="${card.imageSrc}" alt="Card image" class="uploaded-image" style="display: block;" data-card-id="${card.id}"
-             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif'">
+             onerror="this.src='https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif'">
       </div>`;
+        }
+
+        // Add more menu for saved and completed cards
+        let moreMenuHtml = '';
+        if (card.type === 'saved' || card.type === 'completed') {
+          moreMenuHtml = `
+        <div class="card-more-menu">
+          <button class="card-more-btn" data-card-id="${card.id}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="2" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+              <circle cx="14" cy="8" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="card-dropdown-menu" id="dropdown-${card.id}">
+            <div class="card-dropdown-item" data-action="share" data-card-id="${card.id}">
+              <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ca8ce2c3104eb546fd2396_ot-share-icon.svg" alt="Share" width="16" height="16">
+              Share this Thing
+            </div>
+            <div class="card-dropdown-item delete" data-action="delete" data-card-id="${card.id}">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 4H14M5.33333 4V2.66667C5.33333 2.31305 5.47381 1.97391 5.72386 1.72386C5.97391 1.47381 6.31305 1.33333 6.66667 1.33333H9.33333C9.68696 1.33333 10.0261 1.47381 10.2761 1.72386C10.5262 1.97391 10.6667 2.31305 10.6667 2.66667V4M12.6667 4V13.3333C12.6667 13.687 12.5262 14.0261 12.2761 14.2761C12.0261 14.5262 11.687 14.6667 11.3333 14.6667H4.66667C4.31305 14.6667 3.97391 14.5262 3.72386 14.2761C3.47381 14.0261 3.33333 13.687 3.33333 13.3333V4H12.6667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6.66667 7.33333V11.3333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.33333 7.33333V11.3333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Delete this Thing
+            </div>
+          </div>
+        </div>`;
         }
 
         cardEl.innerHTML = `
@@ -2575,6 +3610,7 @@
       ${actionHtml}
       ${toggleHtml}
       ${authorHtml}
+      ${moreMenuHtml}
     `;
         // Add image upload functionality only for saved cards
         if (card.type === 'saved') {
@@ -2598,6 +3634,14 @@
           input.addEventListener('change', e => {
             const file = e.target.files[0];
             if (file) {
+              // Check file size (max 10MB)
+              const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+              if (file.size > maxSize) {
+                alert('File size is too large. Please choose an image smaller than 10MB.');
+                e.target.value = ''; // Clear the input
+                return;
+              }
+
               var userCardId = card.one_thing_user_card_id;
 
                uploadFile(file)
@@ -2613,6 +3657,8 @@
                  .then(function(response) {
                  })
                  .catch(function(error) {
+                   console.error("❌ Ошибка загрузки:", error);
+                   alert('Failed to upload image. Please try again with a different image.');
                  });
 
 
@@ -2687,23 +3733,37 @@
                 file.type === 'image/heic' ||
                 file.type === 'image/heif';
 
-              if (isHeic && typeof heic2any !== 'undefined') {
-
-                // Convert HEIC to JPEG
-                heic2any({
-                  blob: file,
-                  toType: 'image/jpeg',
-                  quality: 0.8
-                }).then(convertedBlob => {
-                  processImage(convertedBlob);
-                }).catch(error => {
+              if (isHeic) {
+                // Check if heic2any is available
+                if (typeof heic2any !== 'undefined' && heic2any) {
+                  console.log('Converting HEIC file to JPEG...');
+                  
+                  // Convert HEIC to JPEG
+                  heic2any({
+                    blob: file,
+                    toType: 'image/jpeg',
+                    quality: 0.8
+                  }).then(convertedBlob => {
+                    console.log('HEIC converted successfully');
+                    processImage(convertedBlob);
+                  }).catch(error => {
+                    console.error('HEIC conversion error:', error);
+                    if (loader) {
+                      loader.classList.remove('show');
+                    }
+                    showHeicErrorTooltip();
+                  });
+                } else {
+                  console.error('HEIC2Any library not loaded or not available');
+                  console.log('Available globals:', Object.keys(window).filter(key => key.includes('heic')));
                   if (loader) {
                     loader.classList.remove('show');
                   }
-                  showHeicErrorTooltip();
-                });
+                  alert('HEIC conversion library not available. Please try with a JPEG or PNG image, or refresh the page and try again.');
+                }
               } else {
                 // Process regular image file
+                console.log('Processing regular image file...');
                 processImage(file);
               }
             }
@@ -2739,6 +3799,19 @@
           });
         }
 
+        // Add image click functionality for completed and community cards
+        if (card.type === 'completed' || card.type === 'community') {
+          const uploadedImage = cardEl.querySelector('.uploaded-image');
+          if (uploadedImage && uploadedImage.src && !uploadedImage.src.includes('add-photo-ot.avif')) {
+            uploadedImage.style.cursor = 'pointer';
+            uploadedImage.addEventListener('click', () => {
+              if (window.openImagePopup) {
+                window.openImagePopup(uploadedImage.src);
+              }
+            });
+          }
+        }
+
         // Add toggle switch functionality for completed cards
         if (card.type === 'completed') {
           const toggle = cardEl.querySelector('input[type="checkbox"]');
@@ -2766,15 +3839,292 @@
           }
         }
 
+        // Add more menu functionality for saved and completed cards
+        if (card.type === 'saved' || card.type === 'completed') {
+          const moreBtn = cardEl.querySelector('.card-more-btn');
+          const dropdown = cardEl.querySelector('.card-dropdown-menu');
+          
+          if (moreBtn && dropdown) {
+            // Toggle dropdown on button click
+            moreBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              
+              // Close all other dropdowns
+              document.querySelectorAll('.card-dropdown-menu.show').forEach(menu => {
+                if (menu !== dropdown) {
+                  menu.classList.remove('show');
+                }
+              });
+              
+              // Toggle current dropdown
+              dropdown.classList.toggle('show');
+            });
+            
+            // Handle dropdown item clicks
+            const shareItem = dropdown.querySelector('[data-action="share"]');
+            const deleteItem = dropdown.querySelector('[data-action="delete"]');
+            
+            if (shareItem) {
+              shareItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.remove('show');
+                shareCard(card);
+              });
+            }
+            
+            if (deleteItem) {
+              deleteItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.remove('show');
+                deleteCard(card);
+              });
+            }
+          }
+        }
+
         cardList.appendChild(cardEl);
       });
 
-      // Add fade in effect
-      setTimeout(() => {
-        cardList.style.opacity = '1';
-        cardList.style.transform = 'scale(1)';
+        // Add fade in effect
+        requestAnimationFrame(() => {
+          cardList.style.opacity = '1';
+          cardList.style.transform = 'scale(1)';
+        });
       }, 50);
     });
+    
+    // Close all dropdown menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.card-more-menu')) {
+        document.querySelectorAll('.card-dropdown-menu.show').forEach(menu => {
+          menu.classList.remove('show');
+        });
+      }
+    });
+  }
+
+  // Share card function
+  function shareCard(card) {
+    const shareData = {
+      title: card.title,
+      text: card.description,
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData)
+        .then(() => {
+          console.log('Card shared successfully');
+        })
+        .catch((error) => {
+          console.error('Error sharing card:', error);
+          // Fallback to copying to clipboard
+          copyCardToClipboard(card);
+        });
+    } else {
+      // Fallback to copying to clipboard
+      copyCardToClipboard(card);
+    }
+  }
+
+  // Copy card to clipboard function
+  function copyCardToClipboard(card) {
+    const shareText = `${card.title}\n\n${card.description}\n\nCheck it out on Globio One Thing!`;
+    
+    navigator.clipboard.writeText(shareText)
+      .then(() => {
+        // Show success tooltip
+        showShareSuccessTooltip();
+      })
+      .catch((error) => {
+        console.error('Failed to copy to clipboard:', error);
+        showCopyErrorTooltip();
+      });
+  }
+
+  // Delete card function
+  function deleteCard(card) {
+    // Show confirmation popup
+    showDeleteConfirmationPopup(card);
+  }
+
+  // Show delete confirmation popup
+  function showDeleteConfirmationPopup(card) {
+    const popup = document.getElementById('confirmation-popup');
+    const titleEl = document.getElementById('confirmation-title');
+    const descriptionEl = document.getElementById('confirmation-description');
+    const confirmBtn = document.getElementById('confirmation-confirm');
+
+    if (titleEl) titleEl.textContent = 'Delete this Thing?';
+    if (descriptionEl) descriptionEl.textContent = 'This action cannot be undone. The card will be permanently removed from your saved and completed items.';
+    if (confirmBtn) confirmBtn.textContent = 'Delete Thing';
+
+    // Store the card ID and action for confirmation
+    popup.dataset.cardId = card.one_thing_user_card_id;
+    popup.dataset.action = 'delete';
+
+    popup.classList.add('show');
+    preventBodyScroll();
+  }
+
+  // Show share success tooltip
+  function showShareSuccessTooltip() {
+    const tooltip = document.getElementById('saved-success-tooltip');
+    if (tooltip) {
+      tooltip.querySelector('span').textContent = 'Card shared successfully!';
+      tooltip.classList.add('show');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        tooltip.querySelector('span').textContent = 'Thing Saved!';
+      }, 3000);
+    }
+  }
+
+  // Delete card from server
+  function deleteCardFromServer(cardId) {
+    const deleteUrl = `https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users_cards/${cardId}`;
+    
+    fetch(deleteUrl, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to delete card: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Remove card from local arrays using one_thing_user_card_id
+      savedCards = savedCards.filter(card => card.one_thing_user_card_id != cardId);
+      completedCards = completedCards.filter(card => card.one_thing_user_card_id != cardId);
+      publicCards = publicCards.filter(card => card.one_thing_user_card_id != cardId);
+      
+      // Update UI without reloading page
+      renderCardList(currentTypeFilter, currentCategoryFilter);
+      
+      // Show success tooltip
+      showDeleteSuccessTooltip();
+    })
+    .catch(error => {
+      console.error('Error deleting card:', error);
+      showDeleteErrorTooltip();
+    });
+  }
+
+  // Show delete success tooltip
+  function showDeleteSuccessTooltip() {
+    const tooltip = document.getElementById('saved-success-tooltip');
+    if (tooltip) {
+      tooltip.querySelector('span').textContent = 'Thing deleted successfully!';
+      tooltip.classList.add('show');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        tooltip.querySelector('span').textContent = 'Thing Saved!';
+      }, 3000);
+    }
+  }
+
+  // Show delete error tooltip
+  function showDeleteErrorTooltip() {
+    const tooltip = document.getElementById('copy-error-tooltip');
+    if (tooltip) {
+      tooltip.querySelector('span').textContent = 'Failed to delete thing. Please try again.';
+      tooltip.classList.add('show');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        tooltip.querySelector('span').textContent = 'Failed to copy link. Please copy manually.';
+      }, 3000);
+    }
+  }
+
+  // Show copy error tooltip
+  function showCopyErrorTooltip() {
+    const tooltip = document.getElementById('copy-error-tooltip');
+    if (tooltip) {
+      tooltip.querySelector('span').textContent = 'Failed to copy to clipboard. Please copy manually.';
+      tooltip.classList.add('show');
+
+      setTimeout(() => {
+        tooltip.classList.remove('show');
+        tooltip.querySelector('span').textContent = 'Failed to copy link. Please copy manually.';
+      }, 3000);
+    }
+  }
+
+  // Show "How One Things Work" popup
+  function showHowOneThingsWorkPopup() {
+    console.log('showHowOneThingsWorkPopup called');
+    const popup = document.getElementById('how-one-things-work-popup');
+    console.log('Popup element found:', popup);
+    if (popup) {
+      console.log('Adding show class to popup');
+      popup.classList.add('show');
+      preventBodyScroll();
+      console.log('Popup should be visible now');
+    } else {
+      console.error('Popup element not found!');
+    }
+  }
+
+  // Hide "How One Things Work" popup
+  function hideHowOneThingsWorkPopup() {
+    console.log('hideHowOneThingsWorkPopup called');
+    const popup = document.getElementById('how-one-things-work-popup');
+    console.log('Popup element found:', popup);
+    if (popup) {
+      console.log('Removing show class from popup');
+      popup.classList.remove('show');
+      restoreBodyScroll();
+      console.log('Popup should be hidden now');
+    } else {
+      console.error('Popup element not found!');
+    }
+  }
+
+  // Initialize "How One Things Work" popup
+  function initializeHowOneThingsWorkPopup() {
+    const popup = document.getElementById('how-one-things-work-popup');
+    const closeBtn = document.getElementById('close-how-one-things-work-modal');
+    const gotItBtn = document.getElementById('got-it-btn');
+
+    console.log('Initializing How One Things Work popup...');
+    console.log('Popup element:', popup);
+    console.log('Close button:', closeBtn);
+    console.log('Got it button:', gotItBtn);
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        console.log('Close button clicked');
+        e.preventDefault();
+        e.stopPropagation();
+        hideHowOneThingsWorkPopup();
+      });
+    }
+
+    if (gotItBtn) {
+      gotItBtn.addEventListener('click', (e) => {
+        console.log('Got it button clicked');
+        e.preventDefault();
+        e.stopPropagation();
+        hideHowOneThingsWorkPopup();
+      });
+    }
+
+    if (popup) {
+      popup.addEventListener('click', (e) => {
+        console.log('Popup clicked, target:', e.target);
+        if (e.target === popup) {
+          console.log('Clicking outside popup, closing...');
+          hideHowOneThingsWorkPopup();
+        }
+      });
+    }
   }
 
   // Update expiry count every hour (refreshes days left)
@@ -2822,7 +4172,7 @@
 //              title: card.name,
 //              description: `Discover the ${card.name} in ${card.city}. A great spot for ${card.tags.split(",").join(", ")}.`,
 //              category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-//              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif", // заглушка
+//              imageSrc: "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif", // заглушка
 //              expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30 // через 30 дней
 //            }));
 //
@@ -2886,7 +4236,7 @@
               title: card.title,
               description: card.description,
               category: card.tags.split(",")[0]?.toUpperCase() || "LOCAL CONTEXT",
-              imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ad7aea3e7e2dcd1b6e8350_add-photo.avif",
+              imageSrc: card.image ? "https://xu8w-at8q-hywg.n7d.xano.io" + card.image : "https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif",
               expiresAt: card.expired_at,
               one_thing_user_card_id: card.one_thing_user_card_id,
               completed: card.completed,
@@ -2954,11 +4304,9 @@
    function loadCommunityUserCards() {
 
         let cityId = localStorage.getItem('userCityId');
-        let lat = localStorage.getItem('userLat');
-        let lng = localStorage.getItem('userLon');
 
         // Get all published cards from all users
-        fetch(API_COMMUNITY_CARD + '?lat=' + lat +'&lng=' + lng + '&radius=50&limit=20')
+        fetch(API_SAVE + '?city_id=' + cityId)
           .then(response => {
             return response.json();
           })
@@ -2974,21 +4322,14 @@
                   published: item.published,
                   imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + item.image,
                   completed_at: item.completed_at,
-                  author_name: item.user_name,
-                  author_avatar: item.user_picture,
-                  title: item.card_title,
-                  description: item.card_description,
-                  category: item.card_category,
+                  author_name: item.user.name,
+                  author_avatar: item.user.picture,
                   type: "community"
                 }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
                 publicCards = publishedCards;
           })
           .catch(error => {
-
-
-          console.log('error', error);
-
           });
       }
 
@@ -3075,4 +4416,5 @@
       }
     });
   }
+
 })();

@@ -29,7 +29,22 @@
 </script>
 
 <!-- Include HEIC to JPEG converter -->
-<script src="https://unpkg.com/heic2any@0.2.2/dist/heic2any.min.js"></script>
+<script src="https://unpkg.com/heic2any@0.2.2/dist/heic2any.min.js" onload="console.log('HEIC2Any library loaded successfully')" onerror="console.error('Failed to load HEIC2Any library from unpkg, trying alternative...'); loadHeic2AnyAlternative();"></script>
+
+<script>
+  // Fallback function to load HEIC2Any from alternative CDN
+  function loadHeic2AnyAlternative() {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/heic2any@0.2.2/dist/heic2any.min.js';
+    script.onload = function() {
+      console.log('HEIC2Any library loaded successfully from alternative CDN');
+    };
+    script.onerror = function() {
+      console.error('Failed to load HEIC2Any library from alternative CDN as well');
+    };
+    document.head.appendChild(script);
+  }
+</script>
 
 
 <link href="style.css" rel="stylesheet" />
@@ -41,6 +56,16 @@
     <div class="map-hero-wrapper">
       <div id="dynamic-map" class="map-background"></div>
       <div class="map-overlay-gradient"></div>
+    </div>
+    
+    <!-- User Zone Circle -->
+    <div class="user-zone-circle" id="user-zone-circle">
+      <div class="zone-tooltip" id="zone-tooltip">
+        <div class="tooltip-content">
+          <div class="tooltip-title">One Thing Generation Zone</div>
+          <div class="tooltip-description">Activity radius: 70 km</div>
+        </div>
+      </div>
     </div>
     
     <!-- User Avatar -->
@@ -60,7 +85,7 @@
                    alt="Edit icon" />
             </span>
           </p>
-          <img id="mobile-pin" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6889eb961e515115851948da_9c301540e2805651f3355e19910b6585_pin-2.svg" alt="Change location" />
+          <img id="mobile-pin" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68cabcf45d1ad184feda1cfb_ot-location-icon.svg" alt="Change location" />
         </div>
       </div>
     </div>
@@ -92,6 +117,10 @@
             <path d="M8.00125 9.99992C9.10582 9.99992 10.0013 9.10449 10.0013 7.99992C10.0013 6.89535 9.10582 5.99992 8.00125 5.99992C6.89668 5.99992 6.00125 6.89535 6.00125 7.99992C6.00125 9.10449 6.89668 9.99992 8.00125 9.99992Z" stroke="#949494" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           My Context
+        </div>
+        <div class="user-dropdown-item" id="my-referrals-btn">
+          <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c45ddb48425d67a29c52e3_link-03.svg" alt="My Referrals" width="16" height="16">
+          My Referrals
         </div>
         <div class="user-dropdown-item" id="logout-btn">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -158,6 +187,42 @@
     </div>
   </div>
 
+  <!-- My Referrals Modal -->
+  <div class="my-referrals-modal" id="my-referrals-modal">
+    <div class="my-referrals-content">
+      <button class="close-modal" id="close-my-referrals-modal">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+      </button>
+      <h2 class="my-referrals-title">
+        My Referrals
+      </h2>
+      <p class="my-referrals-description">Share your referral link with friends and help them discover amazing things in your area!</p>
+      
+      <!-- Referral Link Section -->
+      <div class="referral-link-section">
+        <div class="referral-link-container">
+          <div class="referral-link-display" id="referral-link-display">
+            <span class="referral-link-base">globio.io/one-thing?ref=</span>
+            <span class="referral-link-code" id="referral-link-code">1964-2207</span>
+          </div>
+          <button class="copy-referral-btn" id="copy-referral-btn">
+            <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4522bf8804bd3b586530a_copy-06.svg" alt="Copy" width="24" height="24">
+          </button>
+        </div>
+      </div>
+      
+      <!-- Referral Stats -->
+      <div class="referral-stats">
+        <div class="referral-stat-item">
+          <div class="referral-stat-number" id="referral-count">0</div>
+          <div class="referral-stat-label">Friends Joined</div>
+        </div>
+      </div>
+      
+      <button class="share-referral-btn" id="share-referral-btn">Share with Friends</button>
+    </div>
+  </div>
+
   <!-- Location Change Modal -->
   <div class="location-modal" id="location-modal">
     <div class="location-modal-content">
@@ -183,7 +248,7 @@
 
       <div class="location-results" id="location-results"></div>
       
-      <div class="location-modal-buttons">
+      <div class="location-modal-buttons" style="display: none;">
         <button class="location-detect-btn" id="location-detect-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="currentColor"/>
@@ -290,6 +355,17 @@
 <!-- Location Error tooltip -->
 <div id="location-error-tooltip" class="location-error-tooltip">
   <span>Location error occurred</span>
+</div>
+
+<!-- Image Popup Modal -->
+<div class="image-popup-modal" id="image-popup-modal">
+  <div class="image-popup-overlay"></div>
+  <div class="image-popup-content">
+    <button class="image-popup-close" id="image-popup-close">
+      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+    </button>
+    <img class="image-popup-img" id="image-popup-img" src="" alt="Card image">
+  </div>
 </div>
 
 <!-- Location Success tooltip -->
@@ -410,6 +486,48 @@
   </div>
 </div>
 
+<!-- Role Achievement Popup -->
+<div id="role-achievement-popup" class="role-achievement-popup">
+  <div class="role-achievement-overlay"></div>
+  <div class="role-achievement-content">
+    
+    
+    <!-- Achievement Content -->
+    <div class="achievement-header">
+      <h2 class="achievement-title">New Role Unlocked!</h2>
+      <p class="achievement-subtitle">Congratulations on your achievement!</p>
+    </div>
+    
+    <div class="achievement-role-display">
+      <!-- Dynamic Visual Container (behind avatar) -->
+      <div class="achievement-dynamic-visual-container">
+        <img id="achievement-dynamic-visual" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68bfe28c396f3faca6234db5_adaptio.svg" alt="Level Visual" width="200" height="200">
+      </div>
+      
+      <div class="achievement-circular-progress-container">
+        <div class="achievement-circular-progress">
+          <svg class="achievement-progress-ring" width="80" height="80">
+            <circle class="achievement-progress-ring-circle-bg" cx="40" cy="40" r="35" fill="transparent" stroke="#e0e0e0" stroke-width="6"/>
+            <circle class="achievement-progress-ring-circle" cx="40" cy="40" r="35" fill="transparent" stroke="#B1E530" stroke-width="6" stroke-linecap="round" stroke-dasharray="219.8" stroke-dashoffset="219.8"/>
+          </svg>
+          <div class="achievement-level-avatar">
+            <img id="achievement-avatar" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6883c7a80506f986b2f7ddb7_db85210bbfb795678a1578319074aaf4_placeholder.svg" alt="User Avatar" width="48" height="48">
+          </div>
+        </div>
+        <div class="achievement-role-badge" id="achievement-role-badge">
+          <span id="achievement-role-name">Local</span>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="achievement-buttons">
+      <button class="achievement-btn-secondary" id="achievement-close-btn">Continue</button>
+      <button class="achievement-btn-primary" id="achievement-view-progress-btn">View Progress</button>
+    </div>
+  </div>
+</div>
+
 <!-- Card popup -->
 <div id="one-thing-popup" class="one-thing-popup">
   <div class="one-thing-popup-inner">
@@ -448,6 +566,71 @@
   </div>
 </div>
 
+<!-- How One Things Work Popup -->
+<div id="how-one-things-work-popup" class="how-one-things-work-popup">
+  <div class="how-one-things-work-content">
+    <button class="close-modal" id="close-how-one-things-work-modal">
+      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+    </button>
+    
+    <div class="how-one-things-work-header">
+      <h2 class="how-one-things-work-title">How One Things Work</h2>
+      <p class="how-one-things-work-subtitle">Discover how we generate personalized recommendations for you</p>
+    </div>
+    
+    <!-- Visual Section -->
+    <div class="how-one-things-work-visual">
+      <div class="visual-placeholder">
+        <!-- Placeholder for future visual content -->
+        <div class="visual-content">
+          <div class="zone-visual">
+            <div class="zone-circle">
+              <div class="zone-center">
+                <span class="zone-label">You</span>
+              </div>
+            </div>
+            <div class="zone-radius">70km radius</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Content Section -->
+    <div class="how-one-things-work-body">
+      <div class="explanation-section">
+        <h3 class="explanation-title">Generation Radius</h3>
+        <p class="explanation-text">
+          All One Things are generated within a <strong>70km radius</strong> around your current location. 
+          This ensures that every recommendation is accessible and relevant to your daily life, whether you're 
+          exploring your neighborhood or planning a day trip.
+        </p>
+      </div>
+      
+      <div class="explanation-section">
+        <h3 class="explanation-title">Where Things Come From</h3>
+        <p class="explanation-text">
+          We use the <strong>Foursquare API</strong> to discover amazing places and activities in your area. 
+          This powerful location intelligence helps us find the best restaurants, attractions, cultural sites, 
+          and local experiences that match your interests and context.
+        </p>
+      </div>
+      
+      <div class="explanation-section">
+        <h3 class="explanation-title">Personalized for You</h3>
+        <p class="explanation-text">
+          Each One Thing is carefully selected based on your location, preferences, and the time of day. 
+          We consider factors like your activity zone, local context, and trending places to ensure 
+          every recommendation feels fresh and exciting.
+        </p>
+      </div>
+    </div>
+    
+    <div class="how-one-things-work-footer">
+      <button class="got-it-btn" id="got-it-btn">Got it!</button>
+    </div>
+  </div>
+</div>
+
 <script src="main.js">
 </script>
 
@@ -464,4 +647,5 @@
     </div>
   </div>
 </footer>
+
 
