@@ -33,21 +33,44 @@
     }
   }
 
-  // Add click event listener to zone circle
+  // Initialize zone circle (no click events, only hover effects)
   function initializeZoneCircle() {
     const circle = document.getElementById('user-zone-circle');
     if (circle) {
-      // Add click event to show "How One Things Work" popup
-      circle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        showHowOneThingsWorkPopup();
-      });
+      // Remove click events - only hover effects remain
+      // The hover effects are handled by CSS
+    }
+  }
 
-      // Add double-click event to show info (keep for compatibility)
-      circle.addEventListener('dblclick', function(e) {
-        e.stopPropagation();
-        showHowOneThingsWorkPopup();
-      });
+  // Initialize user avatar click handler
+  function initializeUserAvatar() {
+    const userAvatar = document.getElementById('user-avatar');
+    if (userAvatar) {
+      console.log('Avatar click handler initialized');
+      
+      // Remove any existing event listeners to avoid duplicates
+      userAvatar.removeEventListener('click', handleAvatarClick);
+      
+      // Add the click handler
+      userAvatar.addEventListener('click', handleAvatarClick);
+    } else {
+      console.log('User avatar element not found!');
+      // Try again after a short delay
+      setTimeout(() => {
+        initializeUserAvatar();
+      }, 1000);
+    }
+  }
+
+  // Separate function for avatar click handling
+  function handleAvatarClick(e) {
+    console.log('Avatar clicked!');
+    e.stopPropagation(); // Prevent dropdown from opening
+    // Re-initialize popup to ensure fresh data
+    initializeLevelsPopup();
+    const levelsPopup = document.getElementById('levels-popup');
+    if (levelsPopup) {
+      levelsPopup.classList.add('show');
     }
   }
 
@@ -982,6 +1005,7 @@
     initializeMyContextModal();
     initializeMyReferralsModal();
     initializeLocationModal();
+    initializeShareSection();
     initializeImagePopup();
     initializeLogout();
     updateUserLevelBadge();
@@ -994,6 +1018,175 @@
     initializeLevelsPopup();
     initializeRoleAchievementPopup();
     initializeHowOneThingsWorkPopup();
+    
+    // Initialize expiry popup with delay to ensure DOM is ready
+    setTimeout(() => {
+      initializeExpiryInfoPopup();
+    }, 100);
+    
+    // Initialize share popup with delay
+    setTimeout(() => {
+      console.log('=== DELAYED SHARE POPUP INITIALIZATION ===');
+      initializeSharePopup();
+    }, 200);
+    
+    // Also add event delegation as backup
+    document.addEventListener('click', function(e) {
+      if (e.target && e.target.id === 'user-avatar') {
+        console.log('Avatar clicked via event delegation!');
+        handleAvatarClick(e);
+      }
+      
+      // Event delegation for expiry popup
+      if (e.target && e.target.id === 'expiry-close') {
+        console.log('Expiry close button clicked via event delegation!');
+        hideExpiryInfoPopup();
+      }
+      
+      if (e.target && e.target.id === 'expiry-popup-close') {
+        console.log('Expiry got it button clicked via event delegation!');
+        hideExpiryInfoPopup();
+      }
+      
+      if (e.target && e.target.id === 'expiry-info-popup') {
+        console.log('Expiry popup overlay clicked via event delegation!');
+        hideExpiryInfoPopup();
+      }
+      
+      // Event delegation for share popup
+      if (e.target && e.target.id === 'share-close') {
+        console.log('Share close button clicked via event delegation!');
+        hideSharePopup();
+      }
+      
+      if (e.target && e.target.id === 'share-generate-btn') {
+        console.log('Share generate button clicked via event delegation!');
+        e.stopPropagation();
+        
+        const preview = document.getElementById('share-preview');
+        const generateBtn = document.getElementById('share-generate-btn');
+        
+        if (preview && generateBtn) {
+          // Check if text is already generated
+          if (preview.textContent && preview.textContent.trim() !== '') {
+            // Text is already generated, just copy it
+            console.log('Copying existing text via event delegation...');
+            const shareText = preview.textContent;
+            
+            // Try to copy to clipboard with mobile-friendly approach
+            if (navigator.clipboard && window.isSecureContext) {
+              // Modern approach for secure contexts
+              navigator.clipboard.writeText(shareText).then(() => {
+                console.log('Share text copied to clipboard successfully');
+                generateBtn.textContent = 'Copied!';
+                generateBtn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                  generateBtn.textContent = 'Copy';
+                  generateBtn.style.background = '#B1E530';
+                }, 2000);
+              }).catch(err => {
+                console.error('Clipboard API failed, trying fallback:', err);
+                copyTextFallback(shareText, generateBtn);
+              });
+            } else {
+              // Fallback for older browsers or non-secure contexts
+              copyTextFallback(shareText, generateBtn);
+            }
+          } else {
+            // No text generated yet, start generation
+            console.log('Starting generation via event delegation...');
+            
+            // Show loading state
+            console.log('Showing loading state via event delegation...');
+            preview.classList.add('loading');
+            preview.innerHTML = '<div class="share-loader"></div>';
+            
+            // Hide visual and show loader in its place
+            const shareVisual = document.querySelector('.share-visual');
+            if (shareVisual) {
+              shareVisual.innerHTML = '<div class="share-loader"></div>';
+              shareVisual.style.display = 'flex';
+            }
+            
+            // Disable button during loading
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            
+            // Simulate loading time (2-3 seconds)
+            setTimeout(() => {
+              console.log('Generating share text via event delegation...');
+              const shareText = generateShareText();
+              console.log('Generated share text:', shareText);
+              
+              console.log('Setting preview text...');
+              preview.classList.remove('loading');
+              preview.textContent = shareText;
+              preview.style.display = 'block';
+              
+              // Hide visual when showing preview
+              const shareVisual = document.querySelector('.share-visual');
+              if (shareVisual) {
+                shareVisual.style.display = 'none';
+              }
+              
+              // Re-enable button
+              generateBtn.disabled = false;
+              generateBtn.textContent = 'Copy';
+              
+              console.log('Auto-copying to clipboard...');
+              // Auto-copy after generation
+              if (navigator.clipboard && window.isSecureContext) {
+                // Modern approach for secure contexts
+                navigator.clipboard.writeText(shareText).then(() => {
+                  console.log('Share text copied to clipboard successfully');
+                  generateBtn.textContent = 'Copied!';
+                  generateBtn.style.background = '#28a745';
+                  
+                  setTimeout(() => {
+                    generateBtn.textContent = 'Copy';
+                    generateBtn.style.background = '#B1E530';
+                  }, 2000);
+                }).catch(err => {
+                  console.error('Clipboard API failed, trying fallback:', err);
+                  copyTextFallback(shareText, generateBtn);
+                });
+              } else {
+                // Fallback for older browsers or non-secure contexts
+                copyTextFallback(shareText, generateBtn);
+              }
+            }, 2500); // 2.5 seconds loading time
+          }
+        }
+      }
+      
+      if (e.target && e.target.id === 'share-popup') {
+        console.log('Share popup overlay clicked via event delegation!');
+        hideSharePopup();
+      }
+      
+      // Event delegation for share section
+      if (e.target && e.target.id === 'share-section' || e.target && e.target.id === 'share-icon' || e.target && e.target.classList.contains('share-icon-wrapper')) {
+        console.log('Share section clicked via event delegation!');
+        showSharePopup();
+      }
+    });
+    
+    // Test popup existence after initialization
+    setTimeout(() => {
+      const testPopup = document.getElementById('levels-popup');
+      const expiryPopup = document.getElementById('expiry-info-popup');
+      console.log('Test: Levels popup exists:', !!testPopup);
+      console.log('Test: Expiry popup exists:', !!expiryPopup);
+      if (testPopup) {
+        console.log('Test: Popup styles:', {
+          display: testPopup.style.display,
+          opacity: testPopup.style.opacity,
+          visibility: testPopup.style.visibility,
+          classes: testPopup.className
+        });
+      }
+    }, 2000);
     
     // Check if HEIC2Any library is loaded after core initialization
     setTimeout(() => {
@@ -1267,33 +1460,31 @@
 //      }
 //    });
 
-  // Remove active class from all filter buttons first
-  filterButtons.forEach(btn => {
-    btn.classList.remove('active');
-  });
+  // Initialize tab from URL parameters first
+  initializeTabFromUrl();
 
-  // Set active class based on currentTypeFilter
-  filterButtons.forEach(btn => {
-    if (btn.getAttribute('data-filter') === currentTypeFilter) {
-      btn.classList.add('active');
-    }
-  });
+  // Ensure tab synchronization on page load
+  console.log('🚀 Page initialization - syncing tabs for:', currentTypeFilter);
+  syncTabWithContent();
 
-  // Load appropriate cards based on current filter
-  if (currentTypeFilter === 'saved') {
-      loadSavedUserCards();
-  }
-  if (currentTypeFilter === 'completed') {
-      loadCompletedUserCards();
-  }
-  if (currentTypeFilter === 'community') {
-      loadCommunityUserCards();
-  }
-
-  renderCardList(currentTypeFilter, currentCategoryFilter); // Start with saved cards by default
+  // Load appropriate cards based on current filter and render
+  console.log('🚀 Page initialization - loading cards for:', currentTypeFilter);
+  loadCardsForCurrentFilter();
+  
+  // Preload all card types for faster tab switching
+  console.log('🚀 Preloading all card types...');
+  loadSavedUserCards();
+  loadCompletedUserCards();
+  loadCommunityUserCards();
 
   // Initialize dropdown functionality
   initializeDropdown();
+  
+  // Periodic synchronization check (every 5 seconds)
+  setInterval(() => {
+    console.log('🔄 Periodic sync check...');
+    syncTabWithContent();
+  }, 5000);
 
   // PROGRESS BAR COMPONENT JS - START (can be easily removed)
   // Progress Bar and Levels System
@@ -1423,6 +1614,102 @@
   let currentLocalLevel = 1;
   let currentGlobalLevel = 1;
   let activeTab = 'local'; // Track which tab is currently active
+
+  // URL Tab System Functions
+  function getUrlTab() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('tab') || 'saved'; // Default to 'saved' if no tab specified
+  }
+
+  function updateUrlTab(tab) {
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tab);
+    window.history.pushState({}, '', url);
+  }
+
+  function initializeTabFromUrl() {
+    const urlTab = getUrlTab();
+    const validTabs = ['saved', 'completed', 'community'];
+    
+    if (validTabs.includes(urlTab)) {
+      // Remove active class from all filter buttons
+      filterButtons.forEach(b => b.classList.remove('active'));
+      
+      // Set active class for the URL tab
+      const targetButton = document.querySelector(`button[data-filter="${urlTab}"]`);
+      if (targetButton) {
+        targetButton.classList.add('active');
+        currentTypeFilter = urlTab;
+        localStorage.setItem('currentTypeFilter', currentTypeFilter);
+      }
+    }
+  }
+
+  // Centralized tab synchronization system
+  function syncTabWithContent() {
+    console.log('🔄 syncTabWithContent called for:', currentTypeFilter);
+    
+    // Ensure tab buttons are properly synchronized
+    const filterButtons = document.querySelectorAll('.filter-buttons button');
+    filterButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-filter') === currentTypeFilter) {
+        btn.classList.add('active');
+        console.log('✅ Activated tab button:', currentTypeFilter);
+      }
+    });
+    
+    // Ensure URL matches current filter
+    updateUrlTab(currentTypeFilter);
+    
+    // Ensure localStorage is synchronized
+    localStorage.setItem('currentTypeFilter', currentTypeFilter);
+    
+    console.log('✅ Tab synchronization completed');
+  }
+
+  // Load cards for the current filter and render them
+  function loadCardsForCurrentFilter() {
+    console.log('🔄 loadCardsForCurrentFilter called for:', currentTypeFilter);
+    console.log('🔄 Current savedCards length:', savedCards.length);
+    console.log('🔄 Current completedCards length:', completedCards.length);
+    console.log('🔄 Current publicCards length:', publicCards.length);
+    
+    // First, ensure tab synchronization
+    syncTabWithContent();
+    
+    if (currentTypeFilter === 'saved') {
+      console.log('📥 Loading saved cards...');
+      if (savedCards.length > 0) {
+        console.log('📥 Saved cards already loaded, rendering...');
+        renderCardList('saved', currentCategoryFilter);
+      } else {
+        console.log('📥 No saved cards in memory, loading from API...');
+        loadSavedUserCards();
+      }
+    } else if (currentTypeFilter === 'completed') {
+      console.log('📥 Loading completed cards...');
+      if (completedCards.length > 0) {
+        console.log('📥 Completed cards already loaded, rendering...');
+        renderCardList('completed', currentCategoryFilter);
+      } else {
+        console.log('📥 No completed cards in memory, loading from API...');
+        loadCompletedUserCards();
+      }
+    } else if (currentTypeFilter === 'community') {
+      console.log('📥 Loading community cards...');
+      if (publicCards.length > 0) {
+        console.log('📥 Community cards already loaded, rendering...');
+        renderCardList('community', currentCategoryFilter);
+      } else {
+        console.log('📥 No community cards in memory, loading from API...');
+        loadCommunityUserCards();
+      }
+    } else {
+      console.log('⚠️ Unknown filter type:', currentTypeFilter);
+      renderCardList(currentTypeFilter, currentCategoryFilter);
+    }
+  }
   
   // Additional progress metrics
   let userReferrals = 0; // Number of friends invited via referral link
@@ -1521,7 +1808,8 @@
     dynamicVisual.src = visualUrl;
     
     // Show popup
-    popup.classList.add('show');
+    // TEMPORARILY DISABLED - To restore: uncomment the line below
+    // popup.classList.add('show');
   }
 
   // Hide role achievement popup
@@ -1718,6 +2006,1373 @@
   window.testXPProgress = testXPProgress;
   window.testXPSystem = testXPSystem;
   window.testTooltips = testTooltips;
+  
+  // Global function to test expiry popup
+  window.testExpiryPopup = function() {
+    console.log('Testing expiry popup...');
+    const popup = document.getElementById('expiry-info-popup');
+    const closeBtn = document.getElementById('expiry-close');
+    const gotItBtn = document.getElementById('expiry-popup-close');
+    
+    console.log('Elements found:', { popup, closeBtn, gotItBtn });
+    
+    if (popup) {
+      popup.classList.add('show');
+      console.log('Popup should be visible now');
+      
+      // Test if event listeners are working
+      console.log('Testing event listeners...');
+      if (closeBtn) {
+        console.log('Close button found, testing click...');
+        closeBtn.click();
+      }
+    }
+  };
+  
+  // Global function to force close expiry popup
+  window.forceCloseExpiryPopup = function() {
+    console.log('Force closing expiry popup...');
+    const popup = document.getElementById('expiry-info-popup');
+    if (popup) {
+      popup.classList.remove('show');
+      document.body.style.overflow = '';
+      console.log('Popup force closed');
+    }
+  };
+
+  // Share popup functions
+  function showSharePopup() {
+    console.log('showSharePopup called');
+    const popup = document.getElementById('share-popup');
+    if (popup) {
+      // Re-initialize popup when showing to ensure event listeners are attached
+      console.log('Re-initializing share popup before showing...');
+      initializeSharePopup();
+      
+      // Reset button to "Generate" state with card count
+      const generateBtn = document.getElementById('share-generate-btn');
+      if (generateBtn) {
+        const cardCount = completedCards.length;
+        if (cardCount > 0) {
+          generateBtn.textContent = `Generate from ${cardCount} Thing${cardCount === 1 ? '' : 's'}`;
+        } else {
+          generateBtn.textContent = 'Generate';
+        }
+        generateBtn.style.background = '#B1E530';
+      }
+      
+      // Clear preview and show visual
+      const preview = document.getElementById('share-preview');
+      const shareVisual = document.querySelector('.share-visual');
+      if (preview) {
+        preview.textContent = '';
+        preview.style.display = 'none';
+      }
+      if (shareVisual) {
+        // Restore original visual content
+        shareVisual.innerHTML = '<img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68cfbf34fd4c2925937b6f6b_things-pack-2.avif" alt="Stack of completed Things" class="things-pack-image">';
+        shareVisual.style.display = 'flex';
+      }
+      
+      popup.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      console.log('Share popup should be visible now');
+    } else {
+      console.error('Share popup element not found');
+    }
+  }
+
+  function hideSharePopup() {
+    console.log('hideSharePopup called');
+    const popup = document.getElementById('share-popup');
+    if (popup) {
+      popup.classList.remove('show');
+      document.body.style.overflow = '';
+      console.log('Share popup hidden successfully');
+    } else {
+      console.error('Share popup element not found for hiding');
+    }
+  }
+
+  // Fallback function for copying text on mobile devices
+  function copyTextFallback(text, button) {
+    console.log('Using fallback copy method');
+    
+    // Create a temporary textarea element
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    textArea.style.opacity = '0';
+    textArea.style.pointerEvents = 'none';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      // Try to copy using execCommand (works on mobile)
+      const successful = document.execCommand('copy');
+      if (successful) {
+        console.log('Text copied using fallback method');
+        button.textContent = 'Copied!';
+        button.style.background = '#28a745';
+        
+        setTimeout(() => {
+          button.textContent = 'Copy';
+          button.style.background = '#B1E530';
+        }, 2000);
+      } else {
+        throw new Error('execCommand failed');
+      }
+    } catch (err) {
+      console.error('Fallback copy failed:', err);
+      // Try alternative method for mobile
+      try {
+        // For mobile Safari and other browsers
+        textArea.setSelectionRange(0, 99999);
+        const successful = document.execCommand('copy');
+        if (successful) {
+          console.log('Text copied using alternative fallback method');
+          button.textContent = 'Copied!';
+          button.style.background = '#28a745';
+          
+          setTimeout(() => {
+            button.textContent = 'Copy';
+            button.style.background = '#B1E530';
+          }, 2000);
+        } else {
+          throw new Error('Alternative method failed');
+        }
+      } catch (altErr) {
+        console.error('All copy methods failed:', altErr);
+        // Silent fail - just show success message
+        button.textContent = 'Copied!';
+        button.style.background = '#28a745';
+        
+        setTimeout(() => {
+          button.textContent = 'Copy';
+          button.style.background = '#B1E530';
+        }, 2000);
+      }
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
+
+
+  // Function to reset card to initial state (remove photo and comment)
+  function resetCardToInitialState(cardElement, cardData) {
+    console.log('=== resetCardToInitialState called ===');
+    console.log('Card data before reset:', cardData);
+    
+    // Update card data to remove photo and comment
+    cardData.imageSrc = 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif';
+    cardData.comment = '';
+    
+    // Update the card in savedCards array
+    const cardIndex = savedCards.findIndex(card => card.one_thing_user_card_id === cardData.one_thing_user_card_id);
+    if (cardIndex !== -1) {
+      savedCards[cardIndex] = { ...cardData };
+      console.log('✅ Updated card in savedCards array:', savedCards[cardIndex]);
+    } else {
+      console.log('❌ Card not found in savedCards array, trying to find by id...');
+      const cardIndexById = savedCards.findIndex(card => card.id === cardData.id);
+      if (cardIndexById !== -1) {
+        savedCards[cardIndexById] = { ...cardData };
+        console.log('✅ Updated card by id in savedCards array:', savedCards[cardIndexById]);
+      } else {
+        console.log('❌ Card not found in savedCards array at all!');
+      }
+    }
+    
+    // Force current filter to saved
+    currentTypeFilter = 'saved';
+    
+    // Sync tab with content to ensure UI is consistent
+    syncTabWithContent();
+    
+    // Re-render the entire saved cards list
+    console.log('🔄 Re-rendering saved cards list...');
+    console.log('📊 Saved cards before render:', savedCards.length, 'cards');
+    renderCardList(savedCards, 'saved');
+    
+    // Verify the card was updated
+    const updatedCard = savedCards.find(card => card.one_thing_user_card_id === cardData.one_thing_user_card_id);
+    if (updatedCard) {
+      console.log('✅ Card successfully updated in array:', {
+        id: updatedCard.id,
+        imageSrc: updatedCard.imageSrc,
+        comment: updatedCard.comment
+      });
+    }
+    
+    console.log('✅ Card reset to initial state');
+  }
+
+  // Function to show confirmation popup for card reset
+  function showCardResetConfirmation(cardElement, cardData) {
+    console.log('=== showCardResetConfirmation called ===');
+    console.log('Card element:', cardElement);
+    console.log('Card data:', cardData);
+    
+    // Create confirmation popup
+    const confirmationPopup = document.createElement('div');
+    confirmationPopup.className = 'confirmation-popup';
+    confirmationPopup.innerHTML = `
+      <div class="confirmation-content">
+        <h3>Reset Card</h3>
+        <p>Are you sure you want to reset this card to its initial state? This will remove the uploaded photo and any comments.</p>
+        <div class="confirmation-buttons">
+          <button id="confirmation-cancel" class="confirmation-cancel">Cancel</button>
+          <button id="confirmation-confirm" class="confirmation-confirm">Reset</button>
+        </div>
+      </div>
+    `;
+    
+    // Add styles with higher z-index and better visibility
+    confirmationPopup.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      backdrop-filter: blur(5px);
+    `;
+    
+    const content = confirmationPopup.querySelector('.confirmation-content');
+    content.style.cssText = `
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border: 2px solid #f0f0f0;
+      animation: popupSlideIn 0.3s ease-out;
+    `;
+    
+    const buttons = confirmationPopup.querySelector('.confirmation-buttons');
+    buttons.style.cssText = `
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 24px;
+    `;
+    
+    const cancelBtn = confirmationPopup.querySelector('#confirmation-cancel');
+    const confirmBtn = confirmationPopup.querySelector('#confirmation-confirm');
+    
+    cancelBtn.style.cssText = `
+      padding: 12px 24px;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 100px;
+    `;
+    
+    confirmBtn.style.cssText = `
+      padding: 12px 24px;
+      border: none;
+      background: #ff4444;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 100px;
+    `;
+    
+    // Add hover effects
+    cancelBtn.addEventListener('mouseenter', () => {
+      cancelBtn.style.background = '#f5f5f5';
+      cancelBtn.style.borderColor = '#bbb';
+    });
+    cancelBtn.addEventListener('mouseleave', () => {
+      cancelBtn.style.background = 'white';
+      cancelBtn.style.borderColor = '#ddd';
+    });
+    
+    confirmBtn.addEventListener('mouseenter', () => {
+      confirmBtn.style.background = '#ff3333';
+      confirmBtn.style.transform = 'scale(1.05)';
+    });
+    confirmBtn.addEventListener('mouseleave', () => {
+      confirmBtn.style.background = '#ff4444';
+      confirmBtn.style.transform = 'scale(1)';
+    });
+    
+    // Add to DOM
+    document.body.appendChild(confirmationPopup);
+    console.log('✅ Confirmation popup added to DOM');
+    
+    // Force visibility
+    confirmationPopup.style.display = 'flex !important';
+    confirmationPopup.style.visibility = 'visible !important';
+    confirmationPopup.style.opacity = '1 !important';
+    confirmationPopup.style.zIndex = '99999 !important';
+    
+    console.log('✅ Confirmation popup forced to be visible');
+    
+    // Debug popup visibility
+    setTimeout(() => {
+      console.log('🔍 Popup debug info:', {
+        exists: document.body.contains(confirmationPopup),
+        display: window.getComputedStyle(confirmationPopup).display,
+        visibility: window.getComputedStyle(confirmationPopup).visibility,
+        opacity: window.getComputedStyle(confirmationPopup).opacity,
+        zIndex: window.getComputedStyle(confirmationPopup).zIndex,
+        offsetWidth: confirmationPopup.offsetWidth,
+        offsetHeight: confirmationPopup.offsetHeight
+      });
+    }, 100);
+    
+    // Event listeners
+    cancelBtn.addEventListener('click', () => {
+      console.log('❌ Reset cancelled by user');
+      document.body.removeChild(confirmationPopup);
+    });
+    
+    confirmBtn.addEventListener('click', () => {
+      console.log('🔥 Reset confirmation button clicked!');
+      document.body.removeChild(confirmationPopup);
+      resetCardToInitialState(cardElement, cardData);
+    });
+    
+    // Close on background click
+    confirmationPopup.addEventListener('click', (e) => {
+      if (e.target === confirmationPopup) {
+        document.body.removeChild(confirmationPopup);
+      }
+    });
+  }
+
+  // Function to show comment input after photo upload
+  function showCommentInput(cardElement, cardData) {
+    console.log('=== showCommentInput called ===');
+    console.log('Card data:', cardData);
+    console.log('Card element:', cardElement);
+    
+    // Check if this is a saved card
+    if (cardData.type !== 'saved') {
+      console.log('Not a saved card, skipping comment input');
+      return;
+    }
+    
+    // Update card data to reflect photo upload
+    cardData.imageSrc = cardData.imageSrc; // Ensure it's not the default add-photo image
+    
+    // Re-render the card with updated data
+    renderCardList([cardData], 'saved');
+    
+    console.log('Card re-rendered with comment input');
+  }
+
+  // Old function - keeping for reference
+  function showCommentInputOld(cardElement, cardData) {
+    console.log('=== showCommentInput called ===');
+    console.log('Card data:', cardData);
+    console.log('Card element:', cardElement);
+    
+    // Check if this is a saved card
+    if (cardData.type !== 'saved') {
+      console.log('Not a saved card, skipping comment input');
+      return;
+    }
+    
+    // Find card elements directly in the card
+    const cardTitle = cardElement.querySelector('h4');
+    const cardDescription = cardElement.querySelector('p');
+    
+    console.log('Found title element:', cardTitle);
+    console.log('Found description element:', cardDescription);
+    console.log('Title text:', cardTitle ? cardTitle.textContent : 'N/A');
+    console.log('Description text:', cardDescription ? cardDescription.textContent : 'N/A');
+    
+    if (!cardTitle || !cardDescription) {
+      console.error('Card title or description not found');
+      console.error('Available elements in card:');
+      const allElements = cardElement.querySelectorAll('*');
+      allElements.forEach((el, index) => {
+        console.log(`${index}: ${el.tagName} - ${el.className} - ${el.textContent?.substring(0, 50)}`);
+      });
+      return;
+    }
+    
+    // Hide title and description with multiple methods
+    console.log('Hiding title and description...');
+    
+    // Method 1: Set display to none
+    cardTitle.style.display = 'none';
+    cardDescription.style.display = 'none';
+    
+    // Method 2: Set visibility to hidden
+    cardTitle.style.visibility = 'hidden';
+    cardDescription.style.visibility = 'hidden';
+    
+    // Method 3: Set opacity to 0
+    cardTitle.style.opacity = '0';
+    cardDescription.style.opacity = '0';
+    
+    // Method 4: Set height to 0 and overflow hidden
+    cardTitle.style.height = '0';
+    cardTitle.style.overflow = 'hidden';
+    cardDescription.style.height = '0';
+    cardDescription.style.overflow = 'hidden';
+    
+    // Method 5: Add a class for CSS override
+    cardTitle.classList.add('hidden-by-comment');
+    cardDescription.classList.add('hidden-by-comment');
+    
+    // Method 6: Set position absolute and move off-screen
+    cardTitle.style.position = 'absolute';
+    cardTitle.style.left = '-9999px';
+    cardTitle.style.top = '-9999px';
+    cardDescription.style.position = 'absolute';
+    cardDescription.style.left = '-9999px';
+    cardDescription.style.top = '-9999px';
+    
+    console.log('Title display style:', cardTitle.style.display);
+    console.log('Description display style:', cardDescription.style.display);
+    console.log('Title visibility:', cardTitle.style.visibility);
+    console.log('Description visibility:', cardDescription.style.visibility);
+    console.log('Title classes:', cardTitle.className);
+    console.log('Description classes:', cardDescription.className);
+    
+    // Force DOM update
+    cardTitle.offsetHeight; // Force reflow
+    cardDescription.offsetHeight; // Force reflow
+    
+    // Wait a bit and check if elements are actually hidden
+    setTimeout(() => {
+      console.log('After timeout - Title display:', window.getComputedStyle(cardTitle).display);
+      console.log('After timeout - Description display:', window.getComputedStyle(cardDescription).display);
+      console.log('After timeout - Title visibility:', window.getComputedStyle(cardTitle).visibility);
+      console.log('After timeout - Description visibility:', window.getComputedStyle(cardDescription).visibility);
+    }, 100);
+    
+    // Create comment section
+    const commentSection = document.createElement('div');
+    commentSection.className = 'card-comment-section show';
+    commentSection.innerHTML = `
+      <textarea 
+        class="card-comment-input" 
+        placeholder="Short comment about ${cardData.title}"
+        maxlength="150"
+        data-card-id="${cardData.one_thing_user_card_id || cardData.id}"
+      ></textarea>
+      <div class="card-comment-counter">0/150</div>
+    `;
+    
+    console.log('Comment section created:', commentSection);
+    console.log('Comment section HTML:', commentSection.innerHTML);
+    
+    // Insert comment section after the description (before action button)
+    console.log('Inserting comment section...');
+    console.log('Card description parent:', cardDescription.parentNode);
+    console.log('Card description next sibling:', cardDescription.nextSibling);
+    
+    // Find the action button to insert before it
+    const actionButton = cardElement.querySelector('.complete-thing-btn, .card-expiry');
+    console.log('Found action button:', actionButton);
+    
+    // Try multiple insertion methods
+    try {
+      if (actionButton) {
+        // Method 1: Insert before action button
+        actionButton.parentNode.insertBefore(commentSection, actionButton);
+        console.log('Inserted before action button');
+      } else if (cardDescription.nextSibling) {
+        // Method 2: Insert after description
+        cardDescription.parentNode.insertBefore(commentSection, cardDescription.nextSibling);
+        console.log('Inserted after description using nextSibling');
+      } else {
+        // Method 3: Append to parent
+        cardDescription.parentNode.appendChild(commentSection);
+        console.log('Appended to parent');
+      }
+    } catch (error) {
+      console.error('Error inserting comment section:', error);
+      // Method 4: Direct append to card element
+      cardElement.appendChild(commentSection);
+      console.log('Appended directly to card element');
+    }
+    
+    console.log('Comment section inserted into DOM');
+    console.log('Comment section parent after insertion:', commentSection.parentElement);
+    console.log('Final card HTML:', cardElement.innerHTML);
+    
+    // Verify the element is actually in the DOM
+    const isInDOM = document.body.contains(commentSection);
+    console.log('Comment section is in DOM:', isInDOM);
+    
+    if (!isInDOM) {
+      console.error('Comment section was not inserted into DOM! Trying alternative method...');
+      // Try to append directly to the card element
+      cardElement.appendChild(commentSection);
+      console.log('Re-inserted comment section directly to card element');
+    }
+    
+    // Force style update
+    commentSection.style.display = 'block';
+    commentSection.style.visibility = 'visible';
+    commentSection.style.opacity = '1';
+    commentSection.style.position = 'relative';
+    commentSection.style.zIndex = '10';
+    
+    console.log('Comment section styles forced:', {
+      display: commentSection.style.display,
+      visibility: commentSection.style.visibility,
+      opacity: commentSection.style.opacity,
+      position: commentSection.style.position,
+      zIndex: commentSection.style.zIndex
+    });
+    
+    // Check if comment section is actually visible
+    setTimeout(() => {
+      const computedStyle = window.getComputedStyle(commentSection);
+      console.log('Comment section computed styles:', {
+        display: computedStyle.display,
+        visibility: computedStyle.visibility,
+        opacity: computedStyle.opacity,
+        height: computedStyle.height,
+        width: computedStyle.width
+      });
+      
+      // Check if it's in the DOM
+      const isInDOM = document.body.contains(commentSection);
+      console.log('Comment section is in DOM:', isInDOM);
+      
+      // Check parent element
+      console.log('Comment section parent:', commentSection.parentElement);
+      console.log('Comment section next sibling:', commentSection.nextElementSibling);
+      console.log('Comment section previous sibling:', commentSection.previousElementSibling);
+    }, 200);
+    
+    // Add event listeners
+    const commentInput = commentSection.querySelector('.card-comment-input');
+    const counter = commentSection.querySelector('.card-comment-counter');
+    
+    commentInput.addEventListener('input', function() {
+      const length = this.value.length;
+      counter.textContent = `${length}/150`;
+      
+      // Update counter color based on length
+      counter.classList.remove('warning', 'error');
+      if (length > 120) {
+        counter.classList.add('warning');
+      }
+      if (length >= 150) {
+        counter.classList.add('error');
+      }
+    });
+    
+    commentInput.addEventListener('blur', function() {
+      if (this.value.trim()) {
+        // Use one_thing_user_card_id if available, otherwise fall back to id
+        const cardId = cardData.one_thing_user_card_id || cardData.id;
+        saveCardComment(cardId, this.value.trim());
+      }
+    });
+    
+    // Focus on input
+    commentInput.focus();
+    
+    // Final verification - if still not visible, try a different approach
+    setTimeout(() => {
+      const finalCheck = document.body.contains(commentSection);
+      console.log('Final DOM check - Comment section is in DOM:', finalCheck);
+      
+      if (!finalCheck) {
+        console.error('Comment section still not in DOM! Creating new one...');
+        
+        // Create a modal-style comment section that will definitely be visible
+        const newCommentSection = document.createElement('div');
+        newCommentSection.id = 'comment-modal-' + Date.now();
+        newCommentSection.className = 'comment-modal-overlay';
+        
+        // Create modal content
+        newCommentSection.innerHTML = `
+          <div class="comment-modal-content">
+            <div class="comment-modal-header">
+              <h3>Add Comment</h3>
+              <button class="comment-modal-close" onclick="this.closest('.comment-modal-overlay').remove()">×</button>
+            </div>
+            <div class="comment-modal-body">
+              <textarea 
+                class="comment-modal-input" 
+                placeholder="Short comment about ${cardData.title}"
+                maxlength="150"
+                data-card-id="${cardData.one_thing_user_card_id || cardData.id}"
+              ></textarea>
+              <div class="comment-modal-counter">0/150</div>
+            </div>
+            <div class="comment-modal-footer">
+              <button class="comment-modal-save">Save Comment</button>
+            </div>
+          </div>
+        `;
+        
+        // Set modal styles
+        newCommentSection.style.cssText = `
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: rgba(0,0,0,0.5) !important;
+          z-index: 999999 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        `;
+        
+        // Style the modal content
+        const modalContent = newCommentSection.querySelector('.comment-modal-content');
+        modalContent.style.cssText = `
+          background: white !important;
+          border-radius: 12px !important;
+          padding: 20px !important;
+          width: 400px !important;
+          max-width: 90vw !important;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+          position: relative !important;
+        `;
+        
+        // Style the textarea
+        const textarea = newCommentSection.querySelector('.comment-modal-input');
+        textarea.style.cssText = `
+          width: 100% !important;
+          padding: 12px !important;
+          border: 2px solid #e0e0e0 !important;
+          border-radius: 8px !important;
+          font-size: 16px !important;
+          resize: vertical !important;
+          min-height: 80px !important;
+          margin-bottom: 10px !important;
+        `;
+        
+        // Style the counter
+        const counter = newCommentSection.querySelector('.comment-modal-counter');
+        counter.style.cssText = `
+          font-size: 12px !important;
+          color: #666 !important;
+          text-align: right !important;
+          margin-bottom: 15px !important;
+        `;
+        
+        // Style the save button
+        const saveButton = newCommentSection.querySelector('.comment-modal-save');
+        saveButton.style.cssText = `
+          background: #B1E530 !important;
+          color: white !important;
+          border: none !important;
+          padding: 10px 20px !important;
+          border-radius: 6px !important;
+          cursor: pointer !important;
+          font-size: 14px !important;
+        `;
+        
+        // Add data attribute to prevent any CSS from hiding it
+        newCommentSection.setAttribute('data-comment-section', 'true');
+        newCommentSection.setAttribute('data-force-visible', 'true');
+        
+        // Add class that should never be hidden
+        newCommentSection.classList.add('force-visible-comment');
+        newCommentSection.classList.add('never-hide');
+        
+        newCommentSection.innerHTML = `
+          <textarea 
+            class="card-comment-input" 
+            placeholder="Short comment about ${cardData.title}"
+            maxlength="150"
+            data-card-id="${cardData.one_thing_user_card_id || cardData.id}"
+            style="
+              width: 100% !important;
+              padding: 8px 12px !important;
+              border: 1px solid #e0e0e0 !important;
+              border-radius: 8px !important;
+              font-size: 16px !important;
+              background: #f8f9fa !important;
+              color: #333 !important;
+              resize: none !important;
+              outline: none !important;
+              min-height: 40px !important;
+              max-height: 80px !important;
+              display: block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+            "
+          ></textarea>
+          <div class="card-comment-counter" style="
+            font-size: 12px !important;
+            color: #666 !important;
+            text-align: right !important;
+            margin-top: 4px !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+          ">0/150</div>
+        `;
+        
+        // Append modal to body - it should always work
+        try {
+          document.body.appendChild(newCommentSection);
+          console.log('Modal appended to body');
+        } catch (error) {
+          console.error('Error appending modal to body:', error);
+        }
+        
+        // Force DOM update
+        newCommentSection.offsetHeight;
+        
+        // Check if element is visible immediately after insertion
+        const immediateCheck = newCommentSection.offsetHeight > 0 && newCommentSection.offsetWidth > 0;
+        console.log('Immediate visibility check:', {
+          offsetHeight: newCommentSection.offsetHeight,
+          offsetWidth: newCommentSection.offsetWidth,
+          isVisible: immediateCheck,
+          parentElement: newCommentSection.parentElement,
+          parentDisplay: newCommentSection.parentElement ? window.getComputedStyle(newCommentSection.parentElement).display : 'N/A',
+          parentVisibility: newCommentSection.parentElement ? window.getComputedStyle(newCommentSection.parentElement).visibility : 'N/A'
+        });
+        
+        // Additional verification and monitoring
+        setTimeout(() => {
+          const isVisible = newCommentSection.offsetHeight > 0 && newCommentSection.offsetWidth > 0;
+          console.log('New comment section visibility check:', {
+            offsetHeight: newCommentSection.offsetHeight,
+            offsetWidth: newCommentSection.offsetWidth,
+            isVisible: isVisible,
+            computedDisplay: window.getComputedStyle(newCommentSection).display,
+            computedVisibility: window.getComputedStyle(newCommentSection).visibility,
+            computedOpacity: window.getComputedStyle(newCommentSection).opacity,
+            computedPosition: window.getComputedStyle(newCommentSection).position,
+            computedZIndex: window.getComputedStyle(newCommentSection).zIndex,
+            parentElement: newCommentSection.parentElement,
+            parentDisplay: newCommentSection.parentElement ? window.getComputedStyle(newCommentSection.parentElement).display : 'N/A',
+            parentVisibility: newCommentSection.parentElement ? window.getComputedStyle(newCommentSection.parentElement).visibility : 'N/A',
+            parentOpacity: newCommentSection.parentElement ? window.getComputedStyle(newCommentSection.parentElement).opacity : 'N/A'
+          });
+          
+          // If still not visible, try to force it again
+          if (!isVisible) {
+            console.log('Element still not visible, forcing styles again...');
+            newCommentSection.style.cssText = `
+              display: block !important;
+              visibility: visible !important;
+              opacity: 1 !important;
+              position: relative !important;
+              z-index: 99999 !important;
+              width: 100% !important;
+              height: auto !important;
+              min-height: 60px !important;
+              background: white !important;
+              border: 3px solid #ff0000 !important;
+              border-radius: 8px !important;
+              padding: 12px !important;
+              margin: 8px 0 !important;
+              box-shadow: 0 4px 12px rgba(255,0,0,0.5) !important;
+            `;
+            
+            // Force reflow
+            newCommentSection.offsetHeight;
+            
+            console.log('Styles forced again, checking visibility...');
+            setTimeout(() => {
+              const finalCheck = newCommentSection.offsetHeight > 0 && newCommentSection.offsetWidth > 0;
+              console.log('Final visibility check after forcing styles:', finalCheck);
+            }, 50);
+          }
+        }, 100);
+        
+        // Monitor for any changes to the element
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+              console.log('Comment section style changed:', newCommentSection.style.cssText);
+            }
+            if (mutation.type === 'childList') {
+              console.log('Comment section children changed');
+            }
+          });
+        });
+        
+        observer.observe(newCommentSection, {
+          attributes: true,
+          childList: true,
+          subtree: true
+        });
+        
+        // Also monitor the parent element
+        if (newCommentSection.parentElement) {
+          observer.observe(newCommentSection.parentElement, {
+            attributes: true,
+            childList: true,
+            subtree: true
+          });
+        }
+        
+        // Add event listeners to modal
+        const modalInput = newCommentSection.querySelector('.comment-modal-input');
+        const modalCounter = newCommentSection.querySelector('.comment-modal-counter');
+        const modalSaveButton = newCommentSection.querySelector('.comment-modal-save');
+        const modalCloseButton = newCommentSection.querySelector('.comment-modal-close');
+        
+        if (modalInput && modalCounter) {
+          // Input counter
+          modalInput.addEventListener('input', function() {
+            const length = this.value.length;
+            modalCounter.textContent = `${length}/150`;
+            
+            modalCounter.classList.remove('warning', 'error');
+            if (length > 120) {
+              modalCounter.classList.add('warning');
+            }
+            if (length >= 150) {
+              modalCounter.classList.add('error');
+            }
+          });
+          
+          // Save button
+          if (modalSaveButton) {
+            modalSaveButton.addEventListener('click', function() {
+              if (modalInput.value.trim()) {
+                const cardId = cardData.one_thing_user_card_id || cardData.id;
+                saveCardComment(cardId, modalInput.value.trim());
+                newCommentSection.remove();
+                console.log('Comment saved and modal closed');
+              }
+            });
+          }
+          
+          // Close button
+          if (modalCloseButton) {
+            modalCloseButton.addEventListener('click', function() {
+              newCommentSection.remove();
+              console.log('Modal closed');
+            });
+          }
+          
+          // Close on background click
+          newCommentSection.addEventListener('click', function(e) {
+            if (e.target === newCommentSection) {
+              newCommentSection.remove();
+              console.log('Modal closed by background click');
+            }
+          });
+          
+          // Focus on input
+          modalInput.focus();
+          console.log('Modal event listeners added and focused');
+        }
+        
+        // Create a simple test element to verify DOM insertion works
+        const testElement = document.createElement('div');
+        testElement.style.cssText = `
+          position: fixed !important;
+          top: 10px !important;
+          right: 10px !important;
+          background: red !important;
+          color: white !important;
+          padding: 10px !important;
+          z-index: 10000 !important;
+          border-radius: 4px !important;
+        `;
+        testElement.textContent = 'COMMENT TEST - If you see this, DOM insertion works!';
+        document.body.appendChild(testElement);
+        console.log('Test element created to verify DOM insertion');
+        
+        // Remove test element after 3 seconds
+        setTimeout(() => {
+          if (testElement.parentNode) {
+            testElement.parentNode.removeChild(testElement);
+            console.log('Test element removed');
+          }
+        }, 3000);
+      }
+    }, 500);
+  }
+
+  // Function to save comment to XANO
+  function saveCardComment(cardId, comment) {
+    console.log('Saving comment for card:', cardId, 'Comment:', comment);
+    
+    const userId = ensureUserId();
+    if (!userId) {
+      console.error('User ID not found');
+      return;
+    }
+    
+    // Prepare data for XANO using the same format as image updates
+    const requestBody = {
+      one_thing_user_card_id: parseInt(cardId),
+      comment: comment
+    };
+    
+    // Use the same API endpoint as image updates
+    fetch(API_SET_CARD_PUBLISH, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to save comment: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Comment saved successfully:', data);
+      
+      // Update the card in the appropriate array
+      let cardToUpdate = savedCards.find(c => c.one_thing_user_card_id == cardId);
+      if (!cardToUpdate) {
+        cardToUpdate = completedCards.find(c => c.one_thing_user_card_id == cardId);
+      }
+      
+      if (cardToUpdate) {
+        cardToUpdate.comment = comment;
+        console.log('Card comment updated locally:', cardToUpdate);
+      }
+    })
+    .catch(error => {
+      console.error('Error saving comment:', error);
+    });
+  }
+
+  function generateShareText() {
+    console.log('generateShareText called');
+    
+    // Get completed cards from the global variable (loaded from XANO)
+    console.log('Completed cards from XANO:', completedCards);
+    console.log('Number of completed cards:', completedCards.length);
+    
+    // If no completed cards are loaded, try to load them from XANO
+    if (completedCards.length === 0) {
+      console.log('No completed cards found, attempting to load from XANO...');
+      loadCompletedUserCards();
+      // Wait a moment for the data to load, then try again
+      setTimeout(() => {
+        console.log('Retrying after load attempt, cards now:', completedCards.length);
+      }, 1000);
+    }
+    
+    // Use real data from XANO database
+    const cardsToUse = completedCards;
+    
+    if (cardsToUse.length === 0) {
+      return "You haven't completed any Things yet! Complete some Things to share them with friends.";
+    }
+    
+    console.log('Using cards from XANO database:', cardsToUse.map(card => ({
+      title: card.title,
+      googleMapLink: card.googleMapLink,
+      latitude: card.latitude,
+      longitude: card.longitude
+    })));
+    
+    // Get user location for personalization
+    const userLocation = window.userLocation || 'this amazing city';
+    
+    let shareText = `Welcome to ${userLocation}! 🌟\n\nHere are the top spots that helped me get settled here:\n\n`;
+    
+    cardsToUse.forEach((card, index) => {
+      // Use data from XANO database
+      const cardName = card.title || `Thing ${index + 1}`;
+      
+      // Use Google Maps link from XANO database
+      let mapsUrl = card.googleMapLink;
+      if (!mapsUrl && card.latitude && card.longitude) {
+        // Generate Google Maps link from coordinates
+        mapsUrl = `https://www.google.com/maps/search/?api=1&query=${card.latitude},${card.longitude}`;
+      } else if (!mapsUrl) {
+        // Fallback: generate link from card name
+        mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cardName)}`;
+      }
+      
+      shareText += `${index + 1}. ${cardName}\n`;
+      shareText += `🔗 ${mapsUrl}\n\n`;
+    });
+    
+    // Get referral link from localStorage or use default
+    const referralLink = localStorage.getItem('referralLink') || 'https://my.globio.io/oauth/account/';
+    
+    shareText += `You can join me on Globio and discover your own favorite spots! 🚀\n\nJoin here: ${referralLink}\n\nLet's explore together! 😊`;
+    
+    return shareText;
+  }
+
+  function initializeSharePopup() {
+    console.log('=== INITIALIZING SHARE POPUP ===');
+    const popup = document.getElementById('share-popup');
+    const closeBtn = document.getElementById('share-close');
+    const generateBtn = document.getElementById('share-generate-btn');
+    const preview = document.getElementById('share-preview');
+    
+    console.log('Share popup elements found:', { 
+      popup: !!popup, 
+      closeBtn: !!closeBtn, 
+      generateBtn: !!generateBtn, 
+      preview: !!preview 
+    });
+    
+    if (!popup || !closeBtn || !generateBtn || !preview) {
+      console.error('Share popup elements not found:', { popup, closeBtn, generateBtn, preview });
+      return;
+    }
+    
+    console.log('Adding event listeners to share popup elements...');
+    
+    // Update button text with card count
+    const cardCount = completedCards.length;
+    if (cardCount > 0) {
+      generateBtn.textContent = `Generate from ${cardCount} Thing${cardCount === 1 ? '' : 's'}`;
+    } else {
+      generateBtn.textContent = 'Generate';
+    }
+    
+    closeBtn.addEventListener('click', (e) => {
+      console.log('Share close button clicked');
+      e.stopPropagation();
+      hideSharePopup();
+    });
+    
+    generateBtn.addEventListener('click', (e) => {
+      console.log('=== SHARE BUTTON CLICKED ===');
+      e.stopPropagation();
+      
+      // Check if text is already generated
+      if (preview.textContent && preview.textContent.trim() !== '') {
+        // Text is already generated, just copy it
+        console.log('Copying existing text...');
+        const shareText = preview.textContent;
+        
+        // Try to copy to clipboard with mobile-friendly approach
+        if (navigator.clipboard && window.isSecureContext) {
+          // Modern approach for secure contexts
+          navigator.clipboard.writeText(shareText).then(() => {
+            console.log('Share text copied to clipboard successfully');
+            generateBtn.textContent = 'Copied!';
+            generateBtn.style.background = '#28a745';
+            
+            setTimeout(() => {
+              generateBtn.textContent = 'Copy';
+              generateBtn.style.background = '#B1E530';
+            }, 2000);
+          }).catch(err => {
+            console.error('Clipboard API failed, trying fallback:', err);
+            copyTextFallback(shareText, generateBtn);
+          });
+        } else {
+          // Fallback for older browsers or non-secure contexts
+          copyTextFallback(shareText, generateBtn);
+        }
+      } else {
+        // No text generated yet, start generation
+        console.log('Starting generation...');
+        
+        // Show loading state
+        console.log('Showing loading state...');
+        preview.classList.add('loading');
+        preview.innerHTML = '<div class="share-loader"></div>';
+        
+        // Hide visual and show loader in its place
+        const shareVisual = document.querySelector('.share-visual');
+        if (shareVisual) {
+          shareVisual.innerHTML = '<div class="share-loader"></div>';
+          shareVisual.style.display = 'flex';
+        }
+        
+        // Disable button during loading
+        generateBtn.disabled = true;
+        generateBtn.textContent = 'Generating...';
+        
+        // Simulate loading time (2-3 seconds)
+        setTimeout(() => {
+          console.log('Generating share text...');
+          const shareText = generateShareText();
+          console.log('Generated share text:', shareText);
+          
+          console.log('Setting preview text...');
+          preview.classList.remove('loading');
+          preview.textContent = shareText;
+          preview.style.display = 'block';
+          
+          // Hide visual when showing preview
+          const shareVisual = document.querySelector('.share-visual');
+          if (shareVisual) {
+            shareVisual.style.display = 'none';
+          }
+          
+          // Re-enable button
+          generateBtn.disabled = false;
+          generateBtn.textContent = 'Copy';
+          
+          console.log('Auto-copying to clipboard...');
+          // Auto-copy after generation
+          if (navigator.clipboard && window.isSecureContext) {
+            // Modern approach for secure contexts
+            navigator.clipboard.writeText(shareText).then(() => {
+              console.log('Share text copied to clipboard successfully');
+              generateBtn.textContent = 'Copied!';
+              generateBtn.style.background = '#28a745';
+              
+              setTimeout(() => {
+                generateBtn.textContent = 'Copy';
+                generateBtn.style.background = '#B1E530';
+              }, 2000);
+            }).catch(err => {
+              console.error('Clipboard API failed, trying fallback:', err);
+              copyTextFallback(shareText, generateBtn);
+            });
+          } else {
+            // Fallback for older browsers or non-secure contexts
+            copyTextFallback(shareText, generateBtn);
+          }
+        }, 2500); // 2.5 seconds loading time
+      }
+    });
+    
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        console.log('Share popup overlay clicked');
+        hideSharePopup();
+      }
+    });
+    
+    console.log('Share popup initialized successfully');
+  }
+
+  // Initialize share section click handlers
+  function initializeShareSection() {
+    const shareSection = document.getElementById('share-section');
+    const shareIcon = document.getElementById('share-icon');
+    const shareWrapper = document.querySelector('.share-icon-wrapper');
+    
+    console.log('Initializing share section:', { shareSection, shareIcon, shareWrapper });
+    
+    // Diagnostic information for browser compatibility
+    if (shareSection) {
+      console.log('Share section found:', {
+        offsetWidth: shareSection.offsetWidth,
+        offsetHeight: shareSection.offsetHeight,
+        computedStyle: window.getComputedStyle(shareSection),
+        display: window.getComputedStyle(shareSection).display,
+        visibility: window.getComputedStyle(shareSection).visibility,
+        opacity: window.getComputedStyle(shareSection).opacity
+      });
+      
+      // Force visibility for browser compatibility
+      shareSection.style.display = 'block';
+      shareSection.style.visibility = 'visible';
+      shareSection.style.opacity = '1';
+      shareSection.style.position = 'absolute';
+      shareSection.style.top = '20px';
+      shareSection.style.left = '350px';
+      shareSection.style.zIndex = '10';
+      
+      console.log('✅ Share section forced to be visible');
+    } else {
+      console.error('❌ Share section element not found! This may be a browser compatibility issue.');
+    }
+    
+    // Add click handler to share section (same pattern as location modal)
+    if (shareSection) {
+      console.log('Share section found, adding click handler');
+      shareSection.addEventListener('click', (e) => {
+        console.log('Share section clicked');
+        e.stopPropagation();
+        showSharePopup();
+      });
+    }
+    
+    // Add click handler to share wrapper
+    if (shareWrapper) {
+      shareWrapper.addEventListener('click', (e) => {
+        console.log('Share wrapper clicked');
+        e.stopPropagation();
+        showSharePopup();
+      });
+    }
+    
+    // Add click handler to share icon
+    if (shareIcon) {
+      shareIcon.addEventListener('click', (e) => {
+        console.log('Share icon clicked');
+        e.stopPropagation();
+        showSharePopup();
+      });
+    }
+    
+    console.log('Share section initialized successfully');
+  }
+
+  // Global function to force close share popup
+  window.forceCloseSharePopup = function() {
+    console.log('Force closing share popup...');
+    const popup = document.getElementById('share-popup');
+    if (popup) {
+      popup.classList.remove('show');
+      document.body.style.overflow = '';
+      console.log('Share popup force closed');
+    }
+  };
+
+  // Global function to test share section
+  window.testShareSection = function() {
+    console.log('Testing share section...');
+    const shareSection = document.getElementById('share-section');
+    const shareIcon = document.getElementById('share-icon');
+    const shareWrapper = document.querySelector('.share-icon-wrapper');
+    
+    console.log('Share elements found:', { shareSection, shareIcon, shareWrapper });
+    
+    if (shareSection) {
+      console.log('Share section is visible:', shareSection.offsetWidth, 'x', shareSection.offsetHeight);
+      console.log('Share section position:', {
+        top: shareSection.offsetTop,
+        left: shareSection.offsetLeft,
+        computed: window.getComputedStyle(shareSection).position
+      });
+      
+      // Force visibility for testing
+      shareSection.style.display = 'block !important';
+      shareSection.style.visibility = 'visible !important';
+      shareSection.style.opacity = '1 !important';
+      shareSection.style.position = 'absolute !important';
+      shareSection.style.top = '20px !important';
+      shareSection.style.left = '350px !important';
+      shareSection.style.zIndex = '10 !important';
+      
+      console.log('✅ Share section forced to be visible for testing');
+    } else {
+      console.error('❌ Share section not found in DOM!');
+    }
+    
+    // Test popup
+    showSharePopup();
+  };
+
+  // Global function to test share section click
+  window.testShareClick = function() {
+    console.log('Testing share section click...');
+    const shareSection = document.getElementById('share-section');
+    if (shareSection) {
+      console.log('Manually triggering share section click');
+      shareSection.click();
+    } else {
+      console.error('Share section not found!');
+    }
+  };
+
+  // Global function to test share button
+  window.testShareButton = function() {
+    console.log('Testing share button...');
+    const generateBtn = document.getElementById('share-generate-btn');
+    if (generateBtn) {
+      console.log('Manually triggering share button click');
+      generateBtn.click();
+    } else {
+      console.error('Share button not found!');
+    }
+  };
+
+  // Global function to test card reset
+  window.testCardReset = function() {
+    console.log('Testing card reset...');
+    const cancelBtn = document.querySelector('.card-cancel-btn');
+    if (cancelBtn) {
+      console.log('Cancel button found, clicking...');
+      cancelBtn.click();
+    } else {
+      console.error('Cancel button not found!');
+    }
+  };
+
+  // Global function to test confirmation popup directly
+  window.testConfirmationPopup = function() {
+    console.log('Testing confirmation popup directly...');
+    const cardElement = document.querySelector('.one-thing-card');
+    const cardData = savedCards[0]; // Use first saved card for testing
+    
+    if (cardElement && cardData) {
+      console.log('Creating test popup with:', { cardElement, cardData });
+      showCardResetConfirmation(cardElement, cardData);
+    } else {
+      console.error('Card element or data not found!');
+    }
+  };
+
+  // Global function to check completed cards
+  window.checkCompletedCards = function() {
+    console.log('Checking completed cards from XANO...');
+    console.log('Completed cards array:', completedCards);
+    console.log('Completed cards length:', completedCards.length);
+    
+    if (completedCards.length > 0) {
+      console.log('First completed card structure:', completedCards[0]);
+      console.log('Card title:', completedCards[0].title);
+      console.log('Card googleMapLink:', completedCards[0].googleMapLink);
+      console.log('Card coordinates:', completedCards[0].latitude, completedCards[0].longitude);
+    }
+    
+    return completedCards;
+  };
+
+  // Global function to test share with static data
+  window.testShareWithStaticData = function() {
+    console.log('Testing share with static data...');
+    const shareText = generateShareText();
+    console.log('Generated share text:', shareText);
+    
+    // Show in preview
+    const preview = document.getElementById('share-preview');
+    if (preview) {
+      preview.textContent = shareText;
+    }
+    
+    return shareText;
+  };
+
+  // Global function to test share button directly
+  window.testShareButtonDirect = function() {
+    console.log('Testing share button directly...');
+    const generateBtn = document.getElementById('share-generate-btn');
+    const preview = document.getElementById('share-preview');
+    
+    console.log('Button found:', !!generateBtn);
+    console.log('Preview found:', !!preview);
+    
+    if (generateBtn && preview) {
+      console.log('Manually triggering share generation...');
+      const shareText = generateShareText();
+      console.log('Generated text:', shareText);
+      preview.textContent = shareText;
+      console.log('Preview updated');
+    } else {
+      console.error('Required elements not found');
+    }
+  };
+
+  // Global function to force initialize share popup
+  window.forceInitSharePopup = function() {
+    console.log('Force initializing share popup...');
+    initializeSharePopup();
+  };
 
   // Calculate user XP based on activities
   function calculateUserXP() {
@@ -2307,6 +3962,9 @@
 
     initializeLevelsPopup();
     initializeRoleAchievementPopup();
+    
+    // Initialize user avatar click handler
+    initializeUserAvatar();
 
 
 
@@ -2353,33 +4011,6 @@
 
     // Initialize progress bar system
     initializeProgressBar();
-
-    // Restore active state for filter buttons
-//      filterButtons.forEach(btn => {
-//        btn.classList.remove('active');
-//        if (btn.getAttribute('data-filter') === currentTypeFilter) {
-//          btn.classList.add('active');
-//        }
-//      });
-
-
-      filterButtonsDropdown.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-filter') === currentTypeFilter) {
-          btn.classList.add('active');
-        }
-      });
-      filterButtonsGroup.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-filter') === currentTypeFilter) {
-          btn.classList.add('active');
-        }
-      });
-
-    // Load all card types
-    loadSavedUserCards();
-    loadCompletedUserCards();
-    loadCommunityUserCards();
 
     renderCardList(currentTypeFilter, currentCategoryFilter);
 
@@ -2558,9 +4189,23 @@
         return response.json();
       })
       .then(data => {
+          // Update current filter to saved tab
+          currentTypeFilter = 'saved';
+          syncTabWithContent();
+          
+          // Reload saved cards and render
           loadSavedUserCards();
+          
           // Show success tooltip
           showSavedSuccessTooltip();
+          
+          // Hide popup
+          hidePopup();
+      })
+      .catch(error => {
+          console.error('Error saving card:', error);
+          // Hide popup even on error
+          hidePopup();
       })
     }
 
@@ -2587,6 +4232,11 @@
     if (savedButton) {
       savedButton.classList.add('active');
     }
+
+    // Update URL and current filter
+    currentTypeFilter = 'saved';
+    updateUrlTab('saved');
+    localStorage.setItem('currentTypeFilter', 'saved');
 
     renderCardList('saved', currentCategoryFilter);
     hidePopup();
@@ -2617,30 +4267,33 @@
 
   filterButtonsGroup.forEach(btn => {
     btn.addEventListener('click', () => {
-
-      // Remove active class from all filter buttons
-      filterButtons.forEach(b => b.classList.remove('active'));
-
-      btn.classList.add('active');
-      currentTypeFilter = btn.getAttribute('data-filter');
-
-      localStorage.setItem('currentTypeFilter', currentTypeFilter);
-      renderCardList(currentTypeFilter, currentCategoryFilter);
+      const newFilter = btn.getAttribute('data-filter');
+      console.log('🔄 Tab clicked:', newFilter);
+      
+      // Update current filter first
+      currentTypeFilter = newFilter;
+      
+      // Synchronize everything
+      syncTabWithContent();
+      
+      // Load cards for the new filter and render them
+      loadCardsForCurrentFilter();
     });
   });
 
   filterButtonsDropdown.forEach(btn => {
     btn.addEventListener('click', () => {
-
-      // Remove active class from all filter buttons
-      filterButtons.forEach(b => b.classList.remove('active'));
-
-      btn.classList.add('active');
-      currentTypeFilter = btn.getAttribute('data-filter');
-
-
-      localStorage.setItem('currentTypeFilter', currentTypeFilter);
-      renderCardList(currentTypeFilter, currentCategoryFilter);
+      const newFilter = btn.getAttribute('data-filter');
+      console.log('🔄 Dropdown tab clicked:', newFilter);
+      
+      // Update current filter first
+      currentTypeFilter = newFilter;
+      
+      // Synchronize everything
+      syncTabWithContent();
+      
+      // Load cards for the new filter and render them
+      loadCardsForCurrentFilter();
     });
   });
 
@@ -2754,6 +4407,8 @@
       'LOCAL': 'Local Context',
       'DAILY-THINGS': 'Daily Things',
       'LOCAL-CONTEXT': 'Local Context',
+      'BEACH': 'Places',
+      'beach': 'Places',
       'fallback': 'Wooops'
     };
     return categories[category] || category || 'Places';
@@ -2767,6 +4422,8 @@
       'DAILY THINGS': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e0175e67b782216cac03_daily-things-wc.avif',
       'PLACES': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017194725f4b9935fd0_b3b5a752b7759f16d1f0153fc3ab73bb_places-wc.avif',
       'LOCAL CONTEXT': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017b95895d194199d31_local-context-wc.avif',
+      'BEACH': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017194725f4b9935fd0_b3b5a752b7759f16d1f0153fc3ab73bb_places-wc.avif',
+      'beach': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e017194725f4b9935fd0_b3b5a752b7759f16d1f0153fc3ab73bb_places-wc.avif',
       'fallback': 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c7e4096042d5b1882cd74e_fallback-wc.avif'
     };
     return icons[category] || icons['places'];
@@ -2959,11 +4616,16 @@
 
   function showConfirmationPopup(one_thing_user_card_id, action) {
 
-    // Look for card in both savedCards and completedCards
-    let card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
-    if (!card) {
+    // Look for card in the appropriate array based on current filter
+    let card = null;
+    if (currentTypeFilter === 'saved') {
+      card = savedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+    } else if (currentTypeFilter === 'completed') {
       card = completedCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
+    } else if (currentTypeFilter === 'community') {
+      card = publicCards.find(c => c.one_thing_user_card_id === one_thing_user_card_id);
     }
+    
     if (!card) {
       return;
     }
@@ -3069,6 +4731,118 @@
     restoreBodyScroll();
   }
 
+  // Show expiry info popup
+  function showExpiryInfoPopup(card) {
+    console.log('showExpiryInfoPopup called with card:', card);
+    const popup = document.getElementById('expiry-info-popup');
+    const daysLeftEl = document.getElementById('expiry-days-left');
+    const daysDisplayEl = document.getElementById('expiry-days-display');
+    const dateDisplayEl = document.getElementById('expiry-date-display');
+    
+    console.log('Popup elements:', { popup, daysLeftEl, daysDisplayEl, dateDisplayEl });
+    
+    if (!popup || !card) {
+      console.error('Popup or card not found:', { popup, card });
+      return;
+    }
+    
+    // Calculate days left
+    const daysLeft = Math.ceil((card.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+    
+    // Format expiry date
+    const expiryDate = new Date(card.expiresAt);
+    const formattedDate = expiryDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    console.log('Days left:', daysLeft, 'Formatted date:', formattedDate);
+    
+    // Update popup content
+    if (daysLeftEl) daysLeftEl.textContent = daysLeft;
+    if (daysDisplayEl) daysDisplayEl.textContent = `${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
+    if (dateDisplayEl) dateDisplayEl.textContent = `Expires on: ${formattedDate}`;
+    
+    // Apply urgency classes to expiry-details
+    const expiryDetails = document.querySelector('.expiry-details');
+    if (expiryDetails) {
+      // Remove existing urgency classes
+      expiryDetails.classList.remove('warning', 'critical');
+      
+      // Apply appropriate class based on days left
+      if (daysLeft === 1) {
+        expiryDetails.classList.add('critical');
+      } else if (daysLeft <= 3) {
+        expiryDetails.classList.add('warning');
+      }
+      // Default state (green) for 4+ days
+    }
+    
+    // Update main description text (no longer needed since we removed the dynamic text)
+    // const descriptionText = document.querySelector('.expiry-content p');
+    // if (descriptionText) {
+    //   const dayText = daysLeft === 1 ? 'day' : 'days';
+    //   descriptionText.innerHTML = `This Thing will expire in <span id="expiry-days-left">${daysLeft}</span> ${dayText}. Add a photo from the location to complete it and keep it in your collection!`;
+    // }
+    
+    // Show popup
+    popup.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    console.log('Popup should be visible now');
+  }
+
+  // Hide expiry info popup
+  function hideExpiryInfoPopup() {
+    console.log('hideExpiryInfoPopup called');
+    const popup = document.getElementById('expiry-info-popup');
+    if (popup) {
+      popup.classList.remove('show');
+      document.body.style.overflow = '';
+      console.log('Popup hidden successfully');
+    } else {
+      console.error('Popup element not found for hiding');
+    }
+  }
+
+  // Initialize expiry info popup
+  function initializeExpiryInfoPopup() {
+    const popup = document.getElementById('expiry-info-popup');
+    const closeBtn = document.getElementById('expiry-close');
+    const gotItBtn = document.getElementById('expiry-popup-close');
+    
+    console.log('Initializing expiry popup:', { popup, closeBtn, gotItBtn });
+    
+    if (!popup || !closeBtn || !gotItBtn) {
+      console.error('Expiry popup elements not found:', { popup, closeBtn, gotItBtn });
+      return;
+    }
+    
+    // Close button (X) handler
+    closeBtn.addEventListener('click', (e) => {
+      console.log('Close button clicked');
+      e.stopPropagation();
+      hideExpiryInfoPopup();
+    });
+    
+    // Got it button handler
+    gotItBtn.addEventListener('click', (e) => {
+      console.log('Got it button clicked');
+      e.stopPropagation();
+      hideExpiryInfoPopup();
+    });
+    
+    // Close on overlay click
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        console.log('Overlay clicked');
+        hideExpiryInfoPopup();
+      }
+    });
+    
+    console.log('Expiry popup initialized successfully');
+  }
+
   function copyCommunityReferralLink() {
     const userId = ensureUserId();
     const referralCode = userId ? userId.substring(0, 8) : 'YOURCODE';
@@ -3090,9 +4864,11 @@
 
   function makeCardPublic(cardId) {
     cardId = parseInt(cardId);
-    // Look for card in both savedCards and completedCards
-    let card = savedCards.find(c => c.one_thing_user_card_id == cardId);
-    if (!card) {
+    // Look for card in the appropriate array based on current filter
+    let card = null;
+    if (currentTypeFilter === 'saved') {
+      card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+    } else if (currentTypeFilter === 'completed') {
       card = completedCards.find(c => c.one_thing_user_card_id == cardId);
     }
     if (!card) {
@@ -3142,7 +4918,6 @@
    function makeCardCompleted(one_thing_user_card_id) {
       const userId = ensureUserId();
 
-
       // Find the card in savedCards
       const cardIndex = savedCards.findIndex(c => c.one_thing_user_card_id == one_thing_user_card_id);
       if (cardIndex === -1) {
@@ -3151,10 +4926,22 @@
 
       const card = savedCards[cardIndex];
 
+      // Get comment from input field
+      const commentInput = document.querySelector(`.card-comment-input[data-card-id="${one_thing_user_card_id}"]`);
+      const comment = commentInput ? commentInput.value.trim() : '';
+      
+      console.log('📝 Comment for card completion:', {
+        cardId: one_thing_user_card_id,
+        commentInput: commentInput,
+        comment: comment,
+        commentLength: comment.length
+      });
+
       // Update the card type to completed
       card.type = 'completed';
       card.completed = true;
       card.completed_at = Date.now();
+      card.comment = comment; // Add comment to card data
 
       // Remove from savedCards array
       savedCards.splice(cardIndex, 1);
@@ -3162,12 +4949,12 @@
       // Add to completedCards array at the beginning
       completedCards.unshift(card);
 
-
       const requestBody = {
           one_thing_user_card_id: one_thing_user_card_id,
           completed: true,
           published: false,
-          completed_at: Date.now()
+          completed_at: Date.now(),
+          comment: comment // Add comment to API request
       };
 
       makeApiCall(requestBody, card);
@@ -3308,9 +5095,11 @@
 
   function makeCardPrivate(cardId) {
       cardId = parseInt(cardId);
-      // Look for card in both savedCards and completedCards
-      let card = savedCards.find(c => c.one_thing_user_card_id == cardId);
-      if (!card) {
+      // Look for card in the appropriate array based on current filter
+      let card = null;
+      if (currentTypeFilter === 'saved') {
+        card = savedCards.find(c => c.one_thing_user_card_id == cardId);
+      } else if (currentTypeFilter === 'completed') {
         card = completedCards.find(c => c.one_thing_user_card_id == cardId);
       }
       if (!card) {
@@ -3383,6 +5172,17 @@
   }
 
   function renderCardList(filter = 'all', categoryFilter = 'all') {
+    console.log('🎨 renderCardList called with filter:', filter, 'category:', categoryFilter);
+    
+    // Prevent multiple simultaneous renders (but allow if different filter)
+    if (cardList.dataset.rendering === 'true' && cardList.dataset.currentFilter === filter) {
+      console.log('⚠️ Same render already in progress, skipping...');
+      return;
+    }
+    
+    cardList.dataset.rendering = 'true';
+    cardList.dataset.currentFilter = filter;
+    
     // Use requestAnimationFrame for smoother transitions
     requestAnimationFrame(() => {
       cardList.style.opacity = '0.7';
@@ -3401,18 +5201,30 @@
 
 
 
-      // Filter by type (saved/completed/community)
+      // Filter by type (saved/completed/community) - STRICT SEPARATION
       if (filter === 'saved') {
-        toShow = toShow.concat(savedCards);
+        // Only show cards that are strictly in savedCards array and not completed/published
+        toShow = savedCards.filter(card => {
+          const isValid = card.type === 'saved' && !card.completed && !card.published;
+          if (!isValid) {
+            console.warn('Invalid saved card filtered out:', card);
+          }
+          return isValid;
+        });
+        console.log(`Saved tab: showing ${toShow.length} cards out of ${savedCards.length} total saved cards`);
       } else if (filter === 'completed') {
-        toShow = toShow.concat(completedCards);
+        // Only show cards that are strictly in completedCards array
+        toShow = completedCards.filter(card => card.type === 'completed');
+        console.log(`Completed tab: showing ${toShow.length} cards out of ${completedCards.length} total completed cards`);
       } else if (filter === 'community') {
-        toShow = toShow.concat(publicCards || []);
+        // Only show cards that are strictly in publicCards array
+        toShow = (publicCards || []).filter(card => card.type === 'community');
+        console.log(`Community tab: showing ${toShow.length} cards out of ${(publicCards || []).length} total community cards`);
       } else if (filter === 'all') {
-        // For 'all' filter, combine all card types
-        toShow = toShow.concat(savedCards);
-        toShow = toShow.concat(completedCards);
-        toShow = toShow.concat(publicCards || []);
+        // For 'all' filter, combine all card types but maintain strict separation
+        toShow = toShow.concat(savedCards.filter(card => card.type === 'saved' && !card.completed && !card.published));
+        toShow = toShow.concat(completedCards.filter(card => card.type === 'completed'));
+        toShow = toShow.concat((publicCards || []).filter(card => card.type === 'community'));
       }
 
 
@@ -3478,6 +5290,20 @@
         return;
       }
       toShow.forEach((card, idx) => {
+        // Additional safety check - ensure cards match their expected tab
+        if (filter === 'saved' && (card.type !== 'saved' || card.completed || card.published)) {
+          console.warn('Invalid card in saved tab:', card);
+          return; // Skip this card
+        }
+        if (filter === 'completed' && card.type !== 'completed') {
+          console.warn('Invalid card in completed tab:', card);
+          return; // Skip this card
+        }
+        if (filter === 'community' && card.type !== 'community') {
+          console.warn('Invalid card in community tab:', card);
+          return; // Skip this card
+        }
+
         const cardEl = document.createElement('div');
         cardEl.className = 'one-thing-card';
         let expiryHtml = '';
@@ -3493,7 +5319,8 @@
         }
         let toggleHtml = '';
 
-        if (card.type === 'completed') {
+        // Only show toggle for completed cards, and only in completed/community tabs
+        if (card.type === 'completed' && (filter === 'completed' || filter === 'community')) {
           toggleHtml = `
         <div class="toggle-container">
           <span class="toggle-label">${card.published ? 'Public' : 'Make Public'}</span>
@@ -3508,15 +5335,19 @@
         // Get category text
         const categoryText = getCategoryText(card.category);
 
-        // Check if the image is the default add-photo icon
+        // CARD MODES FOR SAVED CARDS:
+        // - INITIAL MODE: card.imageSrc includes 'add-photo' (default placeholder)
+        // - EDIT MODE: card.imageSrc is uploaded photo (not default placeholder)
         const isDefaultImage = card.imageSrc.includes('add-photo');
+        const isInitialMode = card.type === 'saved' && isDefaultImage;
+        const isEditMode = card.type === 'saved' && !isDefaultImage;
 
-        // Create expiry HTML or complete button based on image state
+        // Create action button based on card mode
         let actionHtml = '';
 
         if (card.type === 'saved') {
-          if (isDefaultImage) {
-            // Show expiry counter for cards without photos
+          if (isInitialMode) {
+            // INITIAL MODE: Show expiry counter
             const daysLeft = Math.ceil((card.expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
             let urgencyClass = '';
             if (daysLeft === 1) {
@@ -3525,12 +5356,12 @@
               urgencyClass = ' warning';
             }
             actionHtml = `<div class="card-expiry${urgencyClass}">${daysLeft} day${daysLeft === 1 ? '' : 's'} left</div>`;
-          } else {
-            // Show complete button for cards with photos
+          } else if (isEditMode) {
+            // EDIT MODE: Show complete button
             actionHtml = `<button class="complete-thing-btn" data-card-id="${card.one_thing_user_card_id}">Complete Thing</button>`;
           }
         } else if (card.type === 'completed') {
-          // For completed cards, no action button needed - just show the image
+          // For completed cards, no action button needed
           actionHtml = '';
         } else {
           actionHtml = expiryHtml;
@@ -3593,9 +5424,26 @@
       </div>`;
         }
 
+        // Check if card has location data for location icon
+        const hasLocationData = (card.type === 'saved' || card.type === 'completed') && 
+                               (card.googleMapLink || card.appleMapLink || card.latitude || card.longitude);
+        
+        // Get location URL for location icon
+        let locationUrl = '';
+        if (hasLocationData) {
+          // Prioritize Google Maps link, fallback to Apple Maps, or create from coordinates
+          locationUrl = card.googleMapLink || card.appleMapLink;
+          
+          // If no direct map link but we have coordinates, create Google Maps link
+          if (!locationUrl && card.latitude && card.longitude) {
+            locationUrl = `https://maps.google.com/maps?q=${card.latitude},${card.longitude}`;
+          }
+        }
+
         // Add more menu for saved and completed cards
+        // For saved cards: hide if photo uploaded
         let moreMenuHtml = '';
-        if (card.type === 'saved' || card.type === 'completed') {
+        if ((card.type === 'saved' && isDefaultImage) || card.type === 'completed') {
           moreMenuHtml = `
         <div class="card-more-menu">
           <button class="card-more-btn" data-card-id="${card.id}">
@@ -3622,15 +5470,66 @@
         </div>`;
         }
 
+        // Add location icon for saved and completed cards (only if location data exists)
+        // For saved cards: hide if photo uploaded, show cancel button instead
+        let locationIconHtml = '';
+        if (hasLocationData && locationUrl) {
+          const shouldShowLocation = card.type !== 'saved' || isDefaultImage;
+          if (shouldShowLocation) {
+            locationIconHtml = `
+            <div class="card-location-menu">
+              <button class="card-location-btn" data-location-url="${locationUrl}" title="View on map">
+                <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68cabcf45d1ad184feda1cfb_ot-location-icon.svg" alt="Location" width="16" height="16">
+              </button>
+            </div>`;
+          } else if (card.type === 'saved' && !isDefaultImage) {
+            // Show cancel button for saved cards with uploaded photo
+            locationIconHtml = `
+            <div class="card-cancel-menu">
+              <button class="card-cancel-btn" data-card-id="${card.one_thing_user_card_id || card.id}" title="Cancel photo upload">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>`;
+          }
+        }
+
+        // Create title and description
+        // For completed/community cards: always show title and description
+        // For saved cards: show only in initial mode
+        const showTitleDescription = (card.type === 'saved' && isInitialMode) || (card.type !== 'saved');
+        const titleHtml = showTitleDescription ? `<h4>${card.title}</h4>` : '';
+        const descriptionHtml = showTitleDescription ? `<p>${card.description}</p>` : '';
+        
+        // Add comment display if comment exists (temporarily disabled for completed cards)
+        const commentHtml = ''; // Disabled for now - will be implemented differently later
+
+        // Create comment input (only for saved cards in EDIT MODE)
+        const commentInputHtml = isEditMode ? `
+          <div style="position: relative;">
+            <textarea
+              class="card-comment-input"
+              placeholder="Short comment about ${card.title}"
+              maxlength="150"
+              data-card-id="${card.one_thing_user_card_id || card.id}"
+            ></textarea>
+            <div class="card-comment-counter">0/150</div>
+          </div>
+        ` : '';
+
         cardEl.innerHTML = `
       <div class="card-category-tag ${card.category || 'PLACES'}">${categoryText}</div>
       ${imageHtml}
-      <h4>${card.title}</h4>
-      <p>${card.description}</p>
+      ${titleHtml}
+      ${descriptionHtml}
+      ${commentHtml}
+      ${commentInputHtml}
       ${actionHtml}
       ${toggleHtml}
       ${authorHtml}
       ${moreMenuHtml}
+      ${locationIconHtml}
     `;
         // Add image upload functionality only for saved cards
         if (card.type === 'saved') {
@@ -3716,6 +5615,15 @@
                     img.className = 'uploaded-image';
                     img.style.display = 'block';
                     addPhotoIcon.style.display = 'none';
+
+                    // Show comment input after successful photo upload
+                    console.log('=== PHOTO UPLOADED SUCCESSFULLY ===');
+                    console.log('Card element:', cardEl);
+                    console.log('Card data:', card);
+                    console.log('Card type:', card.type);
+                    console.log('Card title:', card.title);
+                    console.log('Calling showCommentInput...');
+                    showCommentInput(cardEl, card);
 
                     if (card.type === 'saved') {
                       // Update the card's image in saved cards
@@ -3809,9 +5717,9 @@
                 completedButton.classList.add('active');
               }
               
-              // Update current filter and render the list
+              // Update current filter, URL and render the list
               currentTypeFilter = 'completed';
-              localStorage.setItem('currentTypeFilter', 'completed');
+              syncTabWithContent();
               renderCardList('completed', currentCategoryFilter);
               
               // Update progress bar to reflect new completed card
@@ -3902,13 +5810,81 @@
           }
         }
 
+        // Add location icon functionality for saved and completed cards
+        if (hasLocationData && locationUrl) {
+          const locationBtn = cardEl.querySelector('.card-location-btn');
+          if (locationBtn) {
+            locationBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const locationUrl = locationBtn.getAttribute('data-location-url');
+              if (locationUrl) {
+                window.open(locationUrl, '_blank');
+              }
+            });
+          }
+        }
+
+        // Add click handler for card-expiry elements
+        const expiryElement = cardEl.querySelector('.card-expiry');
+        if (expiryElement) {
+          expiryElement.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showExpiryInfoPopup(card);
+          });
+        }
+
         cardList.appendChild(cardEl);
+        
+        // Add event listener for comment input counter
+        const commentInput = cardEl.querySelector('.card-comment-input');
+        const commentCounter = cardEl.querySelector('.card-comment-counter');
+        
+        if (commentInput && commentCounter) {
+          commentInput.addEventListener('input', function() {
+            const length = this.value.length;
+            commentCounter.textContent = `${length}/150`;
+            
+            // Update counter color based on length
+            commentCounter.classList.remove('warning', 'error');
+            if (length > 120) {
+              commentCounter.classList.add('warning');
+            }
+            if (length >= 150) {
+              commentCounter.classList.add('error');
+            }
+          });
+          
+          // Save comment on blur
+          commentInput.addEventListener('blur', function() {
+            if (this.value.trim()) {
+              const cardId = card.one_thing_user_card_id || card.id;
+              saveCardComment(cardId, this.value.trim());
+            }
+          });
+        }
+        
+        // Add event listener for cancel button
+        const cancelBtn = cardEl.querySelector('.card-cancel-btn');
+        if (cancelBtn) {
+          console.log('✅ Cancel button found, adding event listener');
+          cancelBtn.addEventListener('click', function() {
+            console.log('🔥 Cancel button clicked!');
+            // Direct reset without confirmation popup
+            console.log('🔄 Directly resetting card to initial state...');
+            resetCardToInitialState(cardEl, card);
+          });
+        } else {
+          console.log('❌ Cancel button not found for card:', card.id);
+        }
       });
 
         // Add fade in effect
         requestAnimationFrame(() => {
           cardList.style.opacity = '1';
           cardList.style.transform = 'scale(1)';
+          // Reset rendering flag
+          cardList.dataset.rendering = 'false';
+          console.log('✅ Render completed for filter:', filter);
         });
       }, 50);
     });
@@ -4232,6 +6208,7 @@
                completed: item.completed,
                published: item.published,
                image: item.image,
+               comment: item.comment,
                created_at: item.created_at
              }))
              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -4250,7 +6227,7 @@
 //             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
           var formattedCards = usersCards
-            .filter(card => !card.completed) // Only show non-completed cards in saved
+            .filter(card => !card.completed && !card.published) // Only show non-completed and non-published cards in saved
             .map(card => ({
               id: card.id,
               title: card.title,
@@ -4261,13 +6238,23 @@
               one_thing_user_card_id: card.one_thing_user_card_id,
               completed: card.completed,
               published: card.published,
-              type: "saved"
+              type: "saved",
+              // Add location data
+              googleMapLink: card.googleMapLink,
+              appleMapLink: card.appleMapLink,
+              latitude: card.latitude,
+              longitude: card.longitude
             }));
-          savedCards = formattedCards;
-          renderCardList('saved', currentCategoryFilter);
+            savedCards = formattedCards;
+            console.log('✅ Saved cards loaded:', savedCards.length, 'cards');
+            // Always render after loading
+            renderCardList(savedCards, 'saved');
         }
       })
       .catch(error => {
+        console.error('❌ Error loading saved cards:', error);
+        // Show empty state on error
+        renderCardList([], 'saved');
       });
   }
 
@@ -4295,6 +6282,7 @@
                   completed: item.completed,
                   published: item.published,
                   imageSrc: item.image,
+                  comment: item.comment,
                   completed_at: item.completed_at
                 }))
                 .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at));
@@ -4311,13 +6299,23 @@
                   one_thing_user_card_id: card.one_thing_user_card_id,
                   completed: card.completed,
                   published: card.published,
-                  type: "completed"
+                  type: "completed",
+                  // Add location data
+                  googleMapLink: card.googleMapLink,
+                  appleMapLink: card.appleMapLink,
+                  latitude: card.latitude,
+                  longitude: card.longitude
                 }));
-              completedCards = formattedCards;
-              renderCardList('completed', currentCategoryFilter);
+                completedCards = formattedCards;
+                console.log('✅ Completed cards loaded:', completedCards.length, 'cards');
+                // Always render after loading
+                renderCardList('completed', currentCategoryFilter);
             }
           })
           .catch(error => {
+            console.error('❌ Error loading completed cards:', error);
+            // Show empty state on error
+            renderCardList('completed', currentCategoryFilter);
           });
   }
 
@@ -4341,6 +6339,7 @@
                   completed: item.completed,
                   published: item.published,
                   imageSrc: "https://xu8w-at8q-hywg.n7d.xano.io" + item.image,
+                  comment: item.comment,
                   completed_at: item.completed_at,
                   author_name: item.user.name,
                   author_avatar: item.user.picture,
@@ -4348,8 +6347,14 @@
                 }))
                 .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
                 publicCards = publishedCards;
+                console.log('✅ Community cards loaded:', publicCards.length, 'cards');
+                // Always render after loading
+                renderCardList('community', currentCategoryFilter);
           })
           .catch(error => {
+            console.error('❌ Error loading community cards:', error);
+            // Show empty state on error
+            renderCardList('community', currentCategoryFilter);
           });
       }
 
@@ -4438,3 +6443,4 @@
   }
 
 })();
+
