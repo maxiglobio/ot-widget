@@ -89,6 +89,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Share Section - Next to Location -->
+    <div class="share-section" id="share-section">
+      <div class="share-icon-wrapper">
+        <img id="share-icon" src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68ca8ce2c3104eb546fd2396_ot-share-icon.svg" alt="Share completed Things" />
+      </div>
+    </div>
     
     <!-- User Menu Section - Top Right -->
     <div class="user-menu-section">
@@ -485,6 +492,72 @@
     </div>
   </div>
 </div>
+
+  <!-- Expiry Info Popup -->
+  <div id="expiry-info-popup" class="expiry-info-popup" onclick="if(event.target === this) window.forceCloseExpiryPopup()">
+    <div class="expiry-info-popup-inner">
+      <button class="expiry-close" id="expiry-close" onclick="window.forceCloseExpiryPopup()">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+      </button>
+      <div class="expiry-header">
+        <h3 class="expiry-title">Thing Expiration</h3>
+      </div>
+      <div class="expiry-content">
+        <p>Add a photo from the location to complete this Thing and unlock its benefits:</p>
+        <div class="completion-benefits">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c456ad0331f5ca11d27c0f_check.svg" alt="Check" width="16" height="16">
+            </div>
+            <div class="benefit-text">Won't expire and stays in your collection</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c456ad0331f5ca11d27c0f_check.svg" alt="Check" width="16" height="16">
+            </div>
+            <div class="benefit-text">Gives your profile XP to progress to new levels</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c456ad0331f5ca11d27c0f_check.svg" alt="Check" width="16" height="16">
+            </div>
+            <div class="benefit-text">Make it public to earn XP from remixes</div>
+          </div>
+        </div>
+        <div class="expiry-details">
+          <div class="days-left" id="expiry-days-display">X days left</div>
+          <div class="expiry-date" id="expiry-date-display">Expires on: Date</div>
+        </div>
+      </div>
+      <div class="expiry-buttons">
+        <button class="expiry-got-it-btn" id="expiry-popup-close" onclick="window.forceCloseExpiryPopup()">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Completed Things Popup -->
+  <div id="share-popup" class="share-popup" onclick="if(event.target === this) window.forceCloseSharePopup()">
+    <div class="share-popup-inner">
+      <button class="share-close" id="share-close" onclick="window.forceCloseSharePopup()">
+        <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/6851bc3c3f7aabe2efc4ae8e_close-icon.svg" alt="Close" width="32" height="32">
+      </button>
+      <div class="share-header">
+        <h3 class="share-title">Share Your Experience</h3>
+      </div>
+                  <div class="share-content">
+                    <p>Share all your completed Things with your friend</p>
+                    <div class="share-visual">
+                      <img src="https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68cfbf34fd4c2925937b6f6b_things-pack-2.avif" alt="Stack of completed Things" class="things-pack-image">
+                    </div>
+                    <div class="share-preview" id="share-preview">
+                      <!-- Generated content will appear here -->
+                    </div>
+                  </div>
+      <div class="share-buttons">
+        <button class="share-generate-btn" id="share-generate-btn">Generate</button>
+      </div>
+    </div>
+  </div>
 
 <!-- Role Achievement Popup -->
 <div id="role-achievement-popup" class="role-achievement-popup">
