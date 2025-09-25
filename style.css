@@ -217,7 +217,7 @@
     border: 2px dashed #B1E530;
     background: rgba(177, 229, 48, 0.08);
     pointer-events: auto;
-    cursor: pointer;
+    cursor: default;
     transition: all 0.3s ease;
     opacity: 0.7;
   }
@@ -299,6 +299,14 @@
     object-position: center;
     background: #f0f0f0;
     display: block;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: white;
   }
 
   /* Location Section - Top Left */
@@ -308,6 +316,76 @@
     left: 20px;
     z-index: 10;
   }
+
+  /* Share Section - Next to Location */
+  .share-section {
+    position: absolute;
+    top: 20px;
+    left: 350px; /* Positioned next to location section */
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block; /* Ensure it's always visible */
+    visibility: visible; /* Force visibility */
+    opacity: 1; /* Force opacity */
+  }
+
+  .share-icon-wrapper {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    /* Fallback for older browsers */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    -ms-justify-content: center;
+    justify-content: center;
+  }
+
+  .share-section:hover .share-icon-wrapper {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .share-section img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .share-section:hover img {
+    opacity: 1;
+  }
+
+  /* Confirmation popup animation */
+  @keyframes popupSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
 
   .globio-nav-wrapper {
     display: flex;
@@ -956,6 +1034,22 @@
       left: 20px;
     }
 
+    .share-section {
+      top: 20px;
+      left: 300px;
+    }
+
+    .share-icon-wrapper {
+      padding: 12px;
+      width: 44px;
+      height: 44px;
+    }
+
+    .share-section img {
+      width: 18px;
+      height: 18px;
+    }
+
     .user-menu-section {
       top: 20px;
       right: 20px;
@@ -1017,6 +1111,10 @@
       height: 56px;
     }
 
+    .user-avatar:hover {
+      transform: scale(1.02);
+    }
+
     .user-zone-circle {
       width: 72px;
       height: 72px;
@@ -1032,6 +1130,22 @@
     .location-section {
       top: 15px;
       left: 15px;
+    }
+
+    .share-section {
+      top: 15px;
+      left: 250px;
+    }
+
+    .share-icon-wrapper {
+      padding: 10px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .share-section img {
+      width: 16px;
+      height: 16px;
     }
 
     .user-menu-section {
@@ -1464,7 +1578,9 @@
   }
 
   .card-category-tag.places,
-  .card-category-tag.PLACES {
+  .card-category-tag.PLACES,
+  .card-category-tag.BEACH,
+  .card-category-tag.beach {
     background: transparent !important;
     color: #58AD95 !important;
     border: 1.5px solid rgba(88, 173, 149, 0.3) !important;
@@ -1617,18 +1733,706 @@
     align-self: center;
     width: fit-content;
     min-width: fit-content;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+  }
+
+  .card-expiry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    border-color: #B1E530;
+    background: #F8FFE5;
   }
 
   /* Color indicators for urgency */
   .card-expiry.warning {
     color: #FF8C00;
     border-color: #FF8C00;
+    background: #FFF8E5;
   }
 
   .card-expiry.critical {
     color: #FF4444;
     border-color: #FF4444;
     background: #FFF5F5;
+  }
+
+  /* Hover effects for warning and critical states */
+  .card-expiry.warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    border-color: #FF8C00;
+    background: #FFF8E5;
+  }
+
+  .card-expiry.critical:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    border-color: #FF4444;
+    background: #FFF5F5;
+  }
+
+  /* Expiry Info Popup */
+  .expiry-info-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .expiry-info-popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .expiry-info-popup-inner {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 0;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .expiry-info-popup.show .expiry-info-popup-inner {
+    transform: scale(1) translateY(0);
+  }
+
+  .expiry-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .expiry-close:hover {
+    background: #f0f0f0;
+  }
+
+  .expiry-close img {
+    width: 32px;
+    height: 32px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .expiry-close:hover img {
+    opacity: 1;
+  }
+
+  .expiry-header {
+    padding: 32px 32px 0 32px;
+    text-align: center;
+  }
+
+  .expiry-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: -12px 0 24px 0;
+    color: #222;
+  }
+
+  .expiry-content {
+    padding: 0 32px 10px 32px;
+    text-align: center;
+  }
+
+  .expiry-content p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666;
+    margin-bottom: 24px;
+  }
+
+  .expiry-details {
+    background: #F8FFE5;
+    border: 1px solid #B1E530;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .expiry-details .days-left {
+    font-size: 18px;
+    font-weight: 700;
+    color: #B1E530;
+    margin-bottom: 8px;
+  }
+
+  .expiry-details .expiry-date {
+    font-size: 14px;
+    color: #666;
+  }
+
+  /* Warning state (2-3 days left) */
+  .expiry-details.warning {
+    background: #FFF8E5;
+    border-color: #FF8C00;
+  }
+
+  .expiry-details.warning .days-left {
+    color: #FF8C00;
+  }
+
+  /* Critical state (1 day left) */
+  .expiry-details.critical {
+    background: #FFF5F5;
+    border-color: #FF4444;
+  }
+
+  .expiry-details.critical .days-left {
+    color: #FF4444;
+  }
+
+  .completion-benefits {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0px;
+    text-align: left;
+  }
+
+  .benefit-icon {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .benefit-icon img {
+    width: 16px;
+    height: 16px;
+    filter: hue-rotate(90deg) saturate(1.5) brightness(0.8);
+  }
+
+  .benefit-text {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    text-align: left;
+  }
+
+
+  .expiry-buttons {
+    padding: 0 32px 32px 32px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .expiry-got-it-btn {
+    background: #000000;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .expiry-got-it-btn:hover {
+    background: #333333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Share Popup Styles */
+  .share-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .share-popup.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .share-popup-inner {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .share-popup.show .share-popup-inner {
+    transform: scale(1) translateY(0);
+  }
+
+  .share-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .share-close:hover {
+    background: #f0f0f0;
+  }
+
+  .share-close img {
+    width: 32px;
+    height: 32px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .share-close:hover img {
+    opacity: 1;
+  }
+
+  .share-header {
+    padding: 32px 32px 0 32px;
+    text-align: center;
+  }
+
+  .share-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: -12px 0 16px 0;
+    color: #222;
+  }
+
+  .share-content {
+    padding: 0 32px 10px 32px;
+    text-align: center;
+  }
+
+  .share-content p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666;
+    margin-bottom: 24px;
+  }
+
+  .share-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 0 0 0;
+    height: 160px;
+    min-height: 160px;
+  }
+
+  .things-pack-image {
+    height: 160px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .share-visual .share-loader {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #f0f0f0;
+    border-top: 2px solid #B1E530;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .share-preview {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+    position: relative;
+    min-height: 100px;
+  }
+
+  .share-preview:empty {
+    display: none;
+  }
+
+  .share-preview:empty::before {
+    content: "Generated share text will appear here...";
+    color: #999;
+    font-style: italic;
+    display: block;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .share-preview.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+  }
+
+  .share-loader {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #f0f0f0;
+    border-top: 2px solid #B1E530;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .share-buttons {
+    padding: 0 32px 32px 32px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .share-generate-btn {
+    background: #B1E530;
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+    .share-generate-btn:hover {
+      background: #9BCF2A;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(177, 229, 48, 0.3);
+    }
+
+  /* Card Comment Input Styles */
+  .card-comment-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    background: #f8f9fa;
+    color: #333;
+    resize: none;
+    outline: none;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+    min-height: 40px;
+    max-height: 80px;
+  }
+
+  .card-comment-input:focus {
+    border-color: #B1E530;
+    background: white;
+    box-shadow: 0 0 0 2px rgba(177, 229, 48, 0.1);
+  }
+
+  .card-comment-input::placeholder {
+    color: #999;
+    font-style: italic;
+  }
+
+  .card-comment-counter {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  .card-comment-counter.warning {
+    color: #ff6b35;
+  }
+
+  .card-comment-counter.error {
+    color: #e74c3c;
+  }
+
+  .card-comment-section {
+    display: none;
+  }
+
+  .card-comment-section.show {
+    display: block;
+  }
+
+  .card-comment-display {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 14px;
+    color: #333;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .card-comment-input {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    width: 100%;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    color: #333;
+    resize: none;
+    outline: none;
+    transition: all 0.3s ease;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .card-comment-input:focus {
+    border-color: #B1E530;
+    background: white;
+    box-shadow: 0 0 0 2px rgba(177, 229, 48, 0.1);
+  }
+
+  .card-comment-input::placeholder {
+    color: #999;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+  }
+
+  .card-comment-counter {
+    position: absolute;
+    bottom: 18px;
+    right: 2px;
+    font-size: 12px;
+    color: #666;
+    font-family: 'Manrope', sans-serif;
+    background: rgba(248, 249, 250, 0.9);
+    padding: 2px 6px;
+    border-radius: 18px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .card-comment-counter.warning {
+    color: #ff6b35;
+  }
+
+  .card-comment-counter.error {
+    color: #e74c3c;
+  }
+
+  /* Cancel button styles */
+  .card-cancel-menu {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+  }
+
+  .card-cancel-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-cancel-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+
+  .card-cancel-btn svg {
+    width: 16px;
+    height: 16px;
+    color: #666;
+  }
+
+  .card-cancel-btn:hover svg {
+    color: #333;
+  }
+
+  /* Force visibility for comment input */
+  .card-comment-input {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+
+  /* Hide elements when comment input is shown */
+  .hidden-by-comment {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+  }
+
+  /* Force hide title and description when comment input is active */
+  .one-thing-card .card-comment-input ~ h4,
+  .one-thing-card .card-comment-input ~ p {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+  }
+
+  /* Alternative approach - hide when comment input is visible */
+  .one-thing-card:has(.card-comment-input) h4,
+  .one-thing-card:has(.card-comment-input) p {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+  }
+
+  /* Force visible comment section - never hide these */
+  .force-visible-comment,
+  .never-hide,
+  [data-comment-section="true"],
+  [data-force-visible="true"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 99999 !important;
+    background: white !important;
+    border: 3px solid #ff0000 !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    margin: 8px 0 !important;
+    box-shadow: 0 4px 12px rgba(255,0,0,0.5) !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    transform: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    pointer-events: auto !important;
+    user-select: auto !important;
+  }
+
+  /* Override any other CSS that might hide the comment */
+  .card-comment-section.force-visible-comment,
+  .card-comment-section.never-hide,
+  .card-comment-section[data-comment-section="true"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 99999 !important;
+  }
+
+  /* Mobile adjustments for expiry popup */
+  @media (max-width: 600px) {
+    .expiry-info-popup-inner {
+      width: 95%;
+    }
+
+    .expiry-header {
+      padding: 24px 24px 0 24px;
+    }
+
+    .expiry-content {
+      padding: 0 24px 20px 24px;
+    }
+
+    .expiry-buttons {
+      padding: 0 24px 24px 24px;
+    }
+
+    .expiry-title {
+      font-size: 20px;
+    }
+
+    .expiry-content p {
+      font-size: 14px;
+    }
+
+    .expiry-details .days-left {
+      font-size: 16px;
+    }
   }
 
   .card-author {
@@ -1649,6 +2453,39 @@
     top: 16px;
     right: 16px;
     z-index: 10;
+  }
+
+  /* Card Location Icon (Top Right, Left of More Menu) */
+  .card-location-menu {
+    position: absolute;
+    top: 16px;
+    right: 56px; /* 16px margin + 32px more button width + 8px gap */
+    z-index: 10;
+  }
+
+  .card-location-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-location-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-location-btn img {
+    width: 16px;
+    height: 16px;
   }
 
   .card-more-btn {
@@ -2301,15 +3138,16 @@
       margin: 20px auto;
     }
 
+
     .one-thing-account-btn {
-      width: 140px;
-      height: 140px;
+      width: 180px;
+      height: 180px;
       margin-top: 0;
     }
 
     .spinner-ring-account {
-      width: 140px;
-      height: 140px;
+      width: 180px;
+      height: 180px;
     }
 
     .one-thing-account-btn lottie-player {
@@ -2380,9 +3218,12 @@
     }
 
     .dropdown-menu {
-      min-width: 160px;
+      min-width: 200px;
       left: 50%;
       transform: translateX(-50%) translateY(-10px);
+      max-width: calc(100vw - 80px);
+      width: auto;
+      margin-left: 20px;
     }
 
     .dropdown-menu.show {
@@ -2395,6 +3236,17 @@
       background: #E0E0E0;
       border-radius: 1px;
       margin: 0 4px;
+    }
+
+    .dropdown-item {
+      padding: 16px 20px;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .dropdown-item .category-dot {
+      width: 12px;
+      height: 12px;
     }
   }
 
@@ -2589,7 +3441,9 @@
     border: 1.5px solid rgba(170, 180, 15, 0.3) !important;
   }
 
-  .popup-category-pill.places {
+  .popup-category-pill.places,
+  .popup-category-pill.BEACH,
+  .popup-category-pill.beach {
     background: transparent !important;
     color: #58AD95 !important;
     border: 1.5px solid rgba(88, 173, 149, 0.3) !important;
@@ -3607,6 +4461,13 @@
     box-sizing: border-box;
   }
 
+  /* TEMPORARILY HIDDEN - To restore: remove this rule */
+  .role-achievement-popup {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
   .role-achievement-popup.show {
     display: flex;
     animation: achievementPopupFadeIn 0.5s ease-out;
@@ -4045,7 +4906,7 @@
   }
 
   .location-input-section {
-    padding: 0 32px 6px 32px;
+    padding: 0px 12px 6px 12px;
     background: white;
     position: sticky;
     top: 0;
@@ -4086,7 +4947,7 @@
 
 
   .location-results {
-    padding: 0 32px 32px 32px;
+    padding: 0 16px 0px 16px;
     min-height: 0 !important;
     max-height: none !important;
     overflow-y: auto !important;
@@ -4287,10 +5148,18 @@
   /* Mobile adjustments for location modal */
   @media (max-width: 768px) {
     .location-modal-content {
-      padding: 24px;
+      padding: 12px;
       margin: 20px;
       width: calc(100% - 40px);
       height: 480px;
+    }
+    
+    .location-modal-header {
+      padding: 20px 16px 20px 16px;
+    }
+    
+    .location-modal-icon {
+      padding: 0 16px;
     }
 
     .location-modal-title {
