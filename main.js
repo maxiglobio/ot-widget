@@ -1371,6 +1371,7 @@
   const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
   const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
   const API_CITIES = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_cities'
+  const API_REMIX = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/remix'
 
   const MAX_ATTEMPTS = 3;
   const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -4068,15 +4069,15 @@
     if (remixConfirmBtn) {
       remixConfirmBtn.addEventListener('click', () => {
         const popup = document.getElementById('remix-confirmation-popup');
-        const cardData = JSON.parse(popup.dataset.cardData);
-        
+        const cardDataId = JSON.parse(popup.dataset.cardId);
+
         // Check if "don't show again" is checked
         if (remixDontShowCheckbox && remixDontShowCheckbox.checked) {
           localStorage.setItem('remix-dont-show-again', 'true');
         }
         
         // Perform remix
-        performRemix(cardData);
+        performRemix(cardDataId);
         
         // Hide popup
         hideRemixConfirmationPopup();
@@ -6519,7 +6520,7 @@
     
     if (dontShowAgain) {
       // Direct remix without confirmation
-      performRemix(card);
+      performRemix(card.one_thing_user_card_id);
     } else {
       // Show confirmation popup
       showRemixConfirmationPopup(card);
@@ -6549,43 +6550,28 @@
   }
 
   // Perform the actual remix action
-  function performRemix(card) {
-    console.log('🎨 Performing remix for card:', card);
-    
-    // Create a new card based on the remixed card
-    const remixedCard = {
-      ...card,
-      id: Date.now(), // Generate new ID
-      one_thing_user_card_id: null, // Will be assigned when saved
-      type: 'saved', // Set as saved card
-      completed: false,
-      published: false,
-      expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days from now
-      imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif', // Reset to add-photo state
-      comment: '', // Reset comment
-      author_name: null, // Remove author info
-      author_avatar: null,
-      user_name: null,
-      // Keep the original content but mark as remix
-      title: card.title,
-      description: card.description,
-      category: card.category,
-      isRemix: true,
-      originalCardId: card.one_thing_user_card_id || card.id
-    };
-    
-    // Add to saved cards
-    savedCards.unshift(remixedCard);
-    
-    // Switch to saved tab to show the remixed card
-    currentTypeFilter = 'saved';
-    syncTabWithContent();
-    renderCardList('saved', currentCategoryFilter);
-    
-    // Show success message
-    showRemixSuccessTooltip();
-    
-    console.log('✅ Card remixed successfully:', remixedCard);
+  function performRemix(cardId) {
+      const userId = ensureUserId();
+      fetch(API_REMIX, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId: userId,
+            id: cardId,
+            expiredAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
+        })
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+          currentTypeFilter = 'saved';
+          syncTabWithContent();
+          loadSavedUserCards();
+          showRemixSuccessTooltip(); // todo fix
+      })
+      .catch(error => {
+      })
   }
 
   // Show remix success tooltip
