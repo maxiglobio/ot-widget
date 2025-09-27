@@ -2438,13 +2438,19 @@
   .card-author {
     font-size: 12px;
     color: #666;
-    margin-top: 8px;
-    text-align: center;
+    text-align: left;
     font-style: italic;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 6px;
+  }
+
+  /* Card footer for community cards */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   /* Card More Menu */
@@ -2875,6 +2881,39 @@
     width: auto;
     min-width: 120px;
     align-self: center;
+  }
+
+  /* Remix button for community cards */
+  .card-remix-button {
+    margin-left: auto;
+  }
+
+  .remix-btn {
+    background: #866BF2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(134, 107, 242, 0.2);
+    width: auto;
+    min-width: 80px;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    transition: all 0.2s ease;
+  }
+
+  .remix-btn:hover {
+    background: #7A5FEA;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(134, 107, 242, 0.3);
+  }
+
+  .remix-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(134, 107, 242, 0.2);
   }
 
 
@@ -5321,4 +5360,32 @@
 
   .confirmation-confirm:hover {
     background: #333333;
+  }
+
+  /* Remix confirmation popup checkbox styles */
+  .remix-checkbox-container {
+    margin: 16px 0 24px 0;
+    text-align: left;
+  }
+
+  .remix-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  .remix-checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #866BF2;
+  }
+
+  .remix-checkbox-text {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
   }
