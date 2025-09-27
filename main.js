@@ -161,6 +161,10 @@
 
   // Function to load user data from Xano
   function loadUserDataFromXano(userId) {
+//    localStorage.removeItem('hasCar');
+//    localStorage.removeItem('hasKids');
+//    localStorage.removeItem('hasPets');
+
     fetch(`https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_users/${userId}`)
       .then(response => {
         if (!response.ok) {
@@ -169,6 +173,16 @@
         return response.json();
       })
       .then(data => {
+
+        // load my context options
+        document.getElementById('has-kids').checked = data.hasKids;
+        document.getElementById('has-pets').checked = data.hasPets;
+        document.getElementById('has-car').checked = data.hasCar;
+
+        // save to localstorage for the button
+        localStorage.setItem('hasCar', data.hasCar);
+        localStorage.setItem('hasKids', data.hasKids);
+        localStorage.setItem('hasPets', data.hasPets);
 
         // Update user avatar (for map avatar, progress bar, and levels popup)
         if (data.picture) {
@@ -413,14 +427,14 @@
     const userDropdown = document.getElementById('user-dropdown');
 
     // Load saved context
-    const hasKids = localStorage.getItem('hasKids') === 'true';
-    const hasPets = localStorage.getItem('hasPets') === 'true';
-    const hasCar = localStorage.getItem('hasCar') === 'true';
-
-
-    document.getElementById('has-kids').checked = hasKids;
-    document.getElementById('has-pets').checked = hasPets;
-    document.getElementById('has-car').checked = hasCar;
+//    const hasKids = localStorage.getItem('hasKids') === 'true';
+//    const hasPets = localStorage.getItem('hasPets') === 'true';
+//    const hasCar = localStorage.getItem('hasCar') === 'true';
+//
+//
+//    document.getElementById('has-kids').checked = hasKids;
+//    document.getElementById('has-pets').checked = hasPets;
+//    document.getElementById('has-car').checked = hasCar;
 
 
     // Open modal
@@ -446,12 +460,12 @@
       const hasKids = document.getElementById('has-kids').checked;
       const hasPets = document.getElementById('has-pets').checked;
       const hasCar = document.getElementById('has-car').checked;
-
-
-      localStorage.setItem('hasKids', hasKids);
-      localStorage.setItem('hasPets', hasPets);
-      localStorage.setItem('hasCar', hasCar);
-
+        params = {
+            hasKids: hasKids,
+            hasPets: hasPets,
+            hasCar: hasCar,
+        }
+        updateUser(params);
 
       myContextModal.classList.remove('show');
 
@@ -1377,6 +1391,7 @@
   const API_SET_CARD_PUBLISH = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/set_card_param'
   const API_SET_CARD_UPLOAD_IMAGE = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/upload/image'
   const API_CITIES = 'https://xu8w-at8q-hywg.n7d.xano.io/api:WT6s5fz4/one_thing_cities'
+
   const MAX_ATTEMPTS = 3;
   const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -6121,6 +6136,20 @@
         }
       });
     }
+  }
+
+
+
+  function updateUser(oneParam) {
+    const userId = ensureUserId();
+    return fetch(API_USERS + '/' + userId, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(oneParam)
+    })
+    .then(res => res.json());
   }
 
   // Update expiry count every hour (refreshes days left)
