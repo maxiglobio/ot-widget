@@ -4056,6 +4056,43 @@
       });
     }
 
+    // Remix confirmation popup handlers
+    const remixCancelBtn = document.getElementById('remix-confirmation-cancel');
+    const remixConfirmBtn = document.getElementById('remix-confirmation-confirm');
+    const remixDontShowCheckbox = document.getElementById('remix-dont-show-again');
+
+    if (remixCancelBtn) {
+      remixCancelBtn.addEventListener('click', hideRemixConfirmationPopup);
+    }
+
+    if (remixConfirmBtn) {
+      remixConfirmBtn.addEventListener('click', () => {
+        const popup = document.getElementById('remix-confirmation-popup');
+        const cardData = JSON.parse(popup.dataset.cardData);
+        
+        // Check if "don't show again" is checked
+        if (remixDontShowCheckbox && remixDontShowCheckbox.checked) {
+          localStorage.setItem('remix-dont-show-again', 'true');
+        }
+        
+        // Perform remix
+        performRemix(cardData);
+        
+        // Hide popup
+        hideRemixConfirmationPopup();
+      });
+    }
+
+    // Close remix popup when clicking outside
+    const remixPopup = document.getElementById('remix-confirmation-popup');
+    if (remixPopup) {
+      remixPopup.addEventListener('click', (e) => {
+        if (e.target === remixPopup) {
+          hideRemixConfirmationPopup();
+        }
+      });
+    }
+
     // Referral popup handlers
     const copyBtn = document.getElementById('copy-referral-btn');
     const referralCloseBtn = document.getElementById('referral-close');
@@ -5362,22 +5399,33 @@
           actionHtml = expiryHtml;
         }
 
-        // Add author name and avatar for community cards
-        let authorHtml = '';
+        // Create footer section for community cards with author and remix button
+        let footerHtml = '';
         if (card.type === 'community') {
           const authorName = card.author_name || card.user_name || 'User';
           const authorAvatar = card.author_avatar;
-
+          
+          let authorSection = '';
           if (authorAvatar) {
-            authorHtml = `
+            authorSection = `
               <div class="card-author">
                 <img src="${authorAvatar}" alt="${authorName}" class="author-avatar" width="20" height="20"
                      onerror="this.style.display='none'; this.nextElementSibling.style.marginLeft='0';">
                 <span>by ${authorName}</span>
               </div>`;
           } else {
-            authorHtml = `<div class="card-author">by ${authorName}</div>`;
+            authorSection = `<div class="card-author">by ${authorName}</div>`;
           }
+          
+          footerHtml = `
+            <div class="card-footer">
+              ${authorSection}
+              <div class="card-remix-button">
+                <button class="remix-btn" data-card-id="${card.one_thing_user_card_id || card.id}" title="Remix this Thing">
+                  Remix
+                </button>
+              </div>
+            </div>`;
         }
 
         // Create different HTML for saved vs completed cards
@@ -5522,9 +5570,9 @@
       ${commentInputHtml}
       ${actionHtml}
       ${toggleHtml}
-      ${authorHtml}
       ${moreMenuHtml}
       ${locationIconHtml}
+      ${footerHtml}
     `;
         // Add image upload functionality only for saved cards
         if (card.type === 'saved') {
@@ -5870,6 +5918,17 @@
           });
         } else {
           console.log('❌ Cancel button not found for card:', card.id);
+        }
+
+        // Add event listener for remix button (community cards only)
+        const remixBtn = cardEl.querySelector('.remix-btn');
+        if (remixBtn) {
+          console.log('✅ Remix button found, adding event listener');
+          remixBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('🔥 Remix button clicked!');
+            handleRemixCard(card);
+          });
         }
       });
 
@@ -6449,6 +6508,104 @@
         dropdownTrigger.classList.add('active');
       }
     });
+  }
+
+  // Handle remix card functionality
+  function handleRemixCard(card) {
+    console.log('🎨 Handling remix for card:', card);
+    
+    // Check if user has disabled remix confirmation popup
+    const dontShowAgain = localStorage.getItem('remix-dont-show-again') === 'true';
+    
+    if (dontShowAgain) {
+      // Direct remix without confirmation
+      performRemix(card);
+    } else {
+      // Show confirmation popup
+      showRemixConfirmationPopup(card);
+    }
+  }
+
+  // Show remix confirmation popup
+  function showRemixConfirmationPopup(card) {
+    const popup = document.getElementById('remix-confirmation-popup');
+    const checkbox = document.getElementById('remix-dont-show-again');
+    
+    // Reset checkbox state
+    checkbox.checked = false;
+    
+    // Show popup
+    popup.classList.add('show');
+    
+    // Store current card for remix action
+    popup.dataset.cardId = card.one_thing_user_card_id || card.id;
+    popup.dataset.cardData = JSON.stringify(card);
+  }
+
+  // Hide remix confirmation popup
+  function hideRemixConfirmationPopup() {
+    const popup = document.getElementById('remix-confirmation-popup');
+    popup.classList.remove('show');
+  }
+
+  // Perform the actual remix action
+  function performRemix(card) {
+    console.log('🎨 Performing remix for card:', card);
+    
+    // Create a new card based on the remixed card
+    const remixedCard = {
+      ...card,
+      id: Date.now(), // Generate new ID
+      one_thing_user_card_id: null, // Will be assigned when saved
+      type: 'saved', // Set as saved card
+      completed: false,
+      published: false,
+      expiresAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days from now
+      imageSrc: 'https://cdn.prod.website-files.com/64d15b8bef1b2f28f40b4f1e/68c4324573885a3a9d06e6e9_add-photo-ot.avif', // Reset to add-photo state
+      comment: '', // Reset comment
+      author_name: null, // Remove author info
+      author_avatar: null,
+      user_name: null,
+      // Keep the original content but mark as remix
+      title: card.title,
+      description: card.description,
+      category: card.category,
+      isRemix: true,
+      originalCardId: card.one_thing_user_card_id || card.id
+    };
+    
+    // Add to saved cards
+    savedCards.unshift(remixedCard);
+    
+    // Switch to saved tab to show the remixed card
+    currentTypeFilter = 'saved';
+    syncTabWithContent();
+    renderCardList('saved', currentCategoryFilter);
+    
+    // Show success message
+    showRemixSuccessTooltip();
+    
+    console.log('✅ Card remixed successfully:', remixedCard);
+  }
+
+  // Show remix success tooltip
+  function showRemixSuccessTooltip() {
+    const tooltip = document.getElementById('remix-success-tooltip') || createRemixSuccessTooltip();
+    tooltip.classList.add('show');
+    
+    setTimeout(() => {
+      tooltip.classList.remove('show');
+    }, 3000);
+  }
+
+  // Create remix success tooltip if it doesn't exist
+  function createRemixSuccessTooltip() {
+    const tooltip = document.createElement('div');
+    tooltip.id = 'remix-success-tooltip';
+    tooltip.className = 'success-tooltip';
+    tooltip.innerHTML = '<span>Thing remixed successfully!</span>';
+    document.body.appendChild(tooltip);
+    return tooltip;
   }
 
 })();
